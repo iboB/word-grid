@@ -3,14 +3,31 @@
 namespace core
 {
 
-Grid::Grid(size_t w, size_t h)
+Grid::Grid(size_t w, size_t h, chobo::const_memory_view<letter> letters)
     : m_width(w)
     , m_height(h)
-    , m_letters(w * h)
-{}
+{
+    if (letters.empty())
+    {
+        m_ownedLetters.resize(w * h);
+        acquireLetterOwnership();
+    }
+    else
+    {
+        assert(letters.size() >= w * h);
+        m_letters = letters;
+    }
+}
 
 Grid::~Grid() = default;
 
+void Grid::acquireLetterOwnership()
+{
+    assert(m_letters.data() != m_ownedLetters.data());
+    m_ownedLetters.resize(m_width * m_height);
+    m_ownedLetters.assign(m_letters.begin(), m_letters.begin() + m_ownedLetters.size());
+    m_letters.reset(m_ownedLetters.data(), m_ownedLetters.size());
+}
 
 bool Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord> coords) const
 {

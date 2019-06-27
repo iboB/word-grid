@@ -11,11 +11,13 @@ namespace core
 class Grid
 {
 public:
-    Grid(size_t w, size_t h);
+    Grid(size_t w, size_t h, chobo::const_memory_view<letter> letters = {});
     ~Grid();
 
     size_t w() const { return m_width; }
     size_t h() const { return m_height; }
+
+    void acquireLetterOwnership();
 
     struct Coord {
         uint32_t x;
@@ -32,14 +34,15 @@ public:
         auto dm = std::div(int(i), int(m_width));
         return {uint32_t(dm.quot), uint32_t(dm.rem)};
     }
-    letter at(const Coord& c) const;
-    letter at(size_t index) const;
+    letter at(const Coord& c) const { return m_letters[indexOf(c)]; }
+    letter at(size_t index) const { return m_letters[index]; }
 
 private:
     bool testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord>& coords, size_t length) const;
 
-    size_t m_width = 0, m_height = 0;
-    std::vector<letter> m_letters;
+    const size_t m_width = 0, m_height = 0;
+    chobo::const_memory_view<letter> m_letters;
+    std::vector<letter> m_ownedLetters; // the grid can optionally own the letters, or just serve as a view
 };
 
 inline bool operator==(const Grid::Coord& a, const Grid::Coord& b)

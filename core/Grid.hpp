@@ -28,9 +28,9 @@ public:
     };
 
     // tests a pattern (word)
-    // return true if the word is found on the grid
+    // return length in elements if the word is found on the grid
     // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
-    bool testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord> coords) const;
+    size_t testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord> coords) const;
 
     size_t indexOf(const Coord& c) const { return m_width * c.y + c.x; }
     Coord coordOf(size_t i) const {
@@ -41,7 +41,7 @@ public:
     const GridElement& at(size_t index) const { return m_elements[index]; }
 
 private:
-    bool testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord>& coords, size_t length) const;
+    size_t testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord>& coords, size_t length) const;
 
     const size_t m_width = 0, m_height = 0;
     chobo::const_memory_view<GridElement> m_elements;

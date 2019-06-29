@@ -29,10 +29,10 @@ void Grid::acquireElementOwnership()
     m_elements.reset(m_ownedElements.data(), m_ownedElements.size());
 }
 
-bool Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord> coords) const
+size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord> coords) const
 {
     assert(coords.size() >= pattern.size());
-    if (pattern.empty()) return true;
+    if (pattern.empty()) return 0;
 
     Coord c;
     for (c.y=0; c.y<m_height; ++c.y)
@@ -40,28 +40,34 @@ bool Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_v
         for (c.x=0; c.x<m_width; ++c.x)
         {
             auto& elem = at(c);
-            if (!elem.matches(pattern, 0)) continue;
+            if (!elem.matches(pattern)) continue;
 
             coords.front() = c;
 
-            if (pattern.size() == elem.length())
+            const auto matchLength = elem.matchLength();
+            if (pattern.size() == matchLength)
             {
-                return true;
+                return 1;
             }
 
-            auto up = chobo::make_memory_view(pattern.data() + elem.length(), pattern.size() - elem.length());
-
-            if (testPatternR(up, coords, 1))
+            if (elem.backOnly())
             {
-                return true;
+                return 0;
+            }
+
+            auto up = chobo::make_memory_view(pattern.data() + matchLength, pattern.size() - matchLength);
+
+            if (auto length = testPatternR(up, coords, 1))
+            {
+                return length;
             }
         }
     }
 
-    return false;
+    return 0;
 }
 
-bool Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord>& coords, size_t length) const
+size_t Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord>& coords, size_t length) const
 {
     const Coord& base = coords[length - 1];
 
@@ -77,7 +83,8 @@ bool Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_
             if (c.x >= m_width) continue;
 
             auto& elem = at(c);
-            if (!elem.matches(pattern, length)) continue;
+            if (elem.frontOnly()) continue;
+            if (!elem.matches(pattern)) continue;
 
             bool alreadyUsed = [&c, &coords, length]()
             {
@@ -92,21 +99,27 @@ bool Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_
 
             coords[length] = c;
 
-            if (pattern.size() == elem.length())
+            const auto matchLength = elem.matchLength();
+            if (pattern.size() == matchLength)
             {
-                return true;
+                return length + 1;
             }
 
-            auto up = chobo::make_memory_view(pattern.data() + elem.length(), pattern.size() - elem.length());
-
-            if (testPatternR(up, coords, length + 1))
+            if (elem.backOnly())
             {
-                return true;
+                return 0;
+            }
+
+            auto up = chobo::make_memory_view(pattern.data() + matchLength, pattern.size() - matchLength);
+
+            if (auto l = testPatternR(up, coords, length + 1))
+            {
+                return l;
             }
         }
     }
 
-    return false;
+    return 0;
 }
 
 }

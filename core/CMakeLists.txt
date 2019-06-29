@@ -1,7 +1,19 @@
 set(src)
-src_group(grid src
+src_group(lib src
+    lib/UnicodeCharFromUtf8.hpp
+)
+src_group(core src
+    Types.hpp
+    LetterSequence.hpp
+    Word.hpp
+    WordTraits.hpp
+    GridElement.hpp
+    GridElement.cpp
+    GridElementTraits.hpp
+    Dictionary.cpp
+    Dictionary.hpp
     Grid.cpp
-    Grid.h
+    Grid.hpp
 )
 
 add_library(core STATIC

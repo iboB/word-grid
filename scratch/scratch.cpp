@@ -1,29 +1,31 @@
 #include <iostream>
 #include <string>
 
-#include <core/Grid.h>
+#include <core/Grid.hpp>
+#include <core/Word.hpp>
 
 using namespace std;
+using namespace core;
 
 int main()
 {
     // abcd
     // efgh
     // ijkl
-    std::vector<core::letter> letters(16);
+    // mnop
+    std::vector<GridElement> elements(16);
     for (unsigned i = 0; i < 16; ++i)
     {
-        letters[i] = 'a' + i;
+        elements[i].push_back('a' + i);
     }
 
-    auto mv = chobo::make_memory_view(letters);
-    core::Grid grid(4, 4, mv);
-    grid.acquireLetterOwnership();
+    auto mv = chobo::make_memory_view(elements);
+    Grid grid(4, 4, mv);
+    grid.acquireElementOwnership();
 
-    vector<core::Grid::Coord> coords(50);
+    vector<Grid::Coord> coords(50);
 
-    string sword = "abeje";
-    const vector<core::letter> word(sword.begin(), sword.end());
+    auto word = Word::fromAscii("dgjnka");
 
     auto b = grid.testPattern(chobo::make_memory_view(word), chobo::make_memory_view(coords));
 
@@ -37,7 +39,7 @@ int main()
     }
     else
     {
-        cout << "no :(\b";
+        cout << "no :(\n";
     }
 
     return 0;

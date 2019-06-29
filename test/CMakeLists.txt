@@ -1,0 +1,11 @@
+macro(add_core_test test)
+    set(tname test-${test})
+    add_executable(${tname} ${ARGN})
+    target_link_libraries(${tname} doctest-main core)
+    set_target_properties(${tname} PROPERTIES FOLDER test)
+    add_test(NAME ${test} COMMAND $<TARGET_FILE:${tname}>)
+endmacro()
+
+add_core_test(LetterSequence t-LetterSequence.cpp)
+add_core_test(Grid t-Grid.cpp)
+add_core_test(Dictionary t-Dictionary.cpp)

@@ -18,3 +18,6 @@ add_subdirectory(third_party)
 add_subdirectory(core)
 
 add_subdirectory(scratch)
+
+enable_testing()
+add_subdirectory(test)

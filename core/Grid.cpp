@@ -3,7 +3,7 @@
 namespace core
 {
 
-Grid::Grid(size_t w, size_t h, chobo::const_memory_view<GridElement> letters)
+Grid::Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> letters)
     : m_width(w)
     , m_height(h)
 {

@@ -7,9 +7,9 @@ src_group(core src
     LetterSequence.hpp
     Word.hpp
     WordTraits.hpp
-    GridElement.hpp
-    GridElement.cpp
-    GridElementTraits.hpp
+    WordElement.hpp
+    WordElement.cpp
+    WordElementTraits.hpp
     Dictionary.cpp
     Dictionary.hpp
     Grid.cpp

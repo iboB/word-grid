@@ -1,8 +1,8 @@
-#include "GridElement.hpp"
+#include "WordElement.hpp"
 
 namespace core
 {
-bool GridElement::matches(const chobo::const_memory_view<letter>& pattern) const
+bool WordElement::matches(const chobo::const_memory_view<letter>& pattern) const
 {
     if (empty()) return true; // empty matches everything
 
@@ -24,7 +24,7 @@ bool GridElement::matches(const chobo::const_memory_view<letter>& pattern) const
     return true;
 }
 
-size_t GridElement::matchLength() const
+size_t WordElement::matchLength() const
 {
     if (length() <= 1) return length();
     if (front() == '-' || back() == '-') return length() - 1;

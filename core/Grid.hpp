@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Types.hpp"
-#include "GridElement.hpp"
+#include "WordElement.hpp"
 
 #include <chobo/memory_view.hpp>
 #include <vector>
@@ -13,7 +13,7 @@ namespace core
 class Grid
 {
 public:
-    Grid(size_t w, size_t h, chobo::const_memory_view<GridElement> elements = {});
+    Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> elements = {});
     ~Grid();
 
     size_t w() const { return m_width; }
@@ -37,15 +37,15 @@ public:
         auto dm = std::div(int(i), int(m_width));
         return {uint32_t(dm.quot), uint32_t(dm.rem)};
     }
-    const GridElement& at(const Coord& c) const { return m_elements[indexOf(c)]; }
-    const GridElement& at(size_t index) const { return m_elements[index]; }
+    const WordElement& at(const Coord& c) const { return m_elements[indexOf(c)]; }
+    const WordElement& at(size_t index) const { return m_elements[index]; }
 
 private:
     size_t testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Coord>& coords, size_t length) const;
 
     const size_t m_width = 0, m_height = 0;
-    chobo::const_memory_view<GridElement> m_elements;
-    std::vector<GridElement> m_ownedElements; // the grid can optionally own the elements, or just serve as a view
+    chobo::const_memory_view<WordElement> m_elements;
+    std::vector<WordElement> m_ownedElements; // the grid can optionally own the elements, or just serve as a view
 };
 
 inline bool operator==(const Grid::Coord& a, const Grid::Coord& b)

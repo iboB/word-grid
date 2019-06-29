@@ -15,7 +15,7 @@ TEST_CASE("matching")
     // efgh
     // ijkl
     // mnop
-    vector<GridElement> elements(16);
+    vector<WordElement> elements(16);
     for (unsigned i = 0; i < 16; ++i)
     {
         elements[i].push_back('a' + i);
@@ -56,9 +56,9 @@ TEST_CASE("matching")
     // zy f  beg- h
     // i  j  k    l
     // m  n  o    -end
-    elements[4].swap(GridElement::fromAscii("zy"));
-    elements[6].swap(GridElement::fromAscii("beg-"));
-    elements[15].swap(GridElement::fromAscii("-end"));
+    elements[4].swap(WordElement::fromAscii("zy"));
+    elements[6].swap(WordElement::fromAscii("beg-"));
+    elements[15].swap(WordElement::fromAscii("-end"));
 
     wordData = Word::fromAscii("dgjnk");
     word = make_memory_view(wordData);

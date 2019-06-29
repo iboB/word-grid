@@ -13,7 +13,7 @@ int main()
     // efgh
     // ijkl
     // mnop
-    std::vector<GridElement> elements(16);
+    std::vector<WordElement> elements(16);
     for (unsigned i = 0; i < 16; ++i)
     {
         elements[i].push_back('a' + i);

@@ -1,17 +1,17 @@
 #pragma once
 
 #include "LetterSequence.hpp"
-#include "GridElementTraits.hpp"
+#include "WordElementTraits.hpp"
 
 #include <chobo/memory_view.hpp>
 
 namespace core
 {
-// a grid element constists of one or more letters plus optional special characters
+// a word element constists of one or more letters plus optional special characters
 // letters with no special characters match themeselves
 // "-xxx" - must end with "xxx"
 // "xxx-" - must begin with "xxx"
-class GridElement : public LetterSequence<GridElementTraits::Max_Length>
+class WordElement : public LetterSequence<WordElementTraits::Max_Length>
 {
 public:
     // checks whether the element matches the pattern

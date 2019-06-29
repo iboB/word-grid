@@ -29,12 +29,12 @@ void Grid::acquireElementOwnership()
     m_elements.reset(m_ownedElements.data(), m_ownedElements.size());
 }
 
-size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord> coords) const
+size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord> coords) const
 {
     assert(coords.size() >= pattern.size());
     if (pattern.empty()) return 0;
 
-    Coord c;
+    GridCoord c;
     for (c.y=0; c.y<m_height; ++c.y)
     {
         for (c.x=0; c.x<m_width; ++c.x)
@@ -67,13 +67,13 @@ size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory
     return 0;
 }
 
-size_t Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<Grid::Coord>& coords, size_t length) const
+size_t Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord>& coords, size_t length) const
 {
-    const Coord& base = coords[length - 1];
+    const auto& base = coords[length - 1];
 
     for (int y=-1; y<=1; ++y)
     {
-        Coord c;
+        GridCoord c;
         c.y = base.y + y;
         if (c.y >= m_height) continue;
         for (int x=-1; x<=1; ++x)

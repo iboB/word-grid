@@ -23,7 +23,7 @@ int main()
     Grid grid(4, 4, mv);
     grid.acquireElementOwnership();
 
-    vector<Grid::Coord> coords(50);
+    vector<GridCoord> coords(50);
 
     auto word = Word::fromAscii("dgjnka");
 

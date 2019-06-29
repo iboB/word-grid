@@ -23,18 +23,18 @@ TEST_CASE("matching")
 
     Grid grid(4, 4, make_memory_view(elements));
 
-    vector<Grid::Coord> coordsData(50);
+    vector<GridCoord> coordsData(50);
     auto coords = make_memory_view(coordsData);
     auto wordData = Word::fromAscii("dgjnk");
     auto word = make_memory_view(wordData);
 
     auto len = grid.testPattern(word, coords);
     CHECK(len == 5);
-    CHECK(coords[0] == Grid::Coord{ 3, 0 });
-    CHECK(coords[1] == Grid::Coord{ 2, 1 });
-    CHECK(coords[2] == Grid::Coord{ 1, 2 });
-    CHECK(coords[3] == Grid::Coord{ 1, 3 });
-    CHECK(coords[4] == Grid::Coord{ 2, 2 });
+    CHECK(coords[0] == GridCoord{ 3, 0 });
+    CHECK(coords[1] == GridCoord{ 2, 1 });
+    CHECK(coords[2] == GridCoord{ 1, 2 });
+    CHECK(coords[3] == GridCoord{ 1, 3 });
+    CHECK(coords[4] == GridCoord{ 2, 2 });
 
     wordData = Word::fromAscii("dgjnka");
     word = make_memory_view(wordData);
@@ -50,7 +50,7 @@ TEST_CASE("matching")
     word = make_memory_view(wordData);
     len = grid.testPattern(word, coords);
     CHECK(len == 1);
-    CHECK(coords[0] == Grid::Coord{ 3, 3 });
+    CHECK(coords[0] == GridCoord{ 3, 3 });
 
     // a  b  c    d
     // zy f  beg- h

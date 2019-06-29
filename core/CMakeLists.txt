@@ -14,6 +14,9 @@ src_group(core src
     Dictionary.hpp
     Grid.cpp
     Grid.hpp
+    GridCoord.hpp
+    Scoring.hpp
+    Scoring.cpp
 )
 
 add_library(core STATIC

@@ -11,7 +11,7 @@ namespace core
 // letters with no special characters match themeselves
 // "-xxx" - must end with "xxx"
 // "xxx-" - must begin with "xxx"
-class WordElement : public LetterSequence<WordElementTraits::Max_Length>
+class WordElement : public LetterSequence<WordElementTraits::Max_Length, WordElement>
 {
 public:
     // checks whether the element matches the pattern

@@ -1,45 +1,54 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
+#include <core/Dictionary.hpp>
+
+namespace core
+{
+template <size_t N, typename Child>
+std::ostream& operator<<(std::ostream& out, const LetterSequence<N, Child>& w)
+{
+    for (auto l : w)
+    {
+        out.put(l);
+    }
+    return out;
+}
+}
 
 using namespace std;
 using namespace core;
 
+const uint8_t d1[] = R"d1c(
+arc
+amoeba
+amphore
+bee
+baz
+foo
+fathom
+)d1c";
+
 int main()
 {
-    // abcd
-    // efgh
-    // ijkl
-    // mnop
-    std::vector<WordElement> elements(16);
-    for (unsigned i = 0; i < 16; ++i)
+    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(d1, sizeof(d1)));
+
+    auto& words = d.words();
+
+    for (auto& w : words) cout << w << ' ';
+    cout << endl;
+
+    auto a1 = std::lower_bound(words.begin(), words.end(), Word::fromAscii("az"));
+    if (a1 == words.end())
     {
-        elements[i].push_back('a' + i);
-    }
-
-    auto mv = chobo::make_memory_view(elements);
-    Grid grid(4, 4, mv);
-    grid.acquireElementOwnership();
-
-    vector<GridCoord> coords(50);
-
-    auto word = Word::fromAscii("dgjnka");
-
-    auto b = grid.testPattern(chobo::make_memory_view(word), chobo::make_memory_view(coords));
-
-    if (b)
-    {
-        for (size_t i = 0; i < word.size(); ++i)
-        {
-            auto& c = coords[i];
-            cout << "(" << c.x << ", " << c.y << ")\n";
-        }
+        cout << "End\n";
     }
     else
     {
-        cout << "no :(\n";
+        cout << *a1 << endl;
     }
 
     return 0;

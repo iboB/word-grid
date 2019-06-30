@@ -100,6 +100,11 @@ TEST_CASE("matching")
     len = grid.testPattern(word, coords);
     CHECK(len == 2);
 
+    wordData = Word::fromAscii("o-end");
+    word = make_memory_view(wordData);
+    len = grid.testPattern(word, coords);
+    CHECK(len == 2);
+
     wordData = Word::fromAscii("end");
     word = make_memory_view(wordData);
     len = grid.testPattern(word, coords);
@@ -111,6 +116,11 @@ TEST_CASE("matching")
     CHECK(len == 0);
 
     wordData = Word::fromAscii("begbzyjkend");
+    word = make_memory_view(wordData);
+    len = grid.testPattern(word, coords);
+    CHECK(len == 6);
+
+    wordData = Word::fromAscii("begbzy-jkend");
     word = make_memory_view(wordData);
     len = grid.testPattern(word, coords);
     CHECK(len == 6);

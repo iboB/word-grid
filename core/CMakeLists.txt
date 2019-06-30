@@ -12,6 +12,7 @@ src_group(core src
     WordElementTraits.hpp
     Dictionary.cpp
     Dictionary.hpp
+    DictionarySearch.hpp
     Grid.cpp
     Grid.hpp
     GridCoord.hpp

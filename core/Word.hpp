@@ -5,5 +5,5 @@
 
 namespace core
 {
-class Word : public LetterSequence<WordTraits::Max_Length> {};
+class Word : public LetterSequence<WordTraits::Max_Length, Word> {};
 }

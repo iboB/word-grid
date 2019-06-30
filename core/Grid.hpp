@@ -3,6 +3,7 @@
 #include "Types.hpp"
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
+#include "Dictionary.hpp"
 
 #include <chobo/memory_view.hpp>
 #include <vector>
@@ -34,6 +35,8 @@ public:
     }
     const WordElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
     const WordElement& at(size_t index) const { return m_elements[index]; }
+
+    Dictionary findAllWords(const Dictionary& d) const;
 
 private:
     size_t testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord>& coords, size_t length) const;

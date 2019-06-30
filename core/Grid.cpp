@@ -1,4 +1,6 @@
 #include "Grid.hpp"
+#include "Word.hpp"
+#include "DictionarySearch.hpp"
 
 namespace core
 {
@@ -69,6 +71,13 @@ size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory
 
 size_t Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord>& coords, size_t length) const
 {
+    // skip hyphens
+    if (pattern.front() == '-')
+    {
+        if (pattern.size() == 1) return 0; // ends with hyphen?
+        pattern = chobo::make_memory_view(pattern.data() + 1, pattern.size() - 1);
+    }
+
     const auto& base = coords[length - 1];
 
     for (int y=-1; y<=1; ++y)
@@ -120,6 +129,12 @@ size_t Grid::testPatternR(chobo::const_memory_view<letter> pattern, chobo::memor
     }
 
     return 0;
+}
+
+Dictionary Grid::findAllWords(const Dictionary& d) const
+{
+    DictionarySearch search;
+    return Dictionary::fromVector({});
 }
 
 }

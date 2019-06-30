@@ -24,5 +24,8 @@ public:
 
     // how many letters of the input does this sequence match
     size_t matchLength() const;
+
+    // returns begin of relevant letters
+    const_iterator lbegin() const;
 };
 }

@@ -30,4 +30,11 @@ size_t WordElement::matchLength() const
     if (front() == '-' || back() == '-') return length() - 1;
     return length();
 }
+
+WordElement::const_iterator WordElement::lbegin() const
+{
+    if (front() == '-') return begin() + 1;
+    return begin();
+}
+
 }

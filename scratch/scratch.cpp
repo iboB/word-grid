@@ -23,32 +23,38 @@ using namespace std;
 using namespace core;
 
 const uint8_t d1[] = R"d1c(
-arc
-amoeba
-amphore
-bee
-baz
-foo
-fathom
+abcc
+abfk
+aefk
+hjnp
+klpo
+efgh
+mnad
+zoaj
+asdz
+mango
 )d1c";
 
 int main()
 {
     auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(d1, sizeof(d1)));
 
-    auto& words = d.words();
-
-    for (auto& w : words) cout << w << ' ';
-    cout << endl;
-
-    auto a1 = std::lower_bound(words.begin(), words.end(), Word::fromAscii("az"));
-    if (a1 == words.end())
+    // abcd
+    // efgh
+    // ijkl
+    // mnop
+    vector<WordElement> elements(16);
+    for (unsigned i = 0; i < 16; ++i)
     {
-        cout << "End\n";
+        elements[i].push_back('a' + i);
     }
-    else
+    Grid grid(4, 4, make_memory_view(elements));
+
+    auto d2 = grid.findAllWords(d);
+
+    for (auto& w : d2.words())
     {
-        cout << *a1 << endl;
+        cout << w << endl;
     }
 
     return 0;

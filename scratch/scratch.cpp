@@ -19,43 +19,53 @@ std::ostream& operator<<(std::ostream& out, const LetterSequence<N, Child>& w)
 }
 }
 
+std::vector<uint8_t> readFile(const char* path) {
+    auto f = fopen(path, "rb");
+
+    if (!f) return {};
+
+    int pos = ftell(f);
+    fseek(f, 0, SEEK_END);
+    size_t fileSize = ftell(f);
+    fseek(f, pos, SEEK_SET);
+
+    std::vector<uint8_t> r(fileSize);
+
+    fread(r.data(), 1, fileSize, f);
+
+    fclose(f);
+    return r;
+}
+
 using namespace std;
 using namespace core;
 
-const uint8_t d1[] = R"d1c(
-abcc
-abfk
-aefk
-hjnp
-klpo
-efgh
-mnad
-zoaj
-asdz
-mango
-)d1c";
+vector<WordElement> elements = {
+    WordElement::fromAscii("r"), WordElement::fromAscii("t"), WordElement::fromAscii("e"), WordElement::fromAscii("t"),
+    WordElement::fromAscii("h"), WordElement::fromAscii("o"), WordElement::fromAscii("d"), WordElement::fromAscii("e"),
+    WordElement::fromAscii("o"), WordElement::fromAscii("e"), WordElement::fromAscii("a"), WordElement::fromAscii("s"),
+    WordElement::fromAscii("e"), WordElement::fromAscii("r"), WordElement::fromAscii("t"), WordElement::fromAscii("s"),
+};
 
 int main()
 {
-    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(d1, sizeof(d1)));
+    auto buf = readFile("words_alpha.txt");
+    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(buf));
 
-    // abcd
-    // efgh
-    // ijkl
-    // mnop
-    vector<WordElement> elements(16);
-    for (unsigned i = 0; i < 16; ++i)
-    {
-        elements[i].push_back('a' + i);
-    }
+    cout << "dic" << endl;
     Grid grid(4, 4, make_memory_view(elements));
 
     auto d2 = grid.findAllWords(d);
+    cout << "find" << endl;
 
-    for (auto& w : d2.words())
+    auto copy = d2.words();
+    std::sort(copy.begin(), copy.end(), [](const Word& a, const Word& b) { return a.length() > b.length(); });
+
+    for (auto& w : copy)
     {
-        cout << w << endl;
+        cout << w << ' ';
     }
+    cout << endl;
 
     return 0;
 }

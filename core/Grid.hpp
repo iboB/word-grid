@@ -39,7 +39,10 @@ public:
     Dictionary findAllWords(const Dictionary& d) const;
 
 private:
-    size_t testPatternR(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord>& coords, size_t length) const;
+    template <typename Visitor>
+    void visitAll(Visitor& v, chobo::memory_view<GridCoord> coords) const;
+    template <typename Visitor>
+    bool visitAllR(Visitor& v, chobo::memory_view<GridCoord>& coords, size_t length) const;
 
     const size_t m_width = 0, m_height = 0;
     chobo::const_memory_view<WordElement> m_elements;

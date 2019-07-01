@@ -29,7 +29,7 @@ public:
     LetterSequence(LetterSequence&&) noexcept = default;
     LetterSequence& operator=(LetterSequence&&) noexcept = default;
 
-    size_t length() const { return size(); }
+    size_t length() const { return this->size(); }
 
     chobo::memory_view<letter> view()
     {

@@ -56,9 +56,9 @@ TEST_CASE("matching")
     // zy f  beg- h
     // i  j  k    l
     // m  n  o    -end
-    elements[4].swap(WordElement::fromAscii("zy"));
-    elements[6].swap(WordElement::fromAscii("beg-"));
-    elements[15].swap(WordElement::fromAscii("-end"));
+    elements[4] = WordElement::fromAscii("zy");
+    elements[6] = WordElement::fromAscii("beg-");
+    elements[15] = WordElement::fromAscii("-end");
 
     wordData = Word::fromAscii("dgjnk");
     word = make_memory_view(wordData);

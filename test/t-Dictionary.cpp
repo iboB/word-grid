@@ -93,5 +93,4 @@ TEST_CASE("search")
     CHECK(result == Dictionary::SearchResult::None);
 }
 
-
 TEST_SUITE_END();

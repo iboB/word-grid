@@ -23,6 +23,9 @@ Grid::Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> letters)
 
 Grid::~Grid() = default;
 
+Grid::Grid(Grid&&) noexcept = default;
+Grid& Grid::operator=(Grid&&) noexcept = default;
+
 void Grid::acquireElementOwnership()
 {
     assert(m_ownedElements.empty() || m_elements.data() != m_ownedElements.data());

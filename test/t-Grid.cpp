@@ -3,6 +3,8 @@
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 
+#include "g-Grids.hpp"
+
 using namespace core;
 using namespace std;
 using namespace chobo;
@@ -15,13 +17,7 @@ TEST_CASE("matching")
     // efgh
     // ijkl
     // mnop
-    vector<WordElement> elements(16);
-    for (unsigned i = 0; i < 16; ++i)
-    {
-        elements[i].push_back('a' + i);
-    }
-
-    Grid grid(4, 4, make_memory_view(elements));
+    auto grid = test::Grid_alphabetical();
 
     vector<GridCoord> coordsData(50);
     auto coords = make_memory_view(coordsData);
@@ -52,13 +48,7 @@ TEST_CASE("matching")
     CHECK(len == 1);
     CHECK(coords[0] == GridCoord{ 3, 3 });
 
-    // a  b  c    d
-    // zy f  beg- h
-    // i  j  k    l
-    // m  n  o    -end
-    elements[4] = WordElement::fromAscii("zy");
-    elements[6] = WordElement::fromAscii("beg-");
-    elements[15] = WordElement::fromAscii("-end");
+    grid = test::Grid_fancy();
 
     wordData = Word::fromAscii("dgjnk");
     word = make_memory_view(wordData);

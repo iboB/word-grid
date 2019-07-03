@@ -18,13 +18,19 @@ public:
     Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> elements = {});
     ~Grid();
 
+    Grid(const Grid&) = delete;
+    Grid& operator=(const Grid&) = delete;
+
+    Grid(Grid&&) noexcept;
+    Grid& operator=(Grid&&) noexcept;
+
     size_t w() const { return m_width; }
     size_t h() const { return m_height; }
 
     void acquireElementOwnership();
 
     // tests a pattern (word)
-    // return length in elements if the word is found on the grid
+    // return length in elements if the word is found on the grid or 0 if it's not
     // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
     size_t testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord> coords) const;
 
@@ -36,6 +42,8 @@ public:
     const WordElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
     const WordElement& at(size_t index) const { return m_elements[index]; }
 
+    const chobo::const_memory_view<WordElement>& elements() const { return m_elements; }
+
     Dictionary findAllWords(const Dictionary& d) const;
 
 private:
@@ -44,7 +52,7 @@ private:
     template <typename Visitor>
     bool visitAllR(Visitor& v, chobo::memory_view<GridCoord>& coords, size_t length) const;
 
-    const size_t m_width = 0, m_height = 0;
+    size_t m_width = 0, m_height = 0;
     chobo::const_memory_view<WordElement> m_elements;
     std::vector<WordElement> m_ownedElements; // the grid can optionally own the elements, or just serve as a view
 };

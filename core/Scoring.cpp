@@ -4,6 +4,9 @@
 namespace core
 {
 
+Scoring::Scoring() = default;
+Scoring::~Scoring() = default;
+
 void Scoring::setFlat(score_t flatScore)
 {
     m_type = Type::Flat;
@@ -88,7 +91,7 @@ score_t Scoring::scoreLength(const WordView& view) const
     size_t length = 0;
     for (size_t i = 0; i < view.size(); ++i)
     {
-        length += view.at(i).length();
+        length += view.at(i).matchLength();
     }
     return score_t(m_lengthMultiplier * length);
 }

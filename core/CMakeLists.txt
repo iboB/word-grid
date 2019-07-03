@@ -19,14 +19,6 @@ src_group(core src
     Scoring.hpp
     Scoring.cpp
 )
-src_group(scorings src
-    scorings/Flat.cpp
-    scorings/Flat.hpp
-    scorings/Length.cpp
-    scorings/Length.hpp
-    scorings/Scrabble.cpp
-    scorings/Scrabble.hpp
-)
 
 add_library(core STATIC
     ${src}

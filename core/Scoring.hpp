@@ -14,26 +14,34 @@ class Grid;
 class Scoring
 {
 public:
-    virtual ~Scoring() = default;
+    Scoring();
+    ~Scoring();
+
+    enum class Type {
+        Undefined,
+        Flat,
+        Length,
+    };
+    Type type() const { return m_type; }
 
     // both functions assume
     score_t score(const Grid& grid, chobo::const_memory_view<GridCoord> coords) const;
     score_t score(chobo::const_memory_view<WordElement> word) const;
 
-    // the score functions create a word view of the word that needs to be scored
-    // traverse the word view in
-    class WordView
-    {
-    public:
-        virtual size_t size() const = 0;
-        virtual const WordElement& at(size_t i) const = 0;
-    protected:
-        friend class Scoring;
-        // intentionally not virtual Scoring::score are the only functions which create it
-        ~WordView() {}
-    };
-protected:
-    virtual score_t calcScore(const WordView& view) const = 0;
+private:
+    Type m_type = Type::Undefined;
+
+    // dispatch the score according to the particular request
+    template <typename WordView>
+    score_t scoreDispatch(const WordView& wv) const;
+
+    // flat scoring
+    score_t m_flatScore = 13;
+
+    // length-based scoring
+    float m_lengthMultiplier = 2.7f;
+    template <typename WordView>
+    score_t scoreLength(const WordView& wv) const;
 };
 
 }

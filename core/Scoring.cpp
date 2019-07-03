@@ -4,6 +4,18 @@
 namespace core
 {
 
+void Scoring::setFlat(score_t flatScore)
+{
+    m_type = Type::Flat;
+    m_flatScore = flatScore;
+}
+
+void Scoring::setLength(float lengthMultiplier)
+{
+    m_type = Type::Length;
+    m_lengthMultiplier = lengthMultiplier;
+}
+
 namespace
 {
 struct GridCoordView
@@ -64,6 +76,7 @@ score_t Scoring::scoreDispatch(const WordView& wv) const
         case Type::Flat: return m_flatScore;
         case Type::Length: return scoreLength(wv);
         default:
+            assert(false);
             return 0;
     }
 }

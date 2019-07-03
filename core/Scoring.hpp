@@ -17,6 +17,9 @@ public:
     Scoring();
     ~Scoring();
 
+    void setFlat(score_t flatScore = 13);
+    void setLength(float lengthMultiplier = 2.7f);
+
     enum class Type {
         Undefined,
         Flat,
@@ -36,10 +39,10 @@ private:
     score_t scoreDispatch(const WordView& wv) const;
 
     // flat scoring
-    score_t m_flatScore = 13;
+    score_t m_flatScore;
 
     // length-based scoring
-    float m_lengthMultiplier = 2.7f;
+    float m_lengthMultiplier;
     template <typename WordView>
     score_t scoreLength(const WordView& wv) const;
 };

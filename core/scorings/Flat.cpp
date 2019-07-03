@@ -8,7 +8,7 @@ Flat::Flat(score_t score)
     : m_score(score)
 {}
 
-score_t Flat::calcScore(const Scoring::WordView& view) const
+score_t Flat::calcScore(const Scoring::WordView&) const
 {
     return m_score;
 }

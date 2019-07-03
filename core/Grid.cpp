@@ -168,6 +168,10 @@ namespace
 {
 struct FindAllVisitor
 {
+    FindAllVisitor(const Dictionary& dic)
+        : d(dic)
+    {}
+
     const Dictionary& d;
     DictionarySearch ds;
     std::vector<Word> words;
@@ -213,7 +217,7 @@ struct FindAllVisitor
 
 Dictionary Grid::findAllWords(const Dictionary& d) const
 {
-    FindAllVisitor v = { d };
+    FindAllVisitor v(d);
     chobo::static_vector<GridCoord, WordTraits::Max_Length> coords(WordTraits::Max_Length);
     visitAll(v, chobo::make_memory_view(coords));
     return Dictionary::fromVector(std::move(v.words));

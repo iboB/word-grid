@@ -53,7 +53,7 @@ int main()
     auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
     auto commonDicData = readFile(commonDicPath.c_str());
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
-
+    cout << "Dictionary words: " << dictionary.words().size() << endl;
     auto game = std::make_unique<Game>("test", std::move(dictionary));
 
     Universe universe;

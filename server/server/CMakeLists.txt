@@ -1,0 +1,20 @@
+set(src)
+
+src_group(server src
+    Round.cpp
+    Round.hpp
+    Game.cpp
+    Game.hpp
+    Universe.cpp
+    Universe.hpp
+    Player.cpp
+    Player.hpp
+)
+
+add_library(server STATIC
+    ${src}
+)
+
+target_include_directories(server INTERFACE ..)
+
+target_link_libraries(server PUBLIC core)

@@ -2,9 +2,14 @@
 #include <string>
 #include <algorithm>
 
+#include <server/Universe.hpp>
+#include <server/Game.hpp>
+
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 #include <core/Dictionary.hpp>
+
+#include <core/lib/PlatformUtil.hpp>
 
 namespace core
 {
@@ -39,33 +44,20 @@ std::vector<uint8_t> readFile(const char* path) {
 
 using namespace std;
 using namespace core;
-
-vector<WordElement> elements = {
-    WordElement::fromAscii("r"), WordElement::fromAscii("t"), WordElement::fromAscii("e"), WordElement::fromAscii("t"),
-    WordElement::fromAscii("h"), WordElement::fromAscii("o"), WordElement::fromAscii("d"), WordElement::fromAscii("e"),
-    WordElement::fromAscii("o"), WordElement::fromAscii("e"), WordElement::fromAscii("a"), WordElement::fromAscii("s"),
-    WordElement::fromAscii("e"), WordElement::fromAscii("r"), WordElement::fromAscii("t"), WordElement::fromAscii("s"),
-};
+using namespace server;
 
 int main()
 {
-    auto buf = readFile("words_alpha.txt");
-    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(buf));
+    auto mpath = PlatformUtil::getModulePath();
+    auto assetPath = PlatformUtil::getAssetPath(std::move(mpath), "assets");
+    auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
+    auto commonDicData = readFile(commonDicPath.c_str());
+    Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
 
-    cout << "dic" << endl;
-    Grid grid(4, 4, make_memory_view(elements));
+    auto game = std::make_unique<Game>("test", std::move(dictionary));
 
-    auto d2 = grid.findAllWords(d);
-    cout << "find" << endl;
-
-    auto copy = d2.words();
-    std::sort(copy.begin(), copy.end(), [](const Word& a, const Word& b) { return a.length() > b.length(); });
-
-    for (auto& w : copy)
-    {
-        cout << w << ' ';
-    }
-    cout << endl;
+    Universe universe;
+    universe.addGame(std::move(game));
 
     return 0;
 }

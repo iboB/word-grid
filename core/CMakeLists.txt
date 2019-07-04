@@ -18,6 +18,8 @@ src_group(core src
     GridCoord.hpp
     Scoring.hpp
     Scoring.cpp
+    Board.cpp
+    Board.hpp
 )
 
 add_library(core STATIC

@@ -7,16 +7,26 @@ namespace core
 Scoring::Scoring() = default;
 Scoring::~Scoring() = default;
 
-void Scoring::setFlat(score_t flatScore)
+Scoring::Scoring(const Scoring&) = default;
+Scoring& Scoring::operator=(const Scoring&) = default;
+
+Scoring::Scoring(Scoring&&) noexcept = default;
+Scoring& Scoring::operator=(Scoring&&) noexcept = default;
+
+Scoring Scoring::flat(score_t flatScore)
 {
-    m_type = Type::Flat;
-    m_flatScore = flatScore;
+    Scoring ret;
+    ret.m_type = Type::Flat;
+    ret.m_flatScore = flatScore;
+    return ret;
 }
 
-void Scoring::setLength(float lengthMultiplier)
+Scoring Scoring::length(float lengthMultiplier)
 {
-    m_type = Type::Length;
-    m_lengthMultiplier = lengthMultiplier;
+    Scoring ret;
+    ret.m_type = Type::Length;
+    ret.m_lengthMultiplier = lengthMultiplier;
+    return ret;
 }
 
 namespace

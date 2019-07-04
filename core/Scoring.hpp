@@ -14,14 +14,18 @@ class Grid;
 class Scoring
 {
 public:
-    Scoring();
     ~Scoring();
 
-    void setFlat(score_t flatScore = 13);
-    void setLength(float lengthMultiplier = 2.7f);
+    Scoring(const Scoring&);
+    Scoring& operator=(const Scoring&);
+
+    Scoring(Scoring&&) noexcept;
+    Scoring& operator=(Scoring&&) noexcept;
+
+    static Scoring flat(score_t flatScore = 13);
+    static Scoring length(float lengthMultiplier = 2.7f);
 
     enum class Type {
-        Undefined,
         Flat,
         Length,
     };
@@ -32,7 +36,8 @@ public:
     score_t score(chobo::const_memory_view<WordElement> word) const;
 
 private:
-    Type m_type = Type::Undefined;
+    Scoring();
+    Type m_type;
 
     // dispatch the score according to the particular request
     template <typename WordView>

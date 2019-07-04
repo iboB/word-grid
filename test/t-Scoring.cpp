@@ -12,8 +12,7 @@ TEST_SUITE_BEGIN("Scoring");
 
 TEST_CASE("Flat")
 {
-    Scoring scoring;
-    scoring.setFlat(21);
+    auto scoring = Scoring::flat(21);
 
     auto g = test::Grid_alphabetical(1, 1);
     CHECK(scoring.score({}) == 21);
@@ -22,8 +21,7 @@ TEST_CASE("Flat")
 
 TEST_CASE("Length")
 {
-    Scoring scoring;
-    scoring.setLength(2.5f);
+    auto scoring = Scoring::length(2.5f);
 
     auto grid = test::Grid_alphabetical(4, 4);
 

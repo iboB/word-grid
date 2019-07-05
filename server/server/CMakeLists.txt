@@ -9,6 +9,8 @@ src_group(server src
     Universe.hpp
     Player.cpp
     Player.hpp
+    PlayerPtr.hpp
+    PlayerSet.hpp
 )
 
 add_library(server STATIC

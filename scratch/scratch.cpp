@@ -4,10 +4,12 @@
 
 #include <server/Universe.hpp>
 #include <server/Game.hpp>
+#include <server/Player.hpp>
 
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 #include <core/Dictionary.hpp>
+#include <core/GameData.hpp>
 
 #include <core/lib/PlatformUtil.hpp>
 
@@ -24,7 +26,8 @@ std::ostream& operator<<(std::ostream& out, const LetterSequence<N, Child>& w)
 }
 }
 
-std::vector<uint8_t> readFile(const char* path) {
+std::vector<uint8_t> readFile(const char* path)
+{
     auto f = fopen(path, "rb");
 
     if (!f) return {};
@@ -46,6 +49,42 @@ using namespace std;
 using namespace core;
 using namespace server;
 
+class SinglePlayer final : public server::Player
+{
+public:
+    virtual void sendDatas(const std::vector<core::GameData>& datas) override
+    {
+        for (size_t i=0; i<datas.size(); ++i)
+        {
+            auto& data = datas[i];
+            cout << '(' << i << ") " << data.id << " with " << data.numPlayers << " players\n";
+        }
+
+        cout << "Choose game: ";
+        size_t n;
+        while (true)
+        {
+            cin >> n;
+            if (n < datas.size()) break;
+            cout << "No such game. Try again: ";
+        }
+
+
+    }
+    virtual void sendErrorBadId(std::string&& id) override
+    {
+        cout << "Bad id " << id << '\n';
+    }
+    virtual void sendAcceptId(std::string&& id) override
+    {
+        cout << "Id " << id << " accepted\n";
+    }
+    virtual void sendFatalError(std::string&& message) override
+    {
+        cout << "FATAL ERROR: " << message << '\n';
+    }
+};
+
 int main()
 {
     auto mpath = PlatformUtil::getModulePath();
@@ -58,6 +97,10 @@ int main()
 
     Universe universe;
     universe.addGame(std::move(game));
+
+    auto p = std::make_shared<SinglePlayer>();
+    p->setUniverse(universe);
+    p->onSetId("pipi");
 
     return 0;
 }

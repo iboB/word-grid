@@ -22,6 +22,8 @@ src_group(core src
     Scoring.cpp
     Board.cpp
     Board.hpp
+    GameData.cpp
+    GameData.hpp
 )
 
 add_library(core STATIC

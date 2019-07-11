@@ -11,6 +11,7 @@ src_group(server src
     Player.hpp
     PlayerPtr.hpp
     PlayerSet.hpp
+    BoardProducer.hpp
 )
 
 add_library(server STATIC

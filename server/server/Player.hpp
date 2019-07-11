@@ -34,6 +34,8 @@ public:
     virtual void sendErrorBadId(std::string&& id) = 0;
     virtual void sendAcceptId(std::string&& id) = 0;
 
+    //virtual void sendApproveWord()
+
     virtual void sendFatalError(std::string&& message) = 0;
 
 private:

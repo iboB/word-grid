@@ -5,11 +5,14 @@
 #include <server/Universe.hpp>
 #include <server/Game.hpp>
 #include <server/Player.hpp>
+#include <server/BoardProducer.hpp>
 
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 #include <core/Dictionary.hpp>
 #include <core/GameData.hpp>
+#include <core/Scoring.hpp>
+#include <core/Board.hpp>
 
 #include <core/lib/PlatformUtil.hpp>
 
@@ -69,7 +72,8 @@ public:
             cout << "No such game. Try again: ";
         }
 
-
+        string gameId = datas[n].id;
+        onChooseGame(std::move(gameId));
     }
     virtual void sendErrorBadId(std::string&& id) override
     {
@@ -85,6 +89,32 @@ public:
     }
 };
 
+class TestProducer final : public BoardProducer
+{
+public:
+    TestProducer(Dictionary&& d)
+        : m_dictionary(std::move(d))
+        , m_scoring(Scoring::flat(13))
+        , m_gridElements{
+            WordElement::fromAscii("a"), WordElement::fromAscii("z"), WordElement::fromAscii("b"), WordElement::fromAscii("i"),
+            WordElement::fromAscii("f"), WordElement::fromAscii("e"), WordElement::fromAscii("t"), WordElement::fromAscii("m"),
+            WordElement::fromAscii("e"), WordElement::fromAscii("e"), WordElement::fromAscii("s"), WordElement::fromAscii("d"),
+            WordElement::fromAscii("g"), WordElement::fromAscii("n"), WordElement::fromAscii("r"), WordElement::fromAscii("e"),
+        }
+    {
+    }
+
+    virtual void addGame(Game&) override {}
+    virtual core::Board getBoard(const Game*) override
+    {
+        return { {4, 4, chobo::make_memory_view(m_gridElements)}, m_scoring, std::move(m_dictionary) };
+    }
+private:
+    Dictionary m_dictionary;
+    Scoring m_scoring;
+    std::vector<WordElement> m_gridElements;
+};
+
 int main()
 {
     auto mpath = PlatformUtil::getModulePath();
@@ -93,7 +123,10 @@ int main()
     auto commonDicData = readFile(commonDicPath.c_str());
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;
-    auto game = std::make_unique<Game>("test", std::move(dictionary));
+
+    TestProducer producer(std::move(dictionary));
+
+    auto game = std::make_unique<Game>("test", producer);
 
     Universe universe;
     universe.addGame(std::move(game));

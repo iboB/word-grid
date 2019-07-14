@@ -7,8 +7,8 @@ namespace core
 
 struct GridCoord
 {
-    uint32_t x;
-    uint32_t y;
+    uint8_t x;
+    uint8_t y;
 };
 
 inline bool operator==(const GridCoord& a, const GridCoord& b)

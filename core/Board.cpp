@@ -3,9 +3,9 @@
 namespace core
 {
 
-Board::Board(Grid&& grid, const Scoring& scoring, Dictionary&& dictionary)
+Board::Board(Grid&& grid, ScoredDictionary&& dictionary, duration dur)
     : m_grid(std::move(grid))
-    , m_scoring(scoring)
+    , m_remainingTime(dur)
     , m_dictionary(std::move(dictionary))
 {}
 

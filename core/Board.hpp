@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Grid.hpp"
-#include "Dictionary.hpp"
-#include "Scoring.hpp"
+#include "ScoredDictionary.hpp"
 
 namespace core
 {
@@ -10,7 +9,7 @@ namespace core
 class Board
 {
 public:
-    Board(Grid&& grid, const Scoring& scoring, Dictionary&& dictionary);
+    Board(Grid&& grid, ScoredDictionary&& dic, duration dur);
     ~Board();
 
     Board(const Board&) = delete;
@@ -20,15 +19,19 @@ public:
     Board& operator=(Board&&) noexcept;
 
     const Grid& grid() const { return m_grid; }
-    const Scoring& scoring() const { return m_scoring; }
-    const Dictionary& dictionary() const { return m_dictionary; }
+    const ScoredDictionary& dictionary() const { return m_dictionary; }
+
+    duration remainingTime() const { return m_remainingTime; }
+    bool expired() const { return m_remainingTime <= 0; }
+    void tick(duration d) { m_remainingTime -= d; }
 
 private:
     Grid m_grid;
-    Scoring m_scoring;
+
+    duration m_remainingTime;
 
     // words which are found in the grid of this board
     // this is NOT the complete game dictionary
-    Dictionary m_dictionary;
+    ScoredDictionary m_dictionary;
 };
 }

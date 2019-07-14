@@ -24,10 +24,6 @@ void Player::onSetId(std::string&& id)
 
 void Player::onChooseGame(std::string&& id)
 {
-    if (m_game)
-    {
-        m_game->playerLeave(shared_from_this());
-    }
     m_game = m_universe->getGame(id);
     if (!m_game)
     {
@@ -36,6 +32,17 @@ void Player::onChooseGame(std::string&& id)
     }
 
     m_game->playerJoin(shared_from_this());
+}
+
+void Player::onPlayWord(core::Word&& w)
+{
+    if (!m_game)
+    {
+        sendFatalError("Not in a game");
+        return;
+    }
+
+    m_game->playerMove(shared_from_this(), std::move(w));
 }
 
 }

@@ -3,7 +3,6 @@
 #include "Types.hpp"
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
-#include "Dictionary.hpp"
 
 #include <chobo/memory_view.hpp>
 #include <vector>
@@ -11,6 +10,8 @@
 
 namespace core
 {
+class Dictionary;
+class ScoredDictionary;
 
 class Grid
 {
@@ -37,14 +38,14 @@ public:
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {
         auto dm = std::div(int(i), int(m_width));
-        return {uint32_t(dm.quot), uint32_t(dm.rem)};
+        return {uint8_t(dm.quot), uint8_t(dm.rem)};
     }
     const WordElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
     const WordElement& at(size_t index) const { return m_elements[index]; }
 
     const chobo::const_memory_view<WordElement>& elements() const { return m_elements; }
 
-    Dictionary findAllWords(const Dictionary& d) const;
+    void findAllWords(const Dictionary& d, ScoredDictionary& out) const;
 
 private:
     template <typename Visitor>

@@ -24,6 +24,9 @@ src_group(core src
     Board.hpp
     GameData.cpp
     GameData.hpp
+    ScoredDictionary.cpp
+    ScoredDictionary.hpp
+    ScoredWord.hpp
 )
 
 add_library(core STATIC

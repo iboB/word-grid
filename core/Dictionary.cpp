@@ -87,6 +87,9 @@ void Dictionary::sortWords()
     {
         std::sort(m_words.begin(), m_words.end());
     }
+    // remove duplicates
+    auto end = std::unique(m_words.begin(), m_words.end());
+    m_words.erase(end, m_words.end());
 }
 
 bool Dictionary::hasWord(const Word& w) const

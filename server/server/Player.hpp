@@ -2,17 +2,20 @@
 
 #include "PlayerPtr.hpp"
 
+#include <core/Types.hpp>
+
 #include <string>
 #include <vector>
 
 namespace core
 {
 class GameData;
+class Board;
+class Word;
 }
 
 namespace server
 {
-
 class Universe;
 class Game;
 
@@ -29,10 +32,20 @@ public:
     // protocol
     void onSetId(std::string&& id);
     void onChooseGame(std::string&& id);
+    void onPlayWord(core::Word&& w);
 
     virtual void sendDatas(const std::vector<core::GameData>& datas) = 0;
     virtual void sendErrorBadId(std::string&& id) = 0;
     virtual void sendAcceptId(std::string&& id) = 0;
+
+    enum class PlayWordResponse
+    {
+        Accept, NoSuchWord, AlreadyPlayed, Error
+    };
+    virtual void sendPlayWordResponse(PlayWordResponse r, const core::Word& w, core::score_t score) = 0;
+
+    // prev board can be null
+    virtual void sendRound(const core::Board& curBoard, core::duration rest, const core::Board* prevBoard) = 0;
 
     //virtual void sendApproveWord()
 

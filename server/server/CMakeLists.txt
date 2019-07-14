@@ -1,8 +1,6 @@
 set(src)
 
 src_group(server src
-    Round.cpp
-    Round.hpp
     Game.cpp
     Game.hpp
     Universe.cpp

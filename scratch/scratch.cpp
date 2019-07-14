@@ -13,6 +13,7 @@
 #include <core/GameData.hpp>
 #include <core/Scoring.hpp>
 #include <core/Board.hpp>
+#include <core/ScoredDictionary.hpp>
 
 #include <core/lib/PlatformUtil.hpp>
 
@@ -87,32 +88,88 @@ public:
     {
         cout << "FATAL ERROR: " << message << '\n';
     }
+    virtual void sendRound(const core::Board& curBoard, core::duration rest, const core::Board* prevBoard) override
+    {
+        auto pad = [](const core::WordElement& e)
+        {
+            if (e.length() < 5)
+            {
+                for (size_t i = 0; i < 5 - e.length(); ++i)
+                {
+                    cout.put(' ');
+                }
+            }
+            cout << e;
+        };
+
+        auto& grid = curBoard.grid();
+        for (uint8_t y = 0; y < grid.h(); ++y)
+        {
+            for (uint8_t x = 0; x < grid.w(); ++x)
+            {
+                pad(grid.at({ x, y }));
+            }
+            cout << '\n';
+        }
+
+        cout << endl;
+        for (auto& w : curBoard.dictionary().words())
+        {
+            cout << w.word << ' ';
+        }
+
+        cout << endl;
+    }
+    virtual void sendPlayWordResponse(PlayWordResponse r, const core::Word& w, core::score_t score) override
+    {
+        switch (r)
+        {
+        case PlayWordResponse::Accept:
+            cout << w << ": " << score << " points\n";
+            break;
+        case PlayWordResponse::AlreadyPlayed:
+            cout << w << " was already played\n";
+            break;
+        case PlayWordResponse::NoSuchWord:
+            cout << "No such word " << w << "\n";
+            break;
+        case PlayWordResponse::Error:
+            cout << "Error!\n";
+            break;
+        }
+    }
 };
 
 class TestProducer final : public BoardProducer
 {
 public:
-    TestProducer(Dictionary&& d)
-        : m_dictionary(std::move(d))
-        , m_scoring(Scoring::flat(13))
-        , m_gridElements{
-            WordElement::fromAscii("a"), WordElement::fromAscii("z"), WordElement::fromAscii("b"), WordElement::fromAscii("i"),
-            WordElement::fromAscii("f"), WordElement::fromAscii("e"), WordElement::fromAscii("t"), WordElement::fromAscii("m"),
-            WordElement::fromAscii("e"), WordElement::fromAscii("e"), WordElement::fromAscii("s"), WordElement::fromAscii("d"),
-            WordElement::fromAscii("g"), WordElement::fromAscii("n"), WordElement::fromAscii("r"), WordElement::fromAscii("e"),
-        }
-    {
-    }
+    TestProducer(const Dictionary& d)
+        : m_dictionary(d)
+    {}
 
     virtual void addGame(Game&) override {}
     virtual core::Board getBoard(const Game*) override
     {
-        return { {4, 4, chobo::make_memory_view(m_gridElements)}, m_scoring, std::move(m_dictionary) };
+        std::vector<WordElement> gridElements = {
+            WordElement::fromAscii("a"), WordElement::fromAscii("z"), WordElement::fromAscii("b"), WordElement::fromAscii("i"),
+            WordElement::fromAscii("f"), WordElement::fromAscii("e"), WordElement::fromAscii("t"), WordElement::fromAscii("m"),
+            WordElement::fromAscii("e"), WordElement::fromAscii("e"), WordElement::fromAscii("s"), WordElement::fromAscii("d"),
+            WordElement::fromAscii("g"), WordElement::fromAscii("n"), WordElement::fromAscii("r"), WordElement::fromAscii("e"),
+        };
+
+        Grid g(4, 4, chobo::make_memory_view(gridElements));
+        g.acquireElementOwnership();
+
+        ScoredDictionary sd;
+        g.findAllWords(m_dictionary, sd);
+
+        auto scoring = Scoring::flat(13);
+        sd.scoreWords(g, scoring);
+
+        return Board(std::move(g), std::move(sd), 60000);
     }
 private:
-    Dictionary m_dictionary;
-    Scoring m_scoring;
-    std::vector<WordElement> m_gridElements;
+    const Dictionary& m_dictionary;
 };
 
 int main()
@@ -124,9 +181,9 @@ int main()
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;
 
-    TestProducer producer(std::move(dictionary));
+    TestProducer producer(dictionary);
 
-    auto game = std::make_unique<Game>("test", producer);
+    auto game = std::make_unique<Game>("test", 45000, producer);
 
     Universe universe;
     universe.addGame(std::move(game));
@@ -134,6 +191,20 @@ int main()
     auto p = std::make_shared<SinglePlayer>();
     p->setUniverse(universe);
     p->onSetId("pipi");
+
+    while (true)
+    {
+        std::string str;
+        cout << "Play: ";
+        cin >> str;
+
+        if (str == "qqqq")
+        {
+            break;
+        }
+
+        p->onPlayWord(Word::fromAscii(str.c_str()));
+    }
 
     return 0;
 }

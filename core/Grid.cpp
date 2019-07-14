@@ -1,6 +1,9 @@
 #include "Grid.hpp"
+
 #include "Word.hpp"
+#include "Dictionary.hpp"
 #include "DictionarySearch.hpp"
+#include "ScoredDictionary.hpp"
 
 namespace core
 {
@@ -43,7 +46,7 @@ void Grid::visitAll(Visitor& v, chobo::memory_view<GridCoord> coords) const
         for (c.x = 0; c.x < m_width; ++c.x)
         {
             auto& elem = this->at(c);
-            if (!v.push(elem)) continue;
+            if (!v.push(elem, c)) continue;
 
             coords.front() = c;
 
@@ -87,7 +90,7 @@ bool Grid::visitAllR(Visitor& v, chobo::memory_view<GridCoord>& coords, size_t l
             if (alreadyUsed) continue;
 
             auto& elem = this->at(c);
-            if (!v.push(elem)) continue;
+            if (!v.push(elem, c)) continue;
 
             coords[length] = c;
 
@@ -110,7 +113,7 @@ namespace
 struct TestPatterVisitor
 {
     chobo::static_vector<chobo::const_memory_view<letter>, WordTraits::Max_Length + 1> top;
-    bool push(const WordElement& elem)
+    bool push(const WordElement& elem, const GridCoord&)
     {
         auto& pattern = top.back();
 
@@ -123,7 +126,6 @@ struct TestPatterVisitor
 
         if (!elem.matches(pattern)) return false;
         if (top.size() != 1 && elem.frontOnly()) return false;
-
 
         const auto matchLength = elem.matchLength();
 
@@ -171,16 +173,20 @@ namespace
 {
 struct FindAllVisitor
 {
-    FindAllVisitor(const Dictionary& dic)
+    FindAllVisitor(const Dictionary& dic, ScoredDictionary& out)
         : d(dic)
+        , out(out)
     {}
 
     const Dictionary& d;
+    ScoredDictionary& out;
     DictionarySearch ds;
-    std::vector<Word> words;
+    chobo::static_vector<GridCoord, WordTraits::Max_Length> coords;
 
-    bool push(const WordElement& elem)
+    bool push(const WordElement& elem, const GridCoord& c)
     {
+        coords.push_back(c);
+
         auto begin = elem.lbegin();
         auto matchLength = elem.matchLength();
         Dictionary::SearchResult result = Dictionary::SearchResult::None;
@@ -191,7 +197,7 @@ struct FindAllVisitor
 
         if (result == Dictionary::SearchResult::Exact)
         {
-            words.push_back(ds.word());
+            out.addWord(ds.word(), chobo::make_memory_view(coords));
             return true;
         }
 
@@ -211,19 +217,22 @@ struct FindAllVisitor
 
     void pop(const WordElement& elem)
     {
-        assert(!ds.length() == 0);
+        assert(coords.size() != 0);
+        coords.pop_back();
+
         auto matchLength = elem.matchLength();
+        assert(ds.length() >= matchLength);
         for (size_t i = 0; i < matchLength; ++i) ds.pop();
     }
 };
 }
 
-Dictionary Grid::findAllWords(const Dictionary& d) const
+void Grid::findAllWords(const Dictionary& d, ScoredDictionary& out) const
 {
-    FindAllVisitor v(d);
+    out.clear();
+    FindAllVisitor v(d, out);
     chobo::static_vector<GridCoord, WordTraits::Max_Length> coords(WordTraits::Max_Length);
     visitAll(v, chobo::make_memory_view(coords));
-    return Dictionary::fromVector(std::move(v.words));
 }
 
 }

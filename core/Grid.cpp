@@ -185,6 +185,8 @@ struct FindAllVisitor
 
     bool push(const WordElement& elem, const GridCoord& c)
     {
+        if (elem.frontOnly() && !coords.empty())  return false;
+
         coords.push_back(c);
 
         auto begin = elem.lbegin();
@@ -198,10 +200,9 @@ struct FindAllVisitor
         if (result == Dictionary::SearchResult::Exact)
         {
             out.addWord(ds.word(), chobo::make_memory_view(coords));
-            return true;
         }
 
-        if (result == Dictionary::SearchResult::None)
+        if (result == Dictionary::SearchResult::None || elem.backOnly())
         {
             pop(elem);
             return false;

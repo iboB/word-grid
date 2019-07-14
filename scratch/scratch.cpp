@@ -151,10 +151,10 @@ public:
     virtual core::Board getBoard(const Game*) override
     {
         std::vector<WordElement> gridElements = {
-            WordElement::fromAscii("a"), WordElement::fromAscii("z"), WordElement::fromAscii("b"), WordElement::fromAscii("i"),
-            WordElement::fromAscii("f"), WordElement::fromAscii("e"), WordElement::fromAscii("t"), WordElement::fromAscii("m"),
-            WordElement::fromAscii("e"), WordElement::fromAscii("e"), WordElement::fromAscii("s"), WordElement::fromAscii("d"),
-            WordElement::fromAscii("g"), WordElement::fromAscii("n"), WordElement::fromAscii("r"), WordElement::fromAscii("e"),
+            WordElement::fromAscii("o"), WordElement::fromAscii("p"), WordElement::fromAscii("w"), WordElement::fromAscii("g"),
+            WordElement::fromAscii("t"), WordElement::fromAscii("s"), WordElement::fromAscii("-y"), WordElement::fromAscii("e"),
+            WordElement::fromAscii("d-"), WordElement::fromAscii("i"), WordElement::fromAscii("t"), WordElement::fromAscii("r"),
+            WordElement::fromAscii("e"), WordElement::fromAscii("n"), WordElement::fromAscii("s"), WordElement::fromAscii("e"),
         };
 
         Grid g(4, 4, chobo::make_memory_view(gridElements));
@@ -177,6 +177,7 @@ int main()
     auto mpath = PlatformUtil::getModulePath();
     auto assetPath = PlatformUtil::getAssetPath(std::move(mpath), "assets");
     auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
+    //auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
     auto commonDicData = readFile(commonDicPath.c_str());
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;

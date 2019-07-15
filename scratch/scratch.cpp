@@ -88,7 +88,7 @@ public:
     {
         cout << "FATAL ERROR: " << message << '\n';
     }
-    virtual void sendRound(const core::Board& curBoard, core::duration rest, const core::Board* prevBoard) override
+    virtual void sendRound(const core::Board& curBoard, core::duration /*rest*/, const core::Board* /*prevBoard*/) override
     {
         auto pad = [](const core::WordElement& e)
         {
@@ -176,8 +176,8 @@ int main()
 {
     auto mpath = PlatformUtil::getModulePath();
     auto assetPath = PlatformUtil::getAssetPath(std::move(mpath), "assets");
-    auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
-    //auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
+    //auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
+    auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
     auto commonDicData = readFile(commonDicPath.c_str());
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;

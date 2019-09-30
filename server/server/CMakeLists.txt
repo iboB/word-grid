@@ -12,6 +12,16 @@ src_group(server src
     BoardProducer.hpp
 )
 
+src_group(exec src
+    exec/ExecutionContext.hpp
+    exec/ExecutorBase.cpp
+    exec/ExecutorBase.hpp
+    exec/TaskExecutor.cpp
+    exec/TaskExecutor.hpp
+    exec/ThreadExecution.cpp
+    exec/ThreadExecution.hpp
+)
+
 add_library(server STATIC
     ${src}
 )

@@ -14,7 +14,6 @@ void Player::setUniverse(Universe& u)
 {
     assert(!m_universe);
     m_universe = &u;
-    m_universe->onNewPlayer(shared_from_this());
 }
 
 void Player::onSetId(std::string&& id)

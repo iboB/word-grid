@@ -26,6 +26,7 @@ public:
     virtual ~Player();
 
     void setUniverse(Universe& u);
+    Universe* universe() const { return m_universe; }
 
     const std::string& id() const { return m_id; }
 

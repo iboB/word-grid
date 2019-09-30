@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <algorithm>
+#include <thread>
 
 #include <server/Universe.hpp>
 #include <server/Game.hpp>
@@ -56,40 +57,72 @@ using namespace server;
 class SinglePlayer final : public server::Player
 {
 public:
+    enum Phase
+    {
+        Phase_New,
+        Phase_IdChosen,
+        Phase_HasId,
+        Phase_HasGameDatas,
+        Phase_GameRequested,
+        Phase_HasGame,
+    };
+
+    Phase phase() const { return m_phase; }
+
+    void chooseId(std::string&& id)
+    {
+        m_phase = Phase_IdChosen;
+        onSetId(std::move(id));
+    }
+
+    void chooseGame(size_t n)
+    {
+        if (n >= m_gameDatas.size()) {
+            cout << "No such game. Try again: ";
+            return;
+        }
+
+        m_phase = Phase_GameRequested;
+        string gameId = m_gameDatas[n].id;
+        onChooseGame(std::move(gameId));
+    }
+
+    void playWord(const std::string& word)
+    {
+        onPlayWord(Word::fromAscii(word.c_str()));
+    }
+private:
+    std::vector<core::GameData> m_gameDatas;
+
     virtual void sendDatas(const std::vector<core::GameData>& datas) override
     {
+        m_phase = Phase_HasGameDatas;
         for (size_t i=0; i<datas.size(); ++i)
         {
             auto& data = datas[i];
             cout << '(' << i << ") " << data.id << " with " << data.numPlayers << " players\n";
         }
 
-        cout << "Choose game: ";
-        size_t n;
-        while (true)
-        {
-            cin >> n;
-            if (n < datas.size()) break;
-            cout << "No such game. Try again: ";
-        }
-
-        string gameId = datas[n].id;
-        onChooseGame(std::move(gameId));
+        m_gameDatas = datas;
     }
     virtual void sendErrorBadId(std::string&& id) override
     {
+        m_phase = Phase_New;
         cout << "Bad id " << id << '\n';
     }
     virtual void sendAcceptId(std::string&& id) override
     {
+        m_phase = Phase_HasId;
         cout << "Id " << id << " accepted\n";
     }
     virtual void sendFatalError(std::string&& message) override
     {
+        if (m_phase != Phase_New) m_phase = Phase_HasId;
         cout << "FATAL ERROR: " << message << '\n';
     }
     virtual void sendRound(const core::Board& curBoard, core::duration /*rest*/, const core::Board* /*prevBoard*/) override
     {
+        m_phase = Phase_HasGame;
         auto pad = [](const core::WordElement& e)
         {
             if (e.length() < 5)
@@ -138,6 +171,8 @@ public:
             break;
         }
     }
+
+    Phase m_phase = Phase_New;
 };
 
 class TestProducer final : public BoardProducer
@@ -176,8 +211,8 @@ int main()
 {
     auto mpath = PlatformUtil::getModulePath();
     auto assetPath = PlatformUtil::getAssetPath(std::move(mpath), "assets");
-    //auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
-    auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
+    auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
+    //auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
     auto commonDicData = readFile(commonDicPath.c_str());
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;
@@ -191,20 +226,46 @@ int main()
 
     auto p = std::make_shared<SinglePlayer>();
     p->setUniverse(universe);
-    p->onSetId("pipi");
+    universe.onNewPlayer(p);
 
     while (true)
     {
-        std::string str;
-        cout << "Play: ";
-        cin >> str;
-
-        if (str == "qqqq")
+        switch(p->phase()) {
+        case SinglePlayer::Phase_New:
         {
-            break;
+            std::string id;
+            cout << "choose id: ";
+            cin >> id;
+            p->chooseId(std::move(id));
         }
+        break;
+        case SinglePlayer::Phase_HasGameDatas:
+        {
+            cout << "Choose game: ";
+            size_t n;
+            cin >> n;
 
-        p->onPlayWord(Word::fromAscii(str.c_str()));
+            p->chooseGame(n);
+        }
+        break;
+        case SinglePlayer::Phase_HasGame:
+        {
+            std::string word;
+            cout << "play: ";
+            cin >> word;
+            if (word == "qqq")
+            {
+                return 0;
+            }
+            p->playWord(word);
+        }
+        break;
+        case SinglePlayer::Phase_HasId:
+        case SinglePlayer::Phase_IdChosen:
+        case SinglePlayer::Phase_GameRequested:
+            std::this_thread::yield();
+        break;
+        }
     }
 
     return 0;

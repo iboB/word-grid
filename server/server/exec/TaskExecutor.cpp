@@ -9,7 +9,8 @@
 
 #include <cassert>
 
-namespace server {
+namespace server
+{
 
 void TaskExecutorBase::update()
 {
@@ -40,6 +41,26 @@ void TaskExecutorBase::pushTask(TaskBasePtr task)
 {
     assert(m_tasksLocked);
     m_taskQueue.emplace_back(std::move(task));
+}
+
+void TaskExecutorBase::finalize()
+{
+    if (!m_finishTasksOnExit) return; // abandon unfinished tasks
+
+    // loop multiple times as the execution of some tasks can spawn yet more tasks
+    while (true)
+    {
+        m_tasksMutex.lock();
+        auto tasks = std::move(m_taskQueue);
+        m_tasksMutex.unlock();
+
+        if (tasks.empty()) break;
+
+        for (auto& task : tasks)
+        {
+            task->execute(*this);
+        }
+    }
 }
 
 }

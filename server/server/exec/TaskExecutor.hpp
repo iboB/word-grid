@@ -19,6 +19,9 @@ class TaskExecutorBase : public ExecutorBase
 {
 public:
     virtual void update() override;
+    virtual void finalize() override;
+
+    void setFinishTasksOnExit(bool b) { m_finishTasksOnExit = b; }
 
     // tasks
     // tasks are pushed from various threads
@@ -40,6 +43,8 @@ public:
     void pushTask(TaskBasePtr task);
 private:
     bool m_tasksLocked = false;  // a silly defence but should work most of the time
+    bool m_finishTasksOnExit = false;
+
     std::mutex m_tasksMutex;
     std::vector<TaskBasePtr> m_taskQueue;
 };
@@ -60,12 +65,13 @@ public:
     };
     using TaskPtr = std::unique_ptr<Task>;
 
-    class TaskLocker {
+    class TaskLocker
+    {
     public:
         TaskLocker(TaskExecutor& e)
             : m_executor(&e)
         {
-            e->lockTasks();
+            e.lockTasks();
         }
         TaskLocker(const TaskLocker&) = delete;
         TaskLocker& operator=(const TaskLocker&) = delete;
@@ -81,7 +87,7 @@ public:
         }
         void pushTask(TaskPtr task)
         {
-            return pushTask(std::move(task));
+            return m_executor->pushTask(std::move(task));
         }
     private:
         TaskExecutor* m_executor;

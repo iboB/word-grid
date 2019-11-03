@@ -14,10 +14,12 @@ namespace server
 namespace
 {
 
-class NoopExecutionContext final : public ExecutionContext {
+class NoopExecutionContext final : public ExecutionContext
+{
     virtual void wakeUp(ExecutorBase&) override {}
     virtual void stop(ExecutorBase&) override {}
-} TheNoopExecution;
+}
+TheNoopExecution;
 
 }
 

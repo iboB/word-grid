@@ -16,7 +16,7 @@
 
 namespace server
 {
-namespace detail
+namespace internal
 {
 
 class ThreadExecutionContext final : public ExecutionContext
@@ -48,7 +48,7 @@ private:
     std::mutex m_workMutex;
 };
 
-} // namespace detail
+} // namespace internal
 
 class ThreadExecution
 {
@@ -59,9 +59,11 @@ public:
 
     void launchThread();
     void stopAndJoinThread();
+
+    std::thread::id threadId() const { return m_thread.get_id(); }
 private:
     ExecutorBase& m_executor;
-    detail::ThreadExecutionContext m_execution;
+    internal::ThreadExecutionContext m_execution;
     ExecutionContext* m_oldExecitionContext;
     std::thread m_thread;
 

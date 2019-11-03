@@ -13,7 +13,7 @@
 
 namespace server
 {
-namespace detail
+namespace internal
 {
 
 ThreadExecutionContext::ThreadExecutionContext()
@@ -47,7 +47,7 @@ void ThreadExecutionContext::wait()
     lock.unlock();
 }
 
-} // namespace detail
+} // namespace internal
 
 ThreadExecution::ThreadExecution(ExecutorBase& e)
     : m_executor(e)
@@ -73,6 +73,7 @@ void ThreadExecution::stopAndJoinThread()
     {
         m_executor.stop();
         m_thread.join();
+        m_executor.finalize();
     }
 }
 

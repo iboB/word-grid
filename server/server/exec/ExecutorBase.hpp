@@ -21,6 +21,9 @@ public:
 
     virtual void update() = 0;
 
+    // optionally called before destruction to finalize all remaining execution
+    virtual void finalize() {}
+
     // returns the previously set execution context
     ExecutionContext* setExecutionContext(ExecutionContext* context);
 

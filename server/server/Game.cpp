@@ -7,9 +7,8 @@
 //
 #include "Game.hpp"
 #include "BoardProducer.hpp"
+#include "Board.hpp"
 #include "Player.hpp"
-
-#include <core/Board.hpp>
 
 namespace server
 {
@@ -24,15 +23,15 @@ Game::~Game() = default;
 
 void Game::playerJoin(const PlayerPtr& player)
 {
-    m_playerDatas[player];
+    m_players.insert(player);
 
     if (!m_currentBoard)
     {
-        m_currentBoard = std::make_unique<core::Board>(m_boardProducer.getBoard(this));
+        newBoard();
     }
 
     // no point in sending the previous board if we're not in a rest
-    core::Board* prevBoard = nullptr;
+    Board* prevBoard = nullptr;
     if (m_currentRest)
     {
         prevBoard = m_previousBoard.get();
@@ -55,33 +54,40 @@ void Game::playerMove(const PlayerPtr& player, core::Word&& word)
         return;
     }
 
-    auto f = m_playerDatas.find(player);
-    if (f == m_playerDatas.end())
-    {
-        player->sendFatalError("Player is not in this game");
-        return;
-    }
+    m_currentBoard->playerMove(player, std::move(word));
+}
 
-    auto& data = f->second;
-    for (auto& sw : data.scores)
+void Game::playerLeave(const PlayerPtr& player)
+{
+    m_players.erase(player);
+}
+
+void Game::tick(core::duration d)
+{
+    if (m_currentRest)
     {
-        if (sw->word == word)
+        m_currentRest -= d;
+
+        if (m_currentRest <= 0)
         {
-            player->sendPlayWordResponse(Player::PlayWordResponse::AlreadyPlayed, word, 0);
-            return;
+            m_currentRest = 0;
         }
-    }
 
-    auto sw = m_currentBoard->dictionary().getWord(word);
-    if (!sw)
-    {
-        player->sendPlayWordResponse(Player::PlayWordResponse::NoSuchWord, word, 0);
         return;
     }
 
-    data.totalScore += sw->score;
-    data.scores.push_back(sw);
-    player->sendPlayWordResponse(Player::PlayWordResponse::Accept, word, sw->score);
+    m_currentBoard->tick(d);
+
+    if (m_currentBoard->expired())
+    {
+        newBoard();
+    }
+}
+
+void Game::newBoard()
+{
+    m_previousBoard.reset(m_currentBoard.release());
+    m_currentBoard.reset(new Board(m_boardProducer.getBoard(this)));
 }
 
 }

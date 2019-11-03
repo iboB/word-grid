@@ -14,13 +14,13 @@
 #include <server/Game.hpp>
 #include <server/Player.hpp>
 #include <server/BoardProducer.hpp>
+#include <server/Board.hpp>
 
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 #include <core/Dictionary.hpp>
 #include <core/GameData.hpp>
 #include <core/Scoring.hpp>
-#include <core/Board.hpp>
 #include <core/ScoredDictionary.hpp>
 
 #include <core/lib/PlatformUtil.hpp>
@@ -127,7 +127,7 @@ private:
         if (m_phase != Phase_New) m_phase = Phase_HasId;
         cout << "FATAL ERROR: " << message << '\n';
     }
-    virtual void sendRound(const core::Board& curBoard, core::duration /*rest*/, const core::Board* /*prevBoard*/) override
+    virtual void sendRound(const server::Board& curBoard, core::duration /*rest*/, const server::Board* /*prevBoard*/) override
     {
         m_phase = Phase_HasGame;
         auto pad = [](const core::WordElement& e)
@@ -190,7 +190,7 @@ public:
     {}
 
     virtual void addGame(Game&) override {}
-    virtual core::Board getBoard(const Game*) override
+    virtual server::Board getBoard(const Game*) override
     {
         std::vector<WordElement> gridElements = {
             WordElement::fromAscii("o"), WordElement::fromAscii("p"), WordElement::fromAscii("w"), WordElement::fromAscii("g"),
@@ -208,7 +208,7 @@ public:
         auto scoring = Scoring::flat(13);
         sd.scoreWords(g, scoring);
 
-        return Board(std::move(g), std::move(sd), 60000);
+        return server::Board(std::move(g), std::move(sd), 60000);
     }
 private:
     const Dictionary& m_dictionary;

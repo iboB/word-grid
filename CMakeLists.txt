@@ -10,7 +10,7 @@ project(word-grid)
 ######################
 # warnings
 if(MSVC)
-    set(WG_WARNING_FLAGS "") # the default is fine here
+    set(WG_WARNING_FLAGS "-D_CRT_SECURE_NO_WARNINGS=1")
 else()
     set(WG_WARNING_FLAGS "-Wall -Wextra -Wno-unused-variable")
 endif()

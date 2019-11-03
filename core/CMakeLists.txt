@@ -20,8 +20,6 @@ src_group(core src
     GridCoord.hpp
     Scoring.hpp
     Scoring.cpp
-    Board.cpp
-    Board.hpp
     GameData.cpp
     GameData.hpp
     ScoredDictionary.cpp

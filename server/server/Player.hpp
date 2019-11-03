@@ -17,13 +17,13 @@
 namespace core
 {
 class GameData;
-class Board;
 class Word;
 }
 
 namespace server
 {
 class Universe;
+class Board;
 class Game;
 
 class Player : public std::enable_shared_from_this<Player>
@@ -53,9 +53,7 @@ public:
     virtual void sendPlayWordResponse(PlayWordResponse r, const core::Word& w, core::score_t score) = 0;
 
     // prev board can be null
-    virtual void sendRound(const core::Board& curBoard, core::duration rest, const core::Board* prevBoard) = 0;
-
-    //virtual void sendApproveWord()
+    virtual void sendRound(const Board& curBoard, core::duration rest, const Board* prevBoard) = 0;
 
     virtual void sendFatalError(std::string&& message) = 0;
 

@@ -30,6 +30,18 @@ void Player::onSetId(std::string&& id)
 
 void Player::onChooseGame(std::string&& id)
 {
+    auto self = shared_from_this();
+
+    if (m_game)
+    {
+        if (m_game->id() == id)
+        {
+            return; // we're already in that game
+        }
+
+        m_game->playerLeave(self);
+    }
+
     m_game = m_universe->getGame(id);
     if (!m_game)
     {
@@ -37,7 +49,7 @@ void Player::onChooseGame(std::string&& id)
         return;
     }
 
-    m_game->playerJoin(shared_from_this());
+    m_game->playerJoin(self);
 }
 
 void Player::onPlayWord(core::Word&& w)

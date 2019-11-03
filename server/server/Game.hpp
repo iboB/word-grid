@@ -12,18 +12,16 @@
 #include <core/Types.hpp>
 
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace core
 {
 class Word;
-class Board;
-struct ScoredWord;
 }
 
 namespace server
 {
+class Board;
 class BoardProducer;
 
 class Game
@@ -36,8 +34,13 @@ public:
 
     void playerJoin(const PlayerPtr& player);
     void playerMove(const PlayerPtr& player, core::Word&& word);
+    void playerLeave(const PlayerPtr& player);
+
+    void tick(core::duration d);
 
 private:
+    void newBoard();
+
     // game name
     std::string m_id;
     const core::duration m_restTime;
@@ -45,15 +48,10 @@ private:
 
     BoardProducer& m_boardProducer;
 
-    struct PlayerGameData
-    {
-        core::score_t totalScore;
-        std::vector<const core::ScoredWord*> scores;
-    };
-    std::unordered_map<PlayerPtr, PlayerGameData> m_playerDatas;
+    player_set m_players;
 
-    std::unique_ptr<core::Board> m_currentBoard;
-    std::unique_ptr<core::Board> m_previousBoard;
+    std::unique_ptr<Board> m_currentBoard;
+    std::unique_ptr<Board> m_previousBoard;
 };
 
 }

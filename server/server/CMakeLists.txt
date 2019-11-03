@@ -1,6 +1,8 @@
 set(src)
 
 src_group(server src
+    Board.cpp
+    Board.hpp
     Game.cpp
     Game.hpp
     Universe.cpp

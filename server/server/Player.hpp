@@ -16,7 +16,6 @@
 
 namespace core
 {
-class GameData;
 class Word;
 }
 
@@ -42,7 +41,7 @@ public:
     void onChooseGame(std::string&& id);
     void onPlayWord(core::Word&& w);
 
-    virtual void sendDatas(const std::vector<core::GameData>& datas) = 0;
+    virtual void sendGames(const std::vector<Game>& games) = 0;
     virtual void sendErrorBadId(std::string&& id) = 0;
     virtual void sendAcceptId(std::string&& id) = 0;
 

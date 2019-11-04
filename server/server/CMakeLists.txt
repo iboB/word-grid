@@ -12,6 +12,7 @@ src_group(server src
     PlayerPtr.hpp
     PlayerSet.hpp
     BoardProducer.hpp
+	BoardProducerPtr.hpp
 )
 
 src_group(exec src

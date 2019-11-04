@@ -8,6 +8,7 @@
 #pragma once
 
 #include "PlayerSet.hpp"
+#include "BoardProducerPtr.hpp"
 
 #include <core/Types.hpp>
 
@@ -22,15 +23,21 @@ class Word;
 namespace server
 {
 class Board;
-class BoardProducer;
 
 class Game
 {
 public:
-    Game(const std::string& id, core::duration restTime, BoardProducer& boardProducer);
+    Game(const std::string& id, core::duration restTime, const BoardProducerPtr& boardProducer);
     ~Game();
 
+    Game(const Game&) = delete;
+    Game& operator=(const Game&) = delete;
+
+    Game(Game&&) noexcept;
+    Game& operator=(Game&&) noexcept = delete;
+
     const std::string& id() const { return m_id; }
+    size_t numPlayers() const { return m_players.size(); }
 
     void playerJoin(const PlayerPtr& player);
     void playerMove(const PlayerPtr& player, core::Word&& word);
@@ -44,9 +51,9 @@ private:
     // game name
     std::string m_id;
     const core::duration m_restTime;
-    core::duration m_currentRest = 0;
+    BoardProducerPtr m_boardProducer;
 
-    BoardProducer& m_boardProducer;
+    core::duration m_currentRest = 0;
 
     player_set m_players;
 

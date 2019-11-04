@@ -7,17 +7,10 @@
 //
 #pragma once
 
-#include <string>
+#include <memory>
 
-namespace core
+namespace server
 {
-class GameData
-{
-public:
-    GameData();
-    GameData(const std::string& id);
-    ~GameData();
-    std::string id;
-    size_t numPlayers = 0;
-};
+class BoardProducer;
+using BoardProducerPtr = std::shared_ptr<BoardProducer>;
 }

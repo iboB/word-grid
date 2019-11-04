@@ -19,7 +19,6 @@
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
 #include <core/Dictionary.hpp>
-#include <core/GameData.hpp>
 #include <core/Scoring.hpp>
 #include <core/ScoredDictionary.hpp>
 
@@ -90,7 +89,7 @@ public:
         }
 
         m_phase = Phase_GameRequested;
-        string gameId = m_gameDatas[n].id;
+        string gameId = m_gameDatas[n];
         onChooseGame(std::move(gameId));
     }
 
@@ -99,18 +98,18 @@ public:
         onPlayWord(Word::fromAscii(word.c_str()));
     }
 private:
-    std::vector<core::GameData> m_gameDatas;
+    std::vector<std::string> m_gameDatas;
 
-    virtual void sendDatas(const std::vector<core::GameData>& datas) override
+    virtual void sendGames(const std::vector<server::Game>& games) override
     {
         m_phase = Phase_HasGameDatas;
-        for (size_t i=0; i<datas.size(); ++i)
+        m_gameDatas.resize(games.size());
+        for (size_t i=0; i<games.size(); ++i)
         {
-            auto& data = datas[i];
-            cout << '(' << i << ") " << data.id << " with " << data.numPlayers << " players\n";
+            auto& game = games[i];
+            m_gameDatas[i] = game.id();
+            cout << '(' << i << ") " << game.id() << " with " << game.numPlayers() << " players\n";
         }
-
-        m_gameDatas = datas;
     }
     virtual void sendErrorBadId(std::string&& id) override
     {
@@ -224,9 +223,9 @@ int main()
     Dictionary dictionary = Dictionary::fromUtf8Buffer(chobo::make_memory_view(commonDicData));
     cout << "Dictionary words: " << dictionary.words().size() << endl;
 
-    TestProducer producer(dictionary);
+    auto producer = std::make_shared<TestProducer>(dictionary);
 
-    auto game = std::make_unique<Game>("test", 45000, producer);
+    Game game("test", 45000, producer);
 
     Universe universe;
     universe.addGame(std::move(game));

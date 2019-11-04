@@ -10,17 +10,14 @@
 #include "Game.hpp"
 #include "Player.hpp"
 
-#include <core/GameData.hpp>
-
 namespace server
 {
 
 Universe::Universe() = default;
 Universe::~Universe() = default;
 
-void Universe::addGame(std::unique_ptr<Game>&& game)
+void Universe::addGame(Game&& game)
 {
-    m_gameDatas.emplace_back(game->id());
     m_games.emplace_back(std::move(game));
 }
 
@@ -28,9 +25,9 @@ Game* Universe::getGame(const std::string& id)
 {
     for (auto& game : m_games)
     {
-        if (game->id() == id)
+        if (game.id() == id)
         {
-            return game.get();
+            return &game;
         }
     }
 
@@ -57,7 +54,7 @@ void Universe::playerSetId(const PlayerPtr& player, std::string&& id)
     {
         std::string copyId = id;
         player->sendAcceptId(std::move(copyId));
-        player->sendDatas(m_gameDatas);
+        player->sendGames(m_games);
     }
 
     player->m_id = std::move(id);

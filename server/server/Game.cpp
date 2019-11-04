@@ -13,13 +13,19 @@
 namespace server
 {
 
-Game::Game(const std::string& id, core::duration restTime, BoardProducer& boardProducer)
+Game::Game(const std::string& id, core::duration restTime, const BoardProducerPtr& boardProducer)
     : m_id(id)
     , m_restTime(restTime)
     , m_boardProducer(boardProducer)
 {}
 
 Game::~Game() = default;
+
+Game::Game(Game&& other) noexcept
+    : m_id(std::move(other.m_id))
+    , m_restTime(other.m_restTime)
+    , m_boardProducer(std::move(other.m_boardProducer))
+{}
 
 void Game::playerJoin(const PlayerPtr& player)
 {
@@ -91,7 +97,7 @@ void Game::tick(core::duration d)
 void Game::newBoard()
 {
     m_previousBoard.reset(m_currentBoard.release());
-    m_currentBoard.reset(new Board(m_boardProducer.getBoard(this)));
+    m_currentBoard.reset(new Board(m_boardProducer->getBoard(this)));
 
     for (auto& player : m_players)
     {

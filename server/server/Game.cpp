@@ -29,15 +29,17 @@ void Game::playerJoin(const PlayerPtr& player)
     {
         newBoard();
     }
-
-    // no point in sending the previous board if we're not in a rest
-    Board* prevBoard = nullptr;
-    if (m_currentRest)
+    else
     {
-        prevBoard = m_previousBoard.get();
-    }
+        // no point in sending the previous board if we're not in a rest
+        Board* prevBoard = nullptr;
+        if (m_currentRest)
+        {
+            prevBoard = m_previousBoard.get();
+        }
 
-    player->sendRound(*m_currentBoard, m_currentRest, prevBoard);
+        player->sendRound(*m_currentBoard, m_currentRest, prevBoard);
+    }
 }
 
 void Game::playerMove(const PlayerPtr& player, core::Word&& word)
@@ -90,6 +92,11 @@ void Game::newBoard()
 {
     m_previousBoard.reset(m_currentBoard.release());
     m_currentBoard.reset(new Board(m_boardProducer.getBoard(this)));
+
+    for (auto& player : m_players)
+    {
+        player->sendRound(*m_currentBoard, m_currentRest, m_previousBoard.get());
+    }
 }
 
 }

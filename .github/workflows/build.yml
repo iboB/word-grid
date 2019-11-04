@@ -1,0 +1,56 @@
+name: CI
+on: [push]
+jobs:
+
+  gcc:
+    runs-on: ubuntu-18.04
+    strategy:
+      matrix:
+        build: [Debug, Release]
+    steps:
+    - name: Clone
+      uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Configure
+      run: cmake . -DCMAKE_BUILD_TYPE=${{ matrix.build }}
+    - name: Build
+      run: make -j
+    - name: Test
+      run: ctest --output-on-failure
+
+  clang:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, macOS-10.14]
+        build: [Debug, Release]
+    steps:
+    - name: Clone
+      uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Configure
+      run: cmake . -DCMAKE_BUILD_TYPE=${{ matrix.build }} -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
+    - name: Build
+      run: make -j
+    - name: Test
+      run: ctest --output-on-failure
+
+  msvc:
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        arch: [Win32, x64]
+        build: [Debug, Release]
+    steps:
+    - name: Clone
+      uses: actions/checkout@v1
+      with:
+        submodules: true
+    - name: Configure
+      run: cmake . -G "Visual Studio 16 2019" -A ${{ matrix.arch }}
+    - name: Build
+      run: cmake --build . --config ${{ matrix.build }}
+    - name: Test
+      run: ctest -C ${{ matrix.build }} --output-on-failure

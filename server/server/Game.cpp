@@ -70,6 +70,7 @@ void Game::tick(core::duration d)
 
         if (m_currentRest <= 0)
         {
+            m_currentBoard->tick(-m_currentRest);
             m_currentRest = 0;
         }
 
@@ -80,6 +81,7 @@ void Game::tick(core::duration d)
 
     if (m_currentBoard->expired())
     {
+        m_currentRest = m_restTime;
         newBoard();
     }
 }

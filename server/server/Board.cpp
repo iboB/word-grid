@@ -13,8 +13,8 @@ namespace server
 
 Board::Board(core::Grid&& grid, core::ScoredDictionary&& dictionary, core::duration dur)
     : m_grid(std::move(grid))
-    , m_remainingTime(dur)
     , m_dictionary(std::move(dictionary))
+    , m_remainingTime(dur)
 {}
 
 Board::~Board() = default;

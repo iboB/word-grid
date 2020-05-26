@@ -1,10 +1,8 @@
-set(src)
-src_group(lib src
+set(src
     lib/UnicodeCharFromUtf8.hpp
     lib/PlatformUtil.cpp
     lib/PlatformUtil.hpp
-)
-src_group(core src
+
     Types.hpp
     LetterSequence.hpp
     Word.hpp

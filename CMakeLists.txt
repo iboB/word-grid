@@ -24,14 +24,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WG_WARNING_FLAGS}")
 find_package(Threads REQUIRED)
 
 ######################
-# cmake lib
-set(CMAKE_MODULE_PATH
-    ${CMAKE_MODULE_PATH}
-    ${CMAKE_CURRENT_SOURCE_DIR}/cmake
-)
-include(src_group)
-
-######################
 # subdirectories
 add_subdirectory(third_party)
 

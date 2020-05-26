@@ -1,6 +1,4 @@
-set(src)
-
-src_group(server src
+set(src
     Board.cpp
     Board.hpp
     Game.cpp
@@ -13,9 +11,7 @@ src_group(server src
     PlayerSet.hpp
     BoardProducer.hpp
 	BoardProducerPtr.hpp
-)
 
-src_group(exec src
     exec/ExecutionContext.hpp
     exec/ExecutorBase.cpp
     exec/ExecutorBase.hpp

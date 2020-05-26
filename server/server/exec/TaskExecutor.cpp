@@ -8,57 +8,89 @@
 #include "TaskExecutor.hpp"
 
 #include <cassert>
+#include <atomic>
 
 namespace server
 {
 
-void TaskExecutorBase::update()
+namespace
+{
+std::atomic_uint64_t currentTaskId = {};
+uint64_t getNextTaskId()
+{
+    return currentTaskId.fetch_add(1, std::memory_order_relaxed);
+}
+}
+
+void TaskExecutor::update()
 {
     m_tasksMutex.lock();
-    auto tasks = std::move(m_taskQueue);
+    std::vector<TaskWithId> tasks;
+    tasks.swap(m_taskQueue);
     m_tasksMutex.unlock();
 
     for (auto& task : tasks)
     {
-        task->execute(*this);
+        task.task();
     }
 }
 
-void TaskExecutorBase::lockTasks()
+void TaskExecutor::lockTasks()
 {
     m_tasksMutex.lock();
     m_tasksLocked = true;
 }
 
-void TaskExecutorBase::unlockTasks()
+void TaskExecutor::unlockTasks()
 {
     m_tasksLocked = false;
     m_tasksMutex.unlock();
     wakeUp(); // assuming something has changed
 }
 
-void TaskExecutorBase::pushTask(TaskBasePtr task)
+uint64_t TaskExecutor::pushTaskL(Task task)
 {
     assert(m_tasksLocked);
-    m_taskQueue.emplace_back(std::move(task));
+    auto& newTask = m_taskQueue.emplace_back();
+    newTask.task = std::move(task);
+    newTask.id = getNextTaskId();
+    return newTask.id;
 }
 
-void TaskExecutorBase::finalize()
+bool TaskExecutor::cancelTask(uint64_t id)
 {
-    if (!m_finishTasksOnExit) return; // abandon unfinished tasks
+    std::lock_guard<std::mutex> l(m_tasksMutex);
 
-    // loop multiple times as the execution of some tasks can spawn yet more tasks
-    while (true)
+    for (auto taskIter = m_taskQueue.cbegin(); taskIter != m_taskQueue.cend(); ++taskIter)
     {
-        m_tasksMutex.lock();
-        auto tasks = std::move(m_taskQueue);
-        m_tasksMutex.unlock();
-
-        if (tasks.empty()) break;
-
-        for (auto& task : tasks)
+        if (taskIter->id == id)
         {
-            task->execute(*this);
+            m_taskQueue.erase(taskIter);
+            return true;
+        }
+    }
+
+    return false;
+}
+
+void TaskExecutor::finalize()
+{
+    if (m_finishTasksOnExit)
+    {
+        // since tasks can add other tasks, we need to loop mulitple times until we're done
+        while (true)
+        {
+            m_tasksMutex.lock();
+            std::vector<TaskWithId> tasks;
+            tasks.swap(m_taskQueue);
+            m_tasksMutex.unlock();
+
+            if (tasks.empty()) break;
+
+            for (auto& task : tasks)
+            {
+                task.task();
+            }
         }
     }
 }

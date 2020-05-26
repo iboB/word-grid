@@ -8,6 +8,9 @@
 #pragma once
 
 #include "ExecutorBase.hpp"
+
+#include <acme/ufunction.hpp>
+
 #include <memory>
 #include <mutex>
 #include <vector>
@@ -15,7 +18,7 @@
 namespace server
 {
 
-class TaskExecutorBase : public ExecutorBase
+class TaskExecutor : public ExecutorBase
 {
 public:
     virtual void update() override;
@@ -26,57 +29,18 @@ public:
     // tasks
     // tasks are pushed from various threads
     // tasks are executed on update
-    class TaskBase
-    {
-    public:
-        virtual ~TaskBase() = default;
-        virtual void execute(TaskExecutorBase& e) = 0;
-    };
-    using TaskBasePtr = std::unique_ptr<TaskBase>;
-
-    // task locking
-    // you need to lock the tasks with these functions or a locker before adding tasks
-    void lockTasks();
-    void unlockTasks();
-
-    // only valid on any thread when tasks are locked
-    void pushTask(TaskBasePtr task);
-private:
-    bool m_tasksLocked = false;  // a silly defence but should work most of the time
-    bool m_finishTasksOnExit = false;
-
-    std::mutex m_tasksMutex;
-    std::vector<TaskBasePtr> m_taskQueue;
-};
-
-// a strong-typed class so one doesn't accidentally push tasks from one type to another executor
-template <typename Child>
-class TaskExecutor : public TaskExecutorBase
-{
-public:
-    class Task : public TaskExecutorBase::TaskBase
-    {
-        virtual void execute(TaskExecutorBase& e) final override
-        {
-            auto& c = static_cast<Child&>(e);
-            execute(c);
-        }
-        virtual void execute(Child& c) = 0;
-    };
-    using TaskPtr = std::unique_ptr<Task>;
+    using Task = acme::ufunction<void()>;
 
     class TaskLocker
     {
     public:
-        TaskLocker(TaskExecutor& e)
-            : m_executor(&e)
+        explicit TaskLocker(TaskExecutor* e) : m_executor(e)
         {
-            e.lockTasks();
+            e->lockTasks();
         }
         TaskLocker(const TaskLocker&) = delete;
         TaskLocker& operator=(const TaskLocker&) = delete;
-        TaskLocker(TaskLocker&& other) noexcept
-            : m_executor(other.m_executor)
+        TaskLocker(TaskLocker&& other) noexcept : m_executor(other.m_executor)
         {
             other.m_executor = nullptr;
         }
@@ -85,20 +49,47 @@ public:
         {
             if (m_executor) m_executor->unlockTasks();
         }
-        void pushTask(TaskPtr task)
+        uint64_t pushTask(Task task)
         {
-            return m_executor->pushTask(std::move(task));
+            return m_executor->pushTaskL(std::move(task));
         }
     private:
         TaskExecutor* m_executor;
     };
-    TaskLocker taskLocker() { return TaskLocker(*this); }
+    TaskLocker taskLocker() { return TaskLocker(this); }
 
-    // intentionally hiding functions from parent
-    void pushTask(TaskPtr task)
+    uint64_t pushTask(Task task)
     {
-        return TaskExecutorBase::pushTask(std::move(task));
+        return taskLocker().pushTask(std::move(task));
     }
+
+    // task locking
+    // you need to lock the tasks with these functions or a locker before adding tasks
+    void lockTasks();
+    void unlockTasks();
+
+    // only valid on any thread when tasks are locked
+    uint64_t pushTaskL(Task task);
+
+    // will cancel the task successfully and return true if the task queue containing
+    // the task hasn't started executing.
+    // returns whether the task was removed from the pending tasks
+    // WARNING if this returns false one of three things might be true:
+    // * The task was never added (bad id)
+    // * The task is currently executing
+    // * The task has finished executing
+    bool cancelTask(uint64_t id);
+private:
+    bool m_tasksLocked = false;  // a silly defence but should work most of the time
+    bool m_finishTasksOnExit = false;
+    std::mutex m_tasksMutex;
+
+    struct TaskWithId
+    {
+        Task task;
+        uint64_t id;
+    };
+    std::vector<TaskWithId> m_taskQueue;
 };
 
 }

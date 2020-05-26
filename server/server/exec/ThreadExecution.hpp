@@ -40,7 +40,7 @@ public:
     void wait();
 
 private:
-    std::atomic_bool m_running = false;
+    std::atomic_bool m_running = {};
 
     // wait state
     bool m_hasWork = false;

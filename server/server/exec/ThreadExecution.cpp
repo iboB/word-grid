@@ -29,8 +29,10 @@ void ThreadExecutionContext::stop(ExecutorBase&)
 
 void ThreadExecutionContext::wakeUp()
 {
-    std::lock_guard<std::mutex> lk(m_workMutex);
-    m_hasWork = true;
+    {
+        std::lock_guard<std::mutex> lk(m_workMutex);
+        m_hasWork = true;
+    }
     m_workCV.notify_one();
 }
 

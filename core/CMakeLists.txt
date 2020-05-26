@@ -33,6 +33,7 @@ target_include_directories(core INTERFACE ..)
 
 target_link_libraries(core PUBLIC
     chobo-shl
+    acme
     ${CMAKE_DL_LIBS}
 )
 

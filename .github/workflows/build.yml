@@ -3,7 +3,7 @@ on: [push]
 jobs:
 
   gcc:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         build: [Debug, Release]
@@ -23,7 +23,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-18.04, macOS-10.14]
+        os: [ubuntu-latest, macOS-latest]
         build: [Debug, Release]
     steps:
     - name: Clone

@@ -11,9 +11,9 @@
 
 #include <acme/ufunction.hpp>
 
-#include <memory>
 #include <mutex>
 #include <vector>
+#include <queue>
 
 namespace server
 {
@@ -30,6 +30,7 @@ public:
     // tasks are pushed from various threads
     // tasks are executed on update
     using Task = acme::ufunction<void()>;
+    using task_id = uint64_t;
 
     class TaskLocker
     {
@@ -49,16 +50,20 @@ public:
         {
             if (m_executor) m_executor->unlockTasks();
         }
-        uint64_t pushTask(Task task)
+        task_id pushTask(Task task)
         {
             return m_executor->pushTaskL(std::move(task));
+        }
+        task_id scheduleTask(std::chrono::milliseconds timeFromNow, Task task)
+        {
+            return m_executor->scheduleTaskL(timeFromNow, std::move(task));
         }
     private:
         TaskExecutor* m_executor;
     };
     TaskLocker taskLocker() { return TaskLocker(this); }
 
-    uint64_t pushTask(Task task)
+    task_id pushTask(Task task)
     {
         return taskLocker().pushTask(std::move(task));
     }
@@ -69,7 +74,8 @@ public:
     void unlockTasks();
 
     // only valid on any thread when tasks are locked
-    uint64_t pushTaskL(Task task);
+    task_id pushTaskL(Task task);
+    task_id scheduleTaskL(std::chrono::milliseconds timeFromNow, Task task);
 
     // will cancel the task successfully and return true if the task queue containing
     // the task hasn't started executing.
@@ -78,7 +84,7 @@ public:
     // * The task was never added (bad id)
     // * The task is currently executing
     // * The task has finished executing
-    bool cancelTask(uint64_t id);
+    bool cancelTask(task_id id);
 private:
     bool m_tasksLocked = false;  // a silly defence but should work most of the time
     bool m_finishTasksOnExit = false;
@@ -87,9 +93,32 @@ private:
     struct TaskWithId
     {
         Task task;
-        uint64_t id;
+        task_id id;
     };
     std::vector<TaskWithId> m_taskQueue;
+
+    struct TimedTaskWithId
+    {
+        Task task;
+        task_id id;
+        std::chrono::steady_clock::time_point time;
+        struct Later
+        {
+            bool operator()(const TimedTaskWithId& a, const TimedTaskWithId& b)
+            {
+                return a.time > b.time;
+            }
+        };
+    };
+
+    // adapt more so we can erase tasks
+    struct TimedTaskQueue
+        : public std::priority_queue<TimedTaskWithId, std::vector<TimedTaskWithId>, TimedTaskWithId::Later>
+    {
+        bool tryEraseId(task_id id);
+        TimedTaskWithId topAndPop();
+    };
+    TimedTaskQueue m_timedTasks;
 };
 
 }

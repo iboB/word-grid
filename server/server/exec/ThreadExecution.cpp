@@ -24,10 +24,10 @@ ThreadExecutionContext::ThreadExecutionContext()
 void ThreadExecutionContext::stop(ExecutorBase&)
 {
     m_running = false;
-    wakeUp();
+    wakeUpNow();
 }
 
-void ThreadExecutionContext::wakeUp()
+void ThreadExecutionContext::wakeUpNow()
 {
     {
         std::lock_guard<std::mutex> lk(m_workMutex);
@@ -36,31 +36,96 @@ void ThreadExecutionContext::wakeUp()
     m_workCV.notify_one();
 }
 
-void ThreadExecutionContext::wakeUp(ExecutorBase&)
+void ThreadExecutionContext::wakeUpNow(ExecutorBase&)
 {
-    wakeUp();
+    wakeUpNow();
+}
+
+void ThreadExecutionContext::scheduleNextWakeUp(std::chrono::milliseconds timeFromNow)
+{
+    {
+        std::lock_guard<std::mutex> lk(m_workMutex);
+        m_scheduledWakeUpTime = std::chrono::steady_clock::now() + timeFromNow;
+    }
+    m_workCV.notify_one();
+}
+
+void ThreadExecutionContext::scheduleNextWakeUp(ExecutorBase&, std::chrono::milliseconds timeFromNow)
+{
+    scheduleNextWakeUp(timeFromNow);
+}
+
+void ThreadExecutionContext::unscheduleNextWakeUp()
+{
+    {
+        std::lock_guard<std::mutex> lk(m_workMutex);
+        m_scheduledWakeUpTime.reset();
+    }
+    m_workCV.notify_one();
+}
+
+void ThreadExecutionContext::unscheduleNextWakeUp(ExecutorBase&)
+{
+    unscheduleNextWakeUp();
 }
 
 void ThreadExecutionContext::wait()
 {
     std::unique_lock<std::mutex> lock(m_workMutex);
-    m_workCV.wait(lock, [this](){ return m_hasWork; });
-    m_hasWork = false;
-    lock.unlock();
+
+    while (true)
+    {
+        if (m_hasWork)
+        {
+            m_hasWork = false;
+            m_scheduledWakeUpTime.reset(); // forget about scheduling wakeup if we were woken up with work to do
+            return;
+        }
+
+        if (m_scheduledWakeUpTime)
+        {
+            // wait until if we have a wake up time, wait for it
+            auto status = m_workCV.wait_until(lock, *m_scheduledWakeUpTime);
+
+            if (status == std::cv_status::timeout)
+            {
+                // timeout => hasWork
+                m_hasWork = true;
+                m_scheduledWakeUpTime.reset(); // timer was consumed
+            }
+
+            // otherwise we should do nothing... we either have work and will return
+            // or we don't have work and will loop again
+
+            // this might be a spurious wake up
+            // in such case we don't have work, and don't have a new timer
+            // so we will loop again and wait on the same timer again
+            // it may also be the case tha we've been woken up by unschedule
+            // in this case we loop again and will wait indefinitely
+        }
+        else
+        {
+            // wait indefinitely
+            // when we wake up we either have work and will return
+            // or will have a scheduled wake up time and will wait for it
+            // or it's a spurious wake up and will end up here again
+            m_workCV.wait(lock);
+        }
+    }
 }
 
-} // namespace internal
+} // namespace detail
 
 ThreadExecution::ThreadExecution(ExecutorBase& e)
     : m_executor(e)
 {
-    m_oldExecitionContext = m_executor.setExecutionContext(&m_execution);
+    m_oldExecitionContext = &m_executor.setExecutionContext(m_execution);
 }
 
 ThreadExecution::~ThreadExecution()
 {
     stopAndJoinThread();
-    m_executor.setExecutionContext(m_oldExecitionContext);
+    m_executor.setExecutionContext(*m_oldExecitionContext);
 }
 
 void ThreadExecution::launchThread()

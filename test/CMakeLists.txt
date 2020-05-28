@@ -20,3 +20,5 @@ macro(add_server_test test)
 endmacro()
 
 add_server_test(TaskExecutor t-TaskExecutor.cpp)
+add_server_test(TaskScheduling t-TaskScheduling.cpp)
+

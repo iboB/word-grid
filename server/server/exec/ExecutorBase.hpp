@@ -7,6 +7,8 @@
 //
 #pragma once
 
+#include <chrono>
+
 namespace server
 {
 
@@ -14,9 +16,9 @@ class ExecutionContext;
 
 class ExecutorBase
 {
-protected:
-    ExecutorBase();
 public:
+    ExecutorBase();
+    ExecutorBase(ExecutionContext& context);
     virtual ~ExecutorBase();
 
     virtual void update() = 0;
@@ -25,11 +27,13 @@ public:
     virtual void finalize() {}
 
     // returns the previously set execution context
-    ExecutionContext* setExecutionContext(ExecutionContext* context);
+    ExecutionContext& setExecutionContext(ExecutionContext& context);
 
-    ExecutionContext* executionContext() const { return m_executionContext; }
+    ExecutionContext& executionContext() const { return *m_executionContext; }
 
-    void wakeUp();
+    void wakeUpNow();
+    void scheduleNextWakeUp(std::chrono::milliseconds timeFromNow);
+    void unscheduleNextWakeUp();
     void stop();
 private:
     ExecutionContext* m_executionContext;

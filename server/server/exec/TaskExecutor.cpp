@@ -16,10 +16,37 @@ namespace server
 namespace
 {
 std::atomic_uint64_t currentTaskId = {};
-uint64_t getNextTaskId()
+TaskExecutor::task_id getNextTaskId()
 {
     return currentTaskId.fetch_add(1, std::memory_order_relaxed);
 }
+
+auto tnow() { return std::chrono::steady_clock::now(); }
+
+constexpr auto Min_Time = std::chrono::milliseconds(20);
+}
+
+
+bool TaskExecutor::TimedTaskQueue::tryEraseId(task_id id)
+{
+    for (auto taskIter = c.begin(); taskIter != c.end(); ++taskIter)
+    {
+        if (taskIter->id == id)
+        {
+            c.erase(taskIter);
+            std::make_heap(c.begin(), c.end(), comp);
+            return true;
+        }
+    }
+    return false;
+}
+
+TaskExecutor::TimedTaskWithId TaskExecutor::TimedTaskQueue::topAndPop()
+{
+    std::pop_heap(c.begin(), c.end(), comp);
+    auto ret = std::move(c.back());
+    c.pop_back();
+    return ret;
 }
 
 void TaskExecutor::update()
@@ -27,6 +54,33 @@ void TaskExecutor::update()
     m_tasksMutex.lock();
     std::vector<TaskWithId> tasks;
     tasks.swap(m_taskQueue);
+
+    if (!m_timedTasks.empty())
+    {
+        const auto now = tnow();
+        const auto maxTimeToExecute = now + Min_Time;
+        while (true)
+        {
+            auto& top = m_timedTasks.top();
+            if (top.time <= maxTimeToExecute)
+            {
+                auto& nt = tasks.emplace_back();
+                nt.task = m_timedTasks.topAndPop().task;
+                if (m_timedTasks.empty())
+                {
+                    unscheduleNextWakeUp();
+                    break;
+                }
+            }
+            else
+            {
+                const auto toWait = top.time - now;
+                scheduleNextWakeUp(std::chrono::duration_cast<std::chrono::milliseconds>(toWait));
+                break;
+            }
+        }
+    }
+
     m_tasksMutex.unlock();
 
     for (auto& task : tasks)
@@ -45,10 +99,10 @@ void TaskExecutor::unlockTasks()
 {
     m_tasksLocked = false;
     m_tasksMutex.unlock();
-    wakeUp(); // assuming something has changed
+    wakeUpNow(); // assuming something has changed
 }
 
-uint64_t TaskExecutor::pushTaskL(Task task)
+TaskExecutor::task_id TaskExecutor::pushTaskL(Task task)
 {
     assert(m_tasksLocked);
     auto& newTask = m_taskQueue.emplace_back();
@@ -57,7 +111,25 @@ uint64_t TaskExecutor::pushTaskL(Task task)
     return newTask.id;
 }
 
-bool TaskExecutor::cancelTask(uint64_t id)
+TaskExecutor::task_id TaskExecutor::scheduleTaskL(std::chrono::milliseconds timeFromNow, Task task)
+{
+    // no point in shceduling something which is about to happen so soon
+    if (timeFromNow < Min_Time)
+    {
+        return pushTaskL(std::move(task));
+    }
+
+    assert(m_tasksLocked);
+    const auto newId = getNextTaskId();
+    TimedTaskWithId newTask;
+    newTask.task = std::move(task);
+    newTask.id = newId;
+    newTask.time = tnow() + timeFromNow;
+    m_timedTasks.emplace(std::move(newTask));
+    return newId;
+}
+
+bool TaskExecutor::cancelTask(task_id id)
 {
     std::lock_guard<std::mutex> l(m_tasksMutex);
 
@@ -70,7 +142,7 @@ bool TaskExecutor::cancelTask(uint64_t id)
         }
     }
 
-    return false;
+    return m_timedTasks.tryEraseId(id);
 }
 
 void TaskExecutor::finalize()
@@ -78,6 +150,8 @@ void TaskExecutor::finalize()
     if (m_finishTasksOnExit)
     {
         // since tasks can add other tasks, we need to loop mulitple times until we're done
+        // we also intentionally ignore scheduled tasks in this context
+        // (since they're not executed immediately they are not considered essential)
         while (true)
         {
             m_tasksMutex.lock();

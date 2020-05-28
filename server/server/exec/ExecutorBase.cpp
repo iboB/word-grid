@@ -16,26 +16,39 @@ namespace
 
 class NoopExecutionContext final : public ExecutionContext
 {
-    virtual void wakeUp(ExecutorBase&) override {}
+    virtual void wakeUpNow(ExecutorBase&) override {}
     virtual void stop(ExecutorBase&) override {}
+    virtual void scheduleNextWakeUp(ExecutorBase&, std::chrono::milliseconds) override {}
+    virtual void unscheduleNextWakeUp(ExecutorBase&) override {}
 }
 TheNoopExecution;
 
 }
 
 ExecutorBase::ExecutorBase() : m_executionContext(&TheNoopExecution) {}
+ExecutorBase::ExecutorBase(ExecutionContext& context) : m_executionContext(&context) {}
 ExecutorBase::~ExecutorBase() = default;
 
-ExecutionContext* ExecutorBase::setExecutionContext(ExecutionContext* context)
+ExecutionContext& ExecutorBase::setExecutionContext(ExecutionContext& context)
 {
     auto old = m_executionContext;
-    m_executionContext = context;
-    return old;
+    m_executionContext = &context;
+    return *old;
 }
 
-void ExecutorBase::wakeUp()
+void ExecutorBase::wakeUpNow()
 {
-    m_executionContext->wakeUp(*this);
+    m_executionContext->wakeUpNow(*this);
+}
+
+void ExecutorBase::scheduleNextWakeUp(std::chrono::milliseconds timeFromNow)
+{
+    m_executionContext->scheduleNextWakeUp(*this, timeFromNow);
+}
+
+void ExecutorBase::unscheduleNextWakeUp()
+{
+    m_executionContext->unscheduleNextWakeUp(*this);
 }
 
 void ExecutorBase::stop()

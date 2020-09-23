@@ -1,0 +1,9 @@
+{
+    "dirs": [
+        ".git",
+        ".github",
+        ".vs",
+        "build",
+        "out"
+    ]
+}

@@ -9,7 +9,7 @@
 
 namespace core
 {
-bool WordElement::matches(const chobo::const_memory_view<letter>& pattern) const
+bool WordElement::matches(const itlib::const_memory_view<letter>& pattern) const
 {
     if (empty()) return true; // empty matches everything
 

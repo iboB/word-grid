@@ -30,8 +30,7 @@ add_library(core STATIC
 target_include_directories(core INTERFACE ..)
 
 target_link_libraries(core PUBLIC
-    chobo-shl
-    acme
+    itlib
     ${CMAKE_DL_LIBS}
 )
 

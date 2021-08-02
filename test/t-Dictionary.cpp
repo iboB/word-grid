@@ -38,7 +38,7 @@ asddd
 TEST_CASE("basic")
 {
     std::vector<uint8_t> d1buf(d1, d1 + sizeof(d1));
-    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(d1buf));
+    auto d = Dictionary::fromUtf8Buffer(itlib::make_memory_view(d1buf));
     auto& words = d.words();
     REQUIRE(words.size() == 4);
     CHECK(words[0] == Word::fromAscii("card"));
@@ -56,7 +56,7 @@ TEST_CASE("basic")
 
 TEST_CASE("search")
 {
-    auto d = Dictionary::fromUtf8Buffer(chobo::make_memory_view(d2, sizeof(d2)));
+    auto d = Dictionary::fromUtf8Buffer(itlib::make_memory_view(d2, sizeof(d2)));
     DictionarySearch ds;
     auto result = d.search(ds, 'b');
     CHECK(result == Dictionary::SearchResult::None);

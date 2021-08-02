@@ -23,7 +23,7 @@ void ScoredDictionary::clear()
     m_words.clear();
 }
 
-void ScoredDictionary::addWord(const Word& word, chobo::const_memory_view<GridCoord> coords)
+void ScoredDictionary::addWord(const Word& word, itlib::const_memory_view<GridCoord> coords)
 {
     m_words.emplace_back();
     m_words.back().word = word;
@@ -37,7 +37,7 @@ void ScoredDictionary::scoreWords(const Grid& g, const Scoring& s)
 {
     for (auto& w : m_words)
     {
-        w.score = s.score(g, chobo::make_memory_view(w.coords));
+        w.score = s.score(g, itlib::make_memory_view(w.coords));
     }
 }
 

@@ -16,7 +16,7 @@ namespace core
 struct ScoredWord
 {
     Word word;
-    chobo::static_vector<GridCoord, WordTraits::Max_Length> coords;
+    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords;
     score_t score;
 };
 }

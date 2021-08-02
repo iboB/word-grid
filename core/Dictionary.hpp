@@ -10,7 +10,7 @@
 #include "Types.hpp"
 
 #include <vector>
-#include <chobo/memory_view.hpp>
+#include <itlib/memory_view.hpp>
 
 namespace core
 {
@@ -31,7 +31,7 @@ public:
     Dictionary& operator=(const Dictionary&) = delete;
 
     // load words from UTF8 buffer separated by newlines
-    static Dictionary fromUtf8Buffer(chobo::const_memory_view<uint8_t> buffer);
+    static Dictionary fromUtf8Buffer(itlib::const_memory_view<uint8_t> buffer);
 
     // loads words from vector of words. consumes the vector
     static Dictionary fromVector(std::vector<Word>&& words);

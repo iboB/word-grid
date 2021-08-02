@@ -8,14 +8,14 @@
 #pragma once
 
 #include "Types.hpp"
-#include <chobo/static_vector.hpp>
-#include <chobo/memory_view.hpp>
+#include <itlib/static_vector.hpp>
+#include <itlib/memory_view.hpp>
 
 namespace core
 {
 
 template <size_t Capacity, typename Child>
-class LetterSequence : public chobo::static_vector<letter, Capacity>
+class LetterSequence : public itlib::static_vector<letter, Capacity>
 {
 public:
     LetterSequence() = default;
@@ -38,14 +38,14 @@ public:
 
     size_t length() const { return this->size(); }
 
-    chobo::memory_view<letter> view()
+    itlib::memory_view<letter> view()
     {
-        return chobo::make_memory_view(*this);
+        return itlib::make_memory_view(*this);
     }
 
-    chobo::const_memory_view<letter> view() const
+    itlib::const_memory_view<letter> view() const
     {
-        return chobo::make_memory_view(*this);
+        return itlib::make_memory_view(*this);
     }
 };
 

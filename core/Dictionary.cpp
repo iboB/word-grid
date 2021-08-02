@@ -23,7 +23,7 @@ Dictionary::~Dictionary() = default;
 Dictionary::Dictionary(Dictionary&&) noexcept = default;
 Dictionary& Dictionary::operator=(Dictionary&&) noexcept = default;
 
-Dictionary Dictionary::fromUtf8Buffer(chobo::const_memory_view<uint8_t> buffer)
+Dictionary Dictionary::fromUtf8Buffer(itlib::const_memory_view<uint8_t> buffer)
 {
     Dictionary d;
     auto begin = reinterpret_cast<const char*>(buffer.data());

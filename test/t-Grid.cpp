@@ -14,7 +14,7 @@
 
 using namespace core;
 using namespace std;
-using namespace chobo;
+using namespace itlib;
 
 TEST_SUITE_BEGIN("Grid");
 

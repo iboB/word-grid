@@ -25,7 +25,7 @@ public:
         std::vector<Word>::const_iterator end;
     };
 
-    const chobo::static_vector<Range, WordTraits::Max_Length>& ranges() const { return m_ranges; }
+    const itlib::static_vector<Range, WordTraits::Max_Length>& ranges() const { return m_ranges; }
 
     size_t length() const { return m_word.length(); }
     void pop()
@@ -38,7 +38,7 @@ private:
     Word m_word;
 
     // ranges for each letter of word
-    chobo::static_vector<Range, WordTraits::Max_Length> m_ranges;
+    itlib::static_vector<Range, WordTraits::Max_Length> m_ranges;
 };
 
 }

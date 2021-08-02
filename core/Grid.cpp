@@ -15,7 +15,7 @@
 namespace core
 {
 
-Grid::Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> letters)
+Grid::Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> letters)
     : m_width(w)
     , m_height(h)
 {
@@ -45,7 +45,7 @@ void Grid::acquireElementOwnership()
 }
 
 template <typename Visitor>
-void Grid::visitAll(Visitor& v, chobo::memory_view<GridCoord> coords) const
+void Grid::visitAll(Visitor& v, itlib::memory_view<GridCoord> coords) const
 {
     GridCoord c;
     for (c.y = 0; c.y < m_height; ++c.y)
@@ -70,7 +70,7 @@ void Grid::visitAll(Visitor& v, chobo::memory_view<GridCoord> coords) const
 }
 
 template <typename Visitor>
-bool Grid::visitAllR(Visitor& v, chobo::memory_view<GridCoord>& coords, size_t length) const
+bool Grid::visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t length) const
 {
     const auto& base = coords[length - 1];
 
@@ -119,7 +119,7 @@ namespace
 {
 struct TestPatterVisitor
 {
-    chobo::static_vector<chobo::const_memory_view<letter>, WordTraits::Max_Length + 1> top;
+    itlib::static_vector<itlib::const_memory_view<letter>, WordTraits::Max_Length + 1> top;
     bool push(const WordElement& elem, const GridCoord&)
     {
         auto& pattern = top.back();
@@ -128,7 +128,7 @@ struct TestPatterVisitor
         if (pattern.front() == '-' && top.size() > 1)
         {
             if (pattern.size() == 1) return false; // ends with hyphen?
-            pattern = chobo::make_memory_view(pattern.data() + 1, pattern.size() - 1);
+            pattern = itlib::make_memory_view(pattern.data() + 1, pattern.size() - 1);
         }
 
         if (!elem.matches(pattern)) return false;
@@ -149,7 +149,7 @@ struct TestPatterVisitor
         }
         else
         {
-            top.emplace_back(chobo::make_memory_view(pattern.data() + matchLength, pattern.size() - matchLength));
+            top.emplace_back(itlib::make_memory_view(pattern.data() + matchLength, pattern.size() - matchLength));
         }
 
         return true;
@@ -168,7 +168,7 @@ struct TestPatterVisitor
 };
 }
 
-size_t Grid::testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord> coords) const
+size_t Grid::testPattern(itlib::const_memory_view<letter> pattern, itlib::memory_view<GridCoord> coords) const
 {
     assert(coords.size() >= pattern.size());
     TestPatterVisitor v = { {pattern} };
@@ -188,7 +188,7 @@ struct FindAllVisitor
     const Dictionary& d;
     ScoredDictionary& out;
     DictionarySearch ds;
-    chobo::static_vector<GridCoord, WordTraits::Max_Length> coords;
+    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords;
 
     bool push(const WordElement& elem, const GridCoord& c)
     {
@@ -206,7 +206,7 @@ struct FindAllVisitor
 
         if (result == Dictionary::SearchResult::Exact)
         {
-            out.addWord(ds.word(), chobo::make_memory_view(coords));
+            out.addWord(ds.word(), itlib::make_memory_view(coords));
         }
 
         if (result == Dictionary::SearchResult::None || elem.backOnly())
@@ -239,8 +239,8 @@ void Grid::findAllWords(const Dictionary& d, ScoredDictionary& out) const
 {
     out.clear();
     FindAllVisitor v(d, out);
-    chobo::static_vector<GridCoord, WordTraits::Max_Length> coords(WordTraits::Max_Length);
-    visitAll(v, chobo::make_memory_view(coords));
+    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords(WordTraits::Max_Length);
+    visitAll(v, itlib::make_memory_view(coords));
 }
 
 }

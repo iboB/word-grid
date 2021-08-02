@@ -11,7 +11,7 @@
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
 
-#include <chobo/memory_view.hpp>
+#include <itlib/memory_view.hpp>
 #include <vector>
 #include <cstdlib>
 
@@ -23,7 +23,7 @@ class ScoredDictionary;
 class Grid
 {
 public:
-    Grid(size_t w, size_t h, chobo::const_memory_view<WordElement> elements = {});
+    Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> elements = {});
     ~Grid();
 
     Grid(const Grid&) = delete;
@@ -40,7 +40,7 @@ public:
     // tests a pattern (word)
     // return length in elements if the word is found on the grid or 0 if it's not
     // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
-    size_t testPattern(chobo::const_memory_view<letter> pattern, chobo::memory_view<GridCoord> coords) const;
+    size_t testPattern(itlib::const_memory_view<letter> pattern, itlib::memory_view<GridCoord> coords) const;
 
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {
@@ -50,18 +50,18 @@ public:
     const WordElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
     const WordElement& at(size_t index) const { return m_elements[index]; }
 
-    const chobo::const_memory_view<WordElement>& elements() const { return m_elements; }
+    const itlib::const_memory_view<WordElement>& elements() const { return m_elements; }
 
     void findAllWords(const Dictionary& d, ScoredDictionary& out) const;
 
 private:
     template <typename Visitor>
-    void visitAll(Visitor& v, chobo::memory_view<GridCoord> coords) const;
+    void visitAll(Visitor& v, itlib::memory_view<GridCoord> coords) const;
     template <typename Visitor>
-    bool visitAllR(Visitor& v, chobo::memory_view<GridCoord>& coords, size_t length) const;
+    bool visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t length) const;
 
     size_t m_width = 0, m_height = 0;
-    chobo::const_memory_view<WordElement> m_elements;
+    itlib::const_memory_view<WordElement> m_elements;
     std::vector<WordElement> m_ownedElements; // the grid can optionally own the elements, or just serve as a view
 };
 

@@ -27,7 +27,4 @@ add_library(server STATIC
 
 target_include_directories(server INTERFACE ..)
 
-target_link_libraries(server
-    PUBLIC core
-    PRIVATE ${CMAKE_THREAD_LIBS_INIT}
-)
+target_link_libraries(server PUBLIC core)

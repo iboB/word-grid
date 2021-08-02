@@ -10,8 +10,8 @@
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
 
-#include <chobo/memory_view.hpp>
-#include <chobo/flat_map.hpp>
+#include <itlib/memory_view.hpp>
+#include <itlib/flat_map.hpp>
 
 namespace core
 {
@@ -39,8 +39,8 @@ public:
     Type type() const { return m_type; }
 
     // both functions assume
-    score_t score(const Grid& grid, chobo::const_memory_view<GridCoord> coords) const;
-    score_t score(chobo::const_memory_view<WordElement> word) const;
+    score_t score(const Grid& grid, itlib::const_memory_view<GridCoord> coords) const;
+    score_t score(itlib::const_memory_view<WordElement> word) const;
 
 private:
     Scoring();

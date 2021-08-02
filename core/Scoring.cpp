@@ -40,7 +40,7 @@ namespace
 {
 struct GridCoordView
 {
-    GridCoordView(const Grid& g, chobo::const_memory_view<GridCoord>& c)
+    GridCoordView(const Grid& g, itlib::const_memory_view<GridCoord>& c)
         : grid(g), coords(c)
     {}
 
@@ -55,12 +55,12 @@ struct GridCoordView
     }
 
     const Grid& grid;
-    chobo::const_memory_view<GridCoord> coords;
+    itlib::const_memory_view<GridCoord> coords;
 };
 
 struct WordElementView
 {
-    WordElementView(const chobo::const_memory_view<WordElement>& w)
+    WordElementView(const itlib::const_memory_view<WordElement>& w)
         : word(w)
     {}
 
@@ -74,16 +74,16 @@ struct WordElementView
         return word.at(i);
     }
 
-    chobo::const_memory_view<WordElement> word;
+    itlib::const_memory_view<WordElement> word;
 };
 }
 
-score_t Scoring::score(const Grid& grid, chobo::const_memory_view<GridCoord> coords) const
+score_t Scoring::score(const Grid& grid, itlib::const_memory_view<GridCoord> coords) const
 {
     return scoreDispatch(GridCoordView(grid, coords));
 }
 
-score_t Scoring::score(chobo::const_memory_view<WordElement> word) const
+score_t Scoring::score(itlib::const_memory_view<WordElement> word) const
 {
     return scoreDispatch(WordElementView(word));
 }

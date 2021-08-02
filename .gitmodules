@@ -1,3 +1,0 @@
-[submodule "third_party/chobo-shl"]
-	path = third_party/chobo-shl
-	url = https://github.com/Chobolabs/chobo-shl.git

@@ -11,14 +11,6 @@ set(src
     PlayerSet.hpp
     BoardProducer.hpp
 	BoardProducerPtr.hpp
-
-    exec/ExecutionContext.hpp
-    exec/ExecutorBase.cpp
-    exec/ExecutorBase.hpp
-    exec/TaskExecutor.cpp
-    exec/TaskExecutor.hpp
-    exec/ThreadExecution.cpp
-    exec/ThreadExecution.hpp
 )
 
 add_library(server STATIC

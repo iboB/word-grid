@@ -14,11 +14,3 @@ add_core_test(LetterSequence t-LetterSequence.cpp)
 add_core_test(Grid t-Grid.cpp)
 add_core_test(Dictionary t-Dictionary.cpp)
 add_core_test(Scoring t-Scoring.cpp)
-
-macro(add_server_test test)
-    add_lib_test(${test} server ${ARGN})
-endmacro()
-
-add_server_test(TaskExecutor t-TaskExecutor.cpp)
-add_server_test(TaskScheduling t-TaskScheduling.cpp)
-

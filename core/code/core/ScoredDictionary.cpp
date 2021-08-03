@@ -29,7 +29,7 @@ void ScoredDictionary::addWord(const Word& word, itlib::const_memory_view<GridCo
     m_words.back().word = word;
     for (auto& c : coords)
     {
-        m_words.back().coords.emplace_back(c);
+        m_words.back().path.emplace_back(c);
     }
 }
 

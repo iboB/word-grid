@@ -44,7 +44,7 @@ public:
     size_t testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const;
 
     // test a set of coords
-    bool testPath(itlib::const_memory_view<GridCoord> coords, Word& word) const;
+    // bool testPath(itlib::const_memory_view<GridCoord> coords, Word& word) const;
 
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {

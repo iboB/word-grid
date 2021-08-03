@@ -9,14 +9,14 @@
 
 #include "Types.hpp"
 #include "Word.hpp"
-#include "GridCoord.hpp"
+#include "GridPath.hpp"
 
 namespace core
 {
 struct ScoredWord
 {
     Word word;
-    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords;
+    GridPath path;
     score_t score;
 };
 }

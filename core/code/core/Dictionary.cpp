@@ -44,7 +44,7 @@ Dictionary Dictionary::fromUtf8Buffer(itlib::const_memory_view<uint8_t> buffer)
 
     while (begin < end)
     {
-        letter l;
+        letter_t l;
         auto len = UnicodeCharFromUtf8(&l, begin, end);
 
         if (!len)
@@ -104,7 +104,7 @@ bool Dictionary::hasWord(const Word& w) const
     return std::binary_search(m_words.begin(), m_words.end(), w);
 }
 
-Dictionary::SearchResult Dictionary::search(DictionarySearch& inoutSearch, letter l) const
+Dictionary::SearchResult Dictionary::search(DictionarySearch& inoutSearch, letter_t l) const
 {
     auto& word = inoutSearch.m_word;
     word.emplace_back(l + 1);

@@ -23,7 +23,7 @@ inline core::Grid Grid_alphabetical(size_t w = 4, size_t h = 4)
 {
     const auto size = w * h;
     std::vector<core::WordElement> elems(size);
-    core::letter letter = 'a';
+    core::letter_t letter = 'a';
     for (auto& e : elems)
     {
         e.push_back(letter++);

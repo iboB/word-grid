@@ -40,7 +40,7 @@ public:
     // tests a pattern (word)
     // return length in elements if the word is found on the grid or 0 if it's not
     // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
-    size_t testPattern(itlib::const_memory_view<letter> pattern, itlib::memory_view<GridCoord> coords) const;
+    size_t testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const;
 
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {

@@ -48,7 +48,7 @@ public:
     };
     // searches for a letter appended to the word in the search
     // changes the inout argument with the bounds of the new letter
-    SearchResult search(DictionarySearch& inoutSearch, letter l) const;
+    SearchResult search(DictionarySearch& inoutSearch, letter_t l) const;
 
 private:
     Dictionary();

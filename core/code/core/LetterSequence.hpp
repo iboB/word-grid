@@ -15,7 +15,7 @@ namespace core
 {
 
 template <size_t Capacity, typename Child>
-class LetterSequence : public itlib::static_vector<letter, Capacity>
+class LetterSequence : public itlib::static_vector<letter_t, Capacity>
 {
 public:
     LetterSequence() = default;
@@ -38,12 +38,12 @@ public:
 
     size_t length() const { return this->size(); }
 
-    itlib::memory_view<letter> view()
+    itlib::memory_view<letter_t> view()
     {
         return itlib::make_memory_view(*this);
     }
 
-    itlib::const_memory_view<letter> view() const
+    itlib::const_memory_view<letter_t> view() const
     {
         return itlib::make_memory_view(*this);
     }

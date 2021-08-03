@@ -119,7 +119,7 @@ namespace
 {
 struct TestPatterVisitor
 {
-    itlib::static_vector<itlib::const_memory_view<letter>, WordTraits::Max_Length + 1> top;
+    itlib::static_vector<itlib::const_memory_view<letter_t>, WordTraits::Max_Length + 1> top;
     bool push(const WordElement& elem, const GridCoord&)
     {
         auto& pattern = top.back();
@@ -168,7 +168,7 @@ struct TestPatterVisitor
 };
 }
 
-size_t Grid::testPattern(itlib::const_memory_view<letter> pattern, itlib::memory_view<GridCoord> coords) const
+size_t Grid::testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const
 {
     assert(coords.size() >= pattern.size());
     TestPatterVisitor v = { {pattern} };

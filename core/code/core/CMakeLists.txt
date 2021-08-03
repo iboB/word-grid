@@ -1,4 +1,5 @@
-set(src
+
+icm_add_lib(core CORE
     lib/UnicodeCharFromUtf8.hpp
     lib/PlatformUtil.cpp
     lib/PlatformUtil.hpp
@@ -23,15 +24,10 @@ set(src
     ScoredWord.hpp
 )
 
-add_library(core STATIC
-    ${src}
-)
-
 target_include_directories(core INTERFACE ..)
 
 target_link_libraries(core PUBLIC
     itlib
+    splat
     ${CMAKE_DL_LIBS}
 )
-
-

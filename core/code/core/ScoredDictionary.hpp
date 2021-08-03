@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "ScoredWord.hpp"
 
@@ -17,7 +18,7 @@ class Scoring;
 class Grid;
 
 // dictionary which also includes scores for each word
-class ScoredDictionary
+class CORE_API ScoredDictionary
 {
 public:
     ScoredDictionary();

@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "Types.hpp"
 #include "WordElement.hpp"
@@ -20,7 +21,7 @@ namespace core
 class Dictionary;
 class ScoredDictionary;
 
-class Grid
+class CORE_API Grid
 {
 public:
     Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> elements = {});

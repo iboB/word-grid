@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "Types.hpp"
 
@@ -19,7 +20,7 @@ class DictionarySearch;
 
 class Word;
 
-class Dictionary
+class CORE_API Dictionary
 {
 public:
     ~Dictionary();

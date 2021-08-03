@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "LetterSequence.hpp"
 #include "WordElementTraits.hpp"
@@ -18,7 +19,7 @@ namespace core
 // letters with no special characters match themeselves
 // "-xxx" - must end with "xxx"
 // "xxx-" - must begin with "xxx"
-class WordElement : public LetterSequence<WordElementTraits::Max_Length, WordElement>
+class CORE_API WordElement : public LetterSequence<WordElementTraits::Max_Length, WordElement>
 {
 public:
     // checks whether the element matches the pattern

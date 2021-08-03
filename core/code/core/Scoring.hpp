@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
@@ -18,7 +19,7 @@ namespace core
 
 class Grid;
 
-class Scoring
+class CORE_API Scoring
 {
 public:
     ~Scoring();

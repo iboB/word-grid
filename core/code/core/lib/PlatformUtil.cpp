@@ -86,7 +86,7 @@ std::string getModulePath()
     return modulePath;
 }
 
-std::string getAssetPath(std::string baseDir, const std::string& assetDir)
+std::string getAssetPath(std::string baseDir, std::string_view assetDir)
 {
     while (true)
     {

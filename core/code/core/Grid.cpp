@@ -12,6 +12,8 @@
 #include "DictionarySearch.hpp"
 #include "ScoredDictionary.hpp"
 
+#include <array>
+
 namespace core
 {
 
@@ -239,7 +241,7 @@ void Grid::findAllWords(const Dictionary& d, ScoredDictionary& out) const
 {
     out.clear();
     FindAllVisitor v(d, out);
-    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords(WordTraits::Max_Length);
+    std::array<GridCoord, WordTraits::Max_Length> coords;
     visitAll(v, itlib::make_memory_view(coords));
 }
 

@@ -43,6 +43,9 @@ public:
     // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
     size_t testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const;
 
+    // test a set of coords
+    bool testPath(itlib::const_memory_view<GridCoord> coords, Word& word) const;
+
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {
         auto dm = std::div(int(i), int(m_width));

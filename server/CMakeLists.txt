@@ -1,1 +1,2 @@
-add_subdirectory(server)
+# add_subdirectory(code/server)
+# add_subdirectory(test)

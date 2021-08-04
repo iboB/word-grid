@@ -40,7 +40,7 @@ namespace
 {
 struct GridCoordView
 {
-    GridCoordView(const Grid& g, itlib::const_memory_view<GridCoord>& c)
+    GridCoordView(const Grid& g, const GridPath& c)
         : grid(g), coords(c)
     {}
 
@@ -55,7 +55,7 @@ struct GridCoordView
     }
 
     const Grid& grid;
-    itlib::const_memory_view<GridCoord> coords;
+    const GridPath& coords;
 };
 
 struct WordElementView
@@ -78,7 +78,7 @@ struct WordElementView
 };
 }
 
-score_t Scoring::score(const Grid& grid, itlib::const_memory_view<GridCoord> coords) const
+score_t Scoring::score(const Grid& grid, const GridPath& coords) const
 {
     return scoreDispatch(GridCoordView(grid, coords));
 }
@@ -106,7 +106,7 @@ score_t Scoring::scoreLength(const WordView& view) const
 {
     // find actual letter legnth
     size_t length = 0;
-    for (size_t i = 0; i < view.size(); ++i)
+    for (size_t i=0; i<view.size(); ++i)
     {
         length += view.at(i).matchLength();
     }

@@ -23,21 +23,18 @@ void ScoredDictionary::clear()
     m_words.clear();
 }
 
-void ScoredDictionary::addWord(const Word& word, itlib::const_memory_view<GridCoord> coords)
+void ScoredDictionary::addWord(const Word& word, const GridPath& path)
 {
-    m_words.emplace_back();
-    m_words.back().word = word;
-    for (auto& c : coords)
-    {
-        m_words.back().path.emplace_back(c);
-    }
+    auto& newWord = m_words.emplace_back();
+    newWord.word = word;
+    newWord.path = path;
 }
 
 void ScoredDictionary::scoreWords(const Grid& g, const Scoring& s)
 {
     for (auto& w : m_words)
     {
-        w.score = s.score(g, itlib::make_memory_view(w.coords));
+        w.score = s.score(g, w.path);
     }
 }
 

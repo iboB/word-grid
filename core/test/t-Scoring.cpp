@@ -32,14 +32,11 @@ TEST_CASE("Length")
 
     auto grid = test::Grid_alphabetical(4, 4);
 
-    vector<GridCoord> coordsData(50);
-    auto coords = make_memory_view(coordsData);
     auto wordData = Word::fromAscii("dgjnk");
     auto word = make_memory_view(wordData);
-    auto len = grid.testPattern(word, coords);
+    auto path = grid.testPattern(word);
 
-    auto wcoords = make_memory_view(coords.data(), len);
-    CHECK(scoring.score(grid, wcoords) == 12);
+    CHECK(scoring.score(grid, path) == 12);
 
     vector<WordElement> elemWordData = {
         WordElement::fromAscii("d"),
@@ -55,14 +52,13 @@ TEST_CASE("Length")
 
     wordData = Word::fromAscii("begbzyjkend");
     word = make_memory_view(wordData);
-    len = grid.testPattern(word, coords);
-    wcoords = make_memory_view(coords.data(), len);
-    CHECK(scoring.score(grid, wcoords) == 27);
+    path = grid.testPattern(word);
+    CHECK(scoring.score(grid, path) == 27);
 
     elemWordData.clear();
-    for (size_t i = 0; i < len; ++i)
+    for (auto c : path)
     {
-        elemWordData.push_back(grid.at(coordsData[i]));
+        elemWordData.push_back(grid.at(c));
     }
     elemWord = make_memory_view(elemWordData);
     CHECK(scoring.score(elemWord) == 27);

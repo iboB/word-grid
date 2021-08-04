@@ -9,7 +9,7 @@
 #include "API.h"
 
 #include "WordElement.hpp"
-#include "GridCoord.hpp"
+#include "GridPath.hpp"
 
 #include <itlib/memory_view.hpp>
 #include <itlib/flat_map.hpp>
@@ -39,8 +39,7 @@ public:
     };
     Type type() const { return m_type; }
 
-    // both functions assume
-    score_t score(const Grid& grid, itlib::const_memory_view<GridCoord> coords) const;
+    score_t score(const Grid& grid, const GridPath& coords) const;
     score_t score(itlib::const_memory_view<WordElement> word) const;
 
 private:

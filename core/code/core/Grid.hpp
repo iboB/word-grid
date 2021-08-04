@@ -11,6 +11,7 @@
 #include "Types.hpp"
 #include "WordElement.hpp"
 #include "GridCoord.hpp"
+#include "GridPath.hpp"
 
 #include <itlib/memory_view.hpp>
 #include <vector>
@@ -39,9 +40,8 @@ public:
     void acquireElementOwnership();
 
     // tests a pattern (word)
-    // return length in elements if the word is found on the grid or 0 if it's not
-    // supply an output argument with coordinates which will be filled with the pattern coordinates in the grid
-    size_t testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const;
+    // return coordinates of elements found on the grid or empty path if it's not
+    GridPath testPattern(itlib::const_memory_view<letter_t> pattern) const;
 
     // test a set of coords
     // bool testPath(itlib::const_memory_view<GridCoord> coords, Word& word) const;
@@ -60,9 +60,9 @@ public:
 
 private:
     template <typename Visitor>
-    void visitAll(Visitor& v, itlib::memory_view<GridCoord> coords) const;
+    void visitAll(Visitor& v, GridPath& path) const;
     template <typename Visitor>
-    bool visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t length) const;
+    bool visitAllR(Visitor& v, GridPath& path) const;
 
     size_t m_width = 0, m_height = 0;
     itlib::const_memory_view<WordElement> m_elements;

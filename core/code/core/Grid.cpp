@@ -47,8 +47,9 @@ void Grid::acquireElementOwnership()
 }
 
 template <typename Visitor>
-void Grid::visitAll(Visitor& v, itlib::memory_view<GridCoord> coords) const
+void Grid::visitAll(Visitor& v, GridPath& path) const
 {
+    assert(path.empty());
     GridCoord c;
     for (c.y = 0; c.y < m_height; ++c.y)
     {
@@ -56,25 +57,25 @@ void Grid::visitAll(Visitor& v, itlib::memory_view<GridCoord> coords) const
         {
             auto& elem = this->at(c);
             if (!v.push(elem, c)) continue;
-
-            coords.front() = c;
+            path.push_back(c);
 
             if (v.done()) return;
 
-            if (this->visitAllR(v, coords, 1))
+            if (this->visitAllR(v, path))
             {
                 return;
             }
 
+            path.pop_back();
             v.pop(elem);
         }
     }
 }
 
 template <typename Visitor>
-bool Grid::visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t length) const
+bool Grid::visitAllR(Visitor& v, GridPath& path) const
 {
-    const auto& base = coords[length - 1];
+    const auto& base = path.back();
 
     for (int y = -1; y <= 1; ++y)
     {
@@ -87,11 +88,11 @@ bool Grid::visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t l
             c.x = base.x + x;
             if (c.x >= m_width) continue;
 
-            bool alreadyUsed = [&c, &coords, length]()
+            bool alreadyUsed = [&c, &path]()
             {
-                for (size_t i = 0; i < length; ++i)
+                for (auto& u : path)
                 {
-                    if (coords[i] == c) return true;
+                    if (u == c) return true;
                 }
                 return false;
             }();
@@ -100,16 +101,16 @@ bool Grid::visitAllR(Visitor& v, itlib::memory_view<GridCoord>& coords, size_t l
 
             auto& elem = this->at(c);
             if (!v.push(elem, c)) continue;
-
-            coords[length] = c;
+            path.push_back(c);
 
             if (v.done()) return true;
 
-            if (visitAllR(v, coords, length + 1))
+            if (visitAllR(v, path))
             {
                 return true;
             }
 
+            path.pop_back();
             v.pop(elem);
         }
     }
@@ -146,7 +147,7 @@ struct TestPatterVisitor
             }
             else
             {
-                top.back() = {};
+                return false;
             }
         }
         else
@@ -170,12 +171,12 @@ struct TestPatterVisitor
 };
 }
 
-size_t Grid::testPattern(itlib::const_memory_view<letter_t> pattern, itlib::memory_view<GridCoord> coords) const
+GridPath Grid::testPattern(itlib::const_memory_view<letter_t> pattern) const
 {
-    assert(coords.size() >= pattern.size());
     TestPatterVisitor v = { {pattern} };
-    visitAll(v, coords);
-    return v.top.size() - 1;
+    GridPath ret;
+    visitAll(v, ret);
+    return ret;
 }
 
 namespace
@@ -190,13 +191,13 @@ struct FindAllVisitor
     const Dictionary& d;
     ScoredDictionary& out;
     DictionarySearch ds;
-    itlib::static_vector<GridCoord, WordTraits::Max_Length> coords;
+    GridPath path;
 
     bool push(const WordElement& elem, const GridCoord& c)
     {
-        if (elem.frontOnly() && !coords.empty())  return false;
+        if (elem.frontOnly() && !path.empty())  return false;
 
-        coords.push_back(c);
+        path.push_back(c);
 
         auto begin = elem.lbegin();
         auto matchLength = elem.matchLength();
@@ -208,7 +209,7 @@ struct FindAllVisitor
 
         if (result == Dictionary::SearchResult::Exact)
         {
-            out.addWord(ds.word(), itlib::make_memory_view(coords));
+            out.addWord(ds.word(), path);
         }
 
         if (result == Dictionary::SearchResult::None || elem.backOnly())
@@ -227,8 +228,8 @@ struct FindAllVisitor
 
     void pop(const WordElement& elem)
     {
-        assert(coords.size() != 0);
-        coords.pop_back();
+        assert(!path.empty());
+        path.pop_back();
 
         auto matchLength = elem.matchLength();
         assert(ds.length() >= matchLength);
@@ -241,8 +242,8 @@ void Grid::findAllWords(const Dictionary& d, ScoredDictionary& out) const
 {
     out.clear();
     FindAllVisitor v(d, out);
-    std::array<GridCoord, WordTraits::Max_Length> coords;
-    visitAll(v, itlib::make_memory_view(coords));
+    GridPath path;
+    visitAll(v, path);
 }
 
 }

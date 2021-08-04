@@ -32,7 +32,7 @@ public:
 
     // building ops
     void clear();
-    void addWord(const Word& word, itlib::const_memory_view<GridCoord> coords);
+    void addWord(const Word& word, const GridPath& coords);
     void scoreWords(const Grid& g, const Scoring& s);
 
     // query ops

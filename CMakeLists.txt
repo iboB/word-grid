@@ -17,7 +17,7 @@ endmacro()
 ######################
 # warnings
 if(MSVC)
-    set(WG_WARNING_FLAGS "-D_CRT_SECURE_NO_WARNINGS=1 /Zc:__cplusplus")
+    set(WG_WARNING_FLAGS "-D_CRT_SECURE_NO_WARNINGS=1 /Zc:__cplusplus /wd4251 /wd4275 /w34100")
 else()
     set(WG_WARNING_FLAGS "-Wall -Wextra")
 endif()

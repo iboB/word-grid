@@ -43,9 +43,6 @@ public:
     // return coordinates of elements found on the grid or empty path if it's not
     GridPath testPattern(itlib::const_memory_view<letter_t> pattern) const;
 
-    // test a set of coords
-    // bool testPath(itlib::const_memory_view<GridCoord> coords, Word& word) const;
-
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {
         auto dm = std::div(int(i), int(m_width));

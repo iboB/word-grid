@@ -1,5 +1,5 @@
 CPMAddPackage(
     NAME itlib
     GITHUB_REPOSITORY iboB/itlib
-    VERSION 1.2.3
+    VERSION 1.2.4
 )

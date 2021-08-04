@@ -31,7 +31,6 @@ inline core::Grid Grid_alphabetical(size_t w = 4, size_t h = 4)
     }
 
     core::Grid g(w, h, make_memory_view(elems));
-    g.acquireElementOwnership();
     return g;
 }
 
@@ -53,7 +52,6 @@ inline core::Grid Grid_fancy()
     elems[15] = WordElement::fromAscii("-end");
 
     core::Grid g(4, 4, make_memory_view(elems));
-    g.acquireElementOwnership();
     return g;
 }
 }

@@ -37,8 +37,6 @@ public:
     size_t w() const { return m_width; }
     size_t h() const { return m_height; }
 
-    void acquireElementOwnership();
-
     // tests a pattern (word)
     // return coordinates of elements found on the grid or empty path if it's not
     GridPath testPattern(itlib::const_memory_view<letter_t> pattern) const;
@@ -51,7 +49,7 @@ public:
     const WordElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
     const WordElement& at(size_t index) const { return m_elements[index]; }
 
-    const itlib::const_memory_view<WordElement>& elements() const { return m_elements; }
+    const std::vector<WordElement>& elements() const { return m_elements; }
 
     void findAllWords(const Dictionary& d, ScoredDictionary& out) const;
 
@@ -62,8 +60,7 @@ private:
     bool visitAllR(Visitor& v, GridPath& path) const;
 
     size_t m_width = 0, m_height = 0;
-    itlib::const_memory_view<WordElement> m_elements;
-    std::vector<WordElement> m_ownedElements; // the grid can optionally own the elements, or just serve as a view
+    std::vector<WordElement> m_elements;
 };
 
 }

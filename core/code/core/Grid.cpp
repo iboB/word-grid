@@ -17,19 +17,18 @@
 namespace core
 {
 
-Grid::Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> letters)
+Grid::Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> elements)
     : m_width(w)
     , m_height(h)
 {
-    if (letters.empty())
+    if (elements.empty())
     {
-        m_ownedElements.resize(w * h);
-        acquireElementOwnership();
+        m_elements.resize(w * h);
     }
     else
     {
-        assert(letters.size() >= w * h);
-        m_elements = letters;
+        assert(elements.size() >= w * h);
+        m_elements.assign(elements.begin(), elements.begin() + w*h);
     }
 }
 
@@ -37,14 +36,6 @@ Grid::~Grid() = default;
 
 Grid::Grid(Grid&&) noexcept = default;
 Grid& Grid::operator=(Grid&&) noexcept = default;
-
-void Grid::acquireElementOwnership()
-{
-    assert(m_ownedElements.empty() || m_elements.data() != m_ownedElements.data());
-    m_ownedElements.resize(m_width * m_height);
-    m_ownedElements.assign(m_elements.begin(), m_elements.begin() + m_ownedElements.size());
-    m_elements.reset(m_ownedElements.data(), m_ownedElements.size());
-}
 
 template <typename Visitor>
 void Grid::visitAll(Visitor& v, GridPath& path) const

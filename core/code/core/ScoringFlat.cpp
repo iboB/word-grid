@@ -5,19 +5,18 @@
 // See accompanying file LICENSE.txt or copy at
 // https://opensource.org/licenses/MIT
 //
-#pragma once
-
-#include "Types.hpp"
-#include "Word.hpp"
-#include "GridPath.hpp"
+#include "ScoringFlat.hpp"
 
 namespace core
 {
-struct ScoredWord
+
+ScoringFlat::ScoringFlat(score_t flatScore)
+    : m_flatScore(flatScore)
+{}
+
+score_t ScoringFlat::score(const ScoredWord&, const Grid&) const
 {
-    Word word;
-    GridPath path;
-    score_t score;
-    bool special = 0; // word with a special bonus
-};
+    return m_flatScore;
+}
+
 }

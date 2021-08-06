@@ -17,8 +17,6 @@ icm_add_lib(core CORE
     Grid.cpp
     Grid.hpp
     GridCoord.hpp
-    Scoring.hpp
-    Scoring.cpp
     ScoredDictionary.cpp
     ScoredDictionary.hpp
     ScoredWord.hpp
@@ -26,6 +24,13 @@ icm_add_lib(core CORE
     Board.hpp
     BoardUtils.cpp
     BoardUtils.hpp
+
+    Scoring.hpp
+    Scoring.cpp
+    ScoringFlat.hpp
+    ScoringFlat.cpp
+    ScoringLength.hpp
+    ScoringLength.cpp
 )
 
 target_include_directories(core INTERFACE ..)

@@ -8,6 +8,7 @@
 #pragma once
 #include "API.h"
 
+#include "Scoring.hpp"
 #include "Types.hpp"
 
 namespace core
@@ -16,13 +17,13 @@ namespace core
 class Grid;
 struct ScoredWord;
 
-class CORE_API Scoring
+class CORE_API ScoringFlat : public Scoring
 {
-protected:
-    Scoring();
-    ~Scoring();
 public:
-    virtual score_t score(const ScoredWord& word, const Grid& grid) const = 0;
+    ScoringFlat(score_t flatScore = 13);
+    virtual score_t score(const ScoredWord& word, const Grid& grid) const override;
+private:
+    score_t m_flatScore;
 };
 
 }

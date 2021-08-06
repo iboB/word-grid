@@ -34,7 +34,7 @@ void ScoredDictionary::scoreWords(const Grid& g, const Scoring& s)
 {
     for (auto& w : m_words)
     {
-        w.score = s.score(g, w.path);
+        s.score(w, g);
     }
 }
 

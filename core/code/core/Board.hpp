@@ -6,6 +6,7 @@
 // https://opensource.org/licenses/MIT
 //
 #pragma once
+#include "API.h"
 
 #include "Grid.hpp"
 #include "ScoredDictionary.hpp"
@@ -14,10 +15,10 @@
 
 namespace core
 {
-class Board
+class CORE_API Board
 {
 public:
-    Board(Grid&& grid, ScoredDictionary&& dic);
+    Board(Grid&& grid);
     ~Board();
 
     Board(const Board&) = delete;
@@ -30,6 +31,8 @@ public:
     const ScoredDictionary& dictionary() const { return m_dictionary; }
 
 private:
+    friend class BoardBuilder;
+
     Grid m_grid;
 
     // words which are found in the grid of this board

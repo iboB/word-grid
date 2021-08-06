@@ -22,6 +22,8 @@ icm_add_lib(core CORE
     ScoredDictionary.cpp
     ScoredDictionary.hpp
     ScoredWord.hpp
+    Board.cpp
+    Board.hpp
 )
 
 target_include_directories(core INTERFACE ..)

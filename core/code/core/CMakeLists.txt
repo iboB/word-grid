@@ -24,8 +24,8 @@ icm_add_lib(core CORE
     ScoredWord.hpp
     Board.cpp
     Board.hpp
-    BoardBuilder.cpp
-    BoardBuilder.hpp
+    BoardUtils.cpp
+    BoardUtils.hpp
 )
 
 target_include_directories(core INTERFACE ..)

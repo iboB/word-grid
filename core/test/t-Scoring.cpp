@@ -10,8 +10,10 @@
 #include "g-Grids.hpp"
 
 #include <core/Scoring.hpp>
+#include <core/BoardUtils.hpp>
 
 using namespace core;
+using namespace core::impl;
 using namespace std;
 using namespace itlib;
 
@@ -32,9 +34,7 @@ TEST_CASE("Length")
 
     auto grid = test::Grid_alphabetical(4, 4);
 
-    auto wordData = Word::fromAscii("dgjnk");
-    auto word = make_memory_view(wordData);
-    auto path = grid.testPattern(word);
+    auto path = testGridPattern(grid, Word::fromAscii("dgjnk"));
 
     CHECK(scoring.score(grid, path) == 12);
 
@@ -50,9 +50,7 @@ TEST_CASE("Length")
 
     grid = test::Grid_fancy();
 
-    wordData = Word::fromAscii("begbzyjkend");
-    word = make_memory_view(wordData);
-    path = grid.testPattern(word);
+    path = testGridPattern(grid, Word::fromAscii("begbzyjkend"));
     CHECK(scoring.score(grid, path) == 27);
 
     elemWordData.clear();

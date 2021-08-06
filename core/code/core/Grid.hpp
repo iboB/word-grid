@@ -37,10 +37,6 @@ public:
     size_t w() const { return m_width; }
     size_t h() const { return m_height; }
 
-    // tests a pattern (word)
-    // return coordinates of elements found on the grid or empty path if it's not
-    GridPath testPattern(itlib::const_memory_view<letter_t> pattern) const;
-
     size_t indexOf(const GridCoord& c) const { return m_width * c.y + c.x; }
     GridCoord coordOf(size_t i) const {
         auto dm = std::div(int(i), int(m_width));
@@ -51,14 +47,7 @@ public:
 
     const std::vector<WordElement>& elements() const { return m_elements; }
 
-    void findAllWords(const Dictionary& d, ScoredDictionary& out) const;
-
 private:
-    template <typename Visitor>
-    void visitAll(Visitor& v, GridPath& path) const;
-    template <typename Visitor>
-    bool visitAllR(Visitor& v, GridPath& path) const;
-
     size_t m_width = 0, m_height = 0;
     std::vector<WordElement> m_elements;
 };

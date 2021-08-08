@@ -8,6 +8,7 @@
 #include <doctest/doctest.h>
 
 #include <core/Word.hpp>
+#include <core/WordElement.hpp>
 
 using namespace core;
 
@@ -42,6 +43,18 @@ TEST_CASE("cmp")
     CHECK(w4 < w2);
     CHECK(w3 < w4);
     CHECK(w1 < w4);
+}
+
+TEST_CASE("elems basic")
+{
+    Word w = Word::fromAscii("absolutely");
+
+    auto e = WordElement::fromAscii("a");
+    CHECK(e.length() == 1);
+    CHECK(!e.frontOnly());
+    CHECK(!e.backOnly());
+    CHECK(e.matchLength() == 1);
+    CHECK(e.matches(w.view()));
 }
 
 TEST_SUITE_END();

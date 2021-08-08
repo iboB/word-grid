@@ -10,6 +10,7 @@
 #include <core/BoardUtils.hpp>
 #include <core/Grid.hpp>
 #include <core/Word.hpp>
+#include <core/Dictionary.hpp>
 
 #include "g-Grids.hpp"
 
@@ -86,6 +87,30 @@ TEST_CASE("matching")
 
     path = testGridPattern(grid, Word::fromAscii("begbzy-jkend"));
     CHECK(path.size() == 6);
+}
+
+TEST_CASE("find all")
+{
+    // abcd
+    // efgh
+    // ijkl
+    // mnop
+    auto grid = test::Grid_alphabetical();
+
+    const uint8_t d1[] = R"d1c(
+zog
+afe
+pokl
+abop
+jiebcd
+klij
+efkl
+jkkl
+iijk
+)d1c";
+    auto dic = Dictionary::fromUtf8Buffer(itlib::make_memory_view(d1));
+
+
 }
 
 TEST_SUITE_END();

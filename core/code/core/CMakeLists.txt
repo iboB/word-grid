@@ -35,8 +35,10 @@ icm_add_lib(core CORE
 
 target_include_directories(core INTERFACE ..)
 
-target_link_libraries(core PUBLIC
-    itlib
-    splat
-    ${CMAKE_DL_LIBS}
+target_link_libraries(core
+    PUBLIC
+        itlib
+        splat
+    PRIVATE
+        ${CMAKE_DL_LIBS}
 )

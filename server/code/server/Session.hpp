@@ -14,7 +14,7 @@ class SERVER_API Session : public std::enable_shared_from_this<Session>
 {
     class State;
 public:
-    void transitionToState(State* state)
+    void transitionToState(State* state);
 
 protected:
     Session();

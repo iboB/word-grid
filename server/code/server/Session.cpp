@@ -3,20 +3,20 @@
 namespace server
 {
 
-class Session::State
+class Session::Mode
 {
 protected:
-    ~State() = default
-
+    ~Mode() = default;
+public:
     virtual void onReceive(Session* s, itlib::memory_view<char> text) = 0;
 };
 
 namespace
 {
+//void TransitionSessionTo_InitialMode();
+}
 
-void TransitionSessionTo_InitialState();
-
-class InitialState final : public Session::State
+class Session::InitialMode final : public Session::Mode
 {
 public:
     virtual void onReceive(Session* s, itlib::memory_view<char> text) override
@@ -25,12 +25,10 @@ public:
     }
 };
 
-}
-
-void Session::transitionToState(State* state)
+void Session::changeMode(Mode* mode)
 {
-    pushIOThreadTask([state]() {
-        m_state = state;
+    pushIOThreadTask([this, mode]() {
+        m_mode = mode;
     });
 }
 

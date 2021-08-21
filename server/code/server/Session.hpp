@@ -8,13 +8,13 @@
 
 namespace server {
 
-class SessionState;
+class SessionMode;
 
 class SERVER_API Session : public std::enable_shared_from_this<Session>
 {
-    class State;
+    class Mode;
 public:
-    void transitionToState(State* state);
+    void changeMode(Mode* mode);
 
 protected:
     Session();
@@ -27,7 +27,8 @@ protected:
     virtual void pushIOThreadTask(std::function<void()> task) = 0;
 
 private:
-    State* m_state;
+    class InitialMode;
+    Mode* m_mode;
 };
 
 }

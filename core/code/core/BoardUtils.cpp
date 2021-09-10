@@ -25,6 +25,29 @@ namespace
 {
 
 template <typename Visitor>
+bool visitGridR(const Grid& g, Visitor& v, GridPath& path);
+
+template <typename Visitor>
+bool visitItem(const Grid& g, const GridCoord& c, Visitor& v, GridPath& path)
+{
+    auto& elem = g.at(c);
+    if (!v.push(elem, c)) return false;
+    path.push_back(c);
+
+    if (v.done()) return true;
+
+    if (visitGridR(g, v, path))
+    {
+        return true;
+    }
+
+    path.pop_back();
+    v.pop(elem);
+
+    return false;
+}
+
+template <typename Visitor>
 bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
 {
     const auto& base = path.back();
@@ -51,19 +74,7 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
 
             if (alreadyUsed) continue;
 
-            auto& elem = g.at(c);
-            if (!v.push(elem, c)) continue;
-            path.push_back(c);
-
-            if (v.done()) return true;
-
-            if (visitGridR(g, v, path))
-            {
-                return true;
-            }
-
-            path.pop_back();
-            v.pop(elem);
+            if (visitItem(g, c, v, path)) return true;
         }
     }
 
@@ -79,19 +90,7 @@ void visitGrid(const Grid& g, Visitor& v, GridPath& path)
     {
         for (c.x = 0; c.x < g.w(); ++c.x)
         {
-            auto& elem = g.at(c);
-            if (!v.push(elem, c)) continue;
-            path.push_back(c);
-
-            if (v.done()) return;
-
-            if (visitGridR(g, v, path))
-            {
-                return;
-            }
-
-            path.pop_back();
-            v.pop(elem);
+            if (visitItem(g, c, v, path)) return;
         }
     }
 }

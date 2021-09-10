@@ -11,6 +11,7 @@ namespace server
 class SERVER_API Request {
 public:
     using TypeID = size_t;
+    
 }
 
 }

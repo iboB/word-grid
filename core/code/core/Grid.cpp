@@ -7,13 +7,6 @@
 //
 #include "Grid.hpp"
 
-#include "Word.hpp"
-#include "Dictionary.hpp"
-#include "DictionarySearch.hpp"
-#include "ScoredDictionary.hpp"
-
-#include <array>
-
 namespace core
 {
 

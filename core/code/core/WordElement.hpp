@@ -16,22 +16,42 @@
 namespace core
 {
 // a word element constists of one or more letters plus optional special characters
-// letters with no special characters match themeselves
+// elements with no special characters match themeselves
 // "-xxx" - must end with "xxx"
 // "xxx-" - must begin with "xxx"
+// "a/b"  - is either 'a' or 'b'
 class CORE_API WordElement : public LetterSequence<WordElementTraits::Max_Length, WordElement>
 {
 public:
-    // checks whether the element matches the pattern
-    bool matches(const itlib::const_memory_view<letter_t>& pattern) const;
+    // sign signifies a continuation
+    // can be at the front or back
+    static constexpr letter_t Cont_Sign = '-';
 
-    bool frontOnly() const { return back() == '-'; }
-    bool backOnly() const { return front() == '-'; }
+    // sign that separates element options
+    static constexpr letter_t Delim_Sign = '/';
 
-    // how many letters of the input does this sequence match
-    size_t matchLength() const;
+    // can only be at the front of a word
+    bool frontOnly() const { return back() == Cont_Sign; }
 
-    // returns begin of relevant letters
-    const_iterator lbegin() const;
+    // can only be at the back of a word
+    bool backOnly() const { return front() == Cont_Sign; }
+
+    // options are the ways in which this element can be interpreted
+    // in most cases there is only one option, but certain elements can be interpreted
+    // in multiple ways (for example "a/b" can be a or b)
+    struct OptionIterator
+    {
+        WordElement::const_iterator srcFrom; // begin of span
+        WordElement::const_iterator srcTo; // end of span
+        WordElement::const_iterator srcEnd; // end of source sequence
+
+        // srcFrom can be beyond end since we skip the delimeter
+        bool isEnd() const { return srcFrom >= srcEnd; }
+
+        void goToNext();
+        itlib::const_memory_view<letter_t> getMatchSequence() const;
+    };
+
+    OptionIterator firstOption() const;
 };
 }

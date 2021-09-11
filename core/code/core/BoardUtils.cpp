@@ -30,19 +30,26 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path);
 template <typename Visitor>
 bool visitItem(const Grid& g, const GridCoord& c, Visitor& v, GridPath& path)
 {
-    auto& elem = g.at(c);
-    if (!v.push(elem, c)) return false;
-    path.push_back(c);
+    auto& gridElem = g.at(c);
 
-    if (v.done()) return true;
+    if (gridElem.frontOnly() && !path.empty()) return false;
 
-    if (visitGridR(g, v, path))
+    for (auto option = gridElem.firstOption(); !option.isEnd(); option.goToNext())
     {
-        return true;
-    }
+        auto seq = option.getMatchSequence();
 
-    path.pop_back();
-    v.pop(elem);
+        if (!v.push(seq, c)) continue;
+        if (v.done()) return true;
+
+        if (!gridElem.backOnly())
+        {
+            path.push_back(c);
+            if (visitGridR(g, v, path)) return true;
+            path.pop_back();
+        }
+
+        v.pop(seq);
+    }
 
     return false;
 }
@@ -95,40 +102,39 @@ void visitGrid(const Grid& g, Visitor& v, GridPath& path)
     }
 }
 
-struct TestPatterVisitor
+struct TestPatternVisitor
 {
     itlib::static_vector<itlib::const_memory_view<letter_t>, WordTraits::Max_Length + 1> top;
-    bool push(const WordElement& elem, const GridCoord&)
+    bool push(itlib::const_memory_view<letter_t> elem, const GridCoord&)
     {
         auto& pattern = top.back();
 
-        // skip hyphens
-        if (pattern.front() == '-' && top.size() > 1)
+        auto pp = pattern.begin();
+        auto ep = elem.begin();
+
+        while (ep != elem.end())
         {
-            if (pattern.size() == 1) return false; // ends with hyphen?
-            pattern = itlib::make_memory_view(pattern.data() + 1, pattern.size() - 1);
-        }
-
-        if (!elem.matches(pattern)) return false;
-        if (top.size() != 1 && elem.frontOnly()) return false;
-
-        const auto matchLength = elem.matchLength();
-
-        if (top.size() == 1 && elem.backOnly())
-        {
-            if (pattern.size() == matchLength)
-            {
-                top.emplace_back();
-            }
-            else
+            if (pp == pattern.end())
             {
                 return false;
             }
+            else if (*pp == '-')
+            {
+                // skip hyphens
+                ++pp;
+                continue;
+            }
+            else if (*ep != *pp)
+            {
+                // no match
+                return false;
+            }
+
+            ++ep;
+            ++pp;
         }
-        else
-        {
-            top.emplace_back(itlib::make_memory_view(pattern.data() + matchLength, pattern.size() - matchLength));
-        }
+
+        top.emplace_back(itlib::const_memory_view(pp, pattern.end() - pp));
 
         return true;
     }
@@ -138,7 +144,7 @@ struct TestPatterVisitor
         return top.back().empty();
     }
 
-    void pop(const WordElement&)
+    void pop(itlib::const_memory_view<letter_t>)
     {
         assert(!top.empty());
         top.pop_back();
@@ -165,18 +171,14 @@ struct FindAllVisitor
     }
 
 
-    bool push(const WordElement& elem, const GridCoord& c)
+    bool push(itlib::const_memory_view<letter_t> elem, const GridCoord& c)
     {
-        if (elem.frontOnly() && !path.empty())  return false;
-
         path.push_back(c);
 
-        auto begin = elem.lbegin();
-        auto matchLength = elem.matchLength();
         Dictionary::SearchResult result = Dictionary::SearchResult::None;
-        for (size_t i = 0; i < matchLength; ++i)
+        for (auto l : elem)
         {
-            result = d.search(ds, *(begin + i));
+            result = d.search(ds, l);
         }
 
         if (result == Dictionary::SearchResult::Exact)
@@ -184,7 +186,7 @@ struct FindAllVisitor
             addWord(ds.word(), path);
         }
 
-        if (result == Dictionary::SearchResult::None || elem.backOnly())
+        if (result == Dictionary::SearchResult::None)
         {
             pop(elem);
             return false;
@@ -198,14 +200,13 @@ struct FindAllVisitor
         return false;
     }
 
-    void pop(const WordElement& elem)
+    void pop(itlib::const_memory_view<letter_t> elem)
     {
         assert(!path.empty());
         path.pop_back();
 
-        auto matchLength = elem.matchLength();
-        assert(ds.length() >= matchLength);
-        for (size_t i = 0; i < matchLength; ++i) ds.pop();
+        assert(ds.length() >= elem.size());
+        for (size_t i = 0; i < elem.size(); ++i) ds.pop();
     }
 };
 
@@ -213,7 +214,7 @@ struct FindAllVisitor
 
 GridPath testGridPattern(const Grid& grid, const Word& pattern)
 {
-    TestPatterVisitor v = { { itlib::make_memory_view(pattern) }  };
+    TestPatternVisitor v = { { itlib::make_memory_view(pattern) }  };
     GridPath ret;
     visitGrid(grid, v, ret);
     return ret;

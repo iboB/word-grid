@@ -47,14 +47,64 @@ TEST_CASE("cmp")
 
 TEST_CASE("elems basic")
 {
-    Word w = Word::fromAscii("absolutely");
-
     auto e = WordElement::fromAscii("a");
     CHECK(e.length() == 1);
     CHECK(!e.frontOnly());
     CHECK(!e.backOnly());
-    CHECK(e.matchLength() == 1);
-    CHECK(e.matches(w.view()));
+
+    auto i = e.firstOption();
+    CHECK(!i.isEnd());
+    auto seq = i.getMatchSequence();
+    CHECK(seq.size() == 1);
+    CHECK(seq.front() == 'a');
+    i.goToNext();
+    CHECK(i.isEnd());
+
+    e = WordElement::fromAscii("-ed");
+    CHECK(e.length() == 3);
+    CHECK(!e.frontOnly());
+    CHECK(e.backOnly());
+
+    i = e.firstOption();
+    CHECK(!i.isEnd());
+    seq = i.getMatchSequence();
+    CHECK(seq.size() == 2);
+    CHECK(seq.front() == 'e');
+    CHECK(seq.back() == 'd');
+    i.goToNext();
+    CHECK(i.isEnd());
+
+    e = WordElement::fromAscii("de-");
+    CHECK(e.length() == 3);
+    CHECK(e.frontOnly());
+    CHECK(!e.backOnly());
+
+    i = e.firstOption();
+    CHECK(!i.isEnd());
+    seq = i.getMatchSequence();
+    CHECK(seq.size() == 2);
+    CHECK(seq.front() == 'd');
+    CHECK(seq.back() == 'e');
+    i.goToNext();
+    CHECK(i.isEnd());
+
+    e = WordElement::fromAscii("a/b");
+    CHECK(e.length() == 3);
+    CHECK(!e.frontOnly());
+    CHECK(!e.backOnly());
+
+    i = e.firstOption();
+    CHECK(!i.isEnd());
+    seq = i.getMatchSequence();
+    CHECK(seq.size() == 1);
+    CHECK(seq.front() == 'a');
+    i.goToNext();
+    CHECK(!i.isEnd());
+    seq = i.getMatchSequence();
+    CHECK(seq.size() == 1);
+    CHECK(seq.front() == 'b');
+    i.goToNext();
+    CHECK(i.isEnd());
 }
 
 TEST_SUITE_END();

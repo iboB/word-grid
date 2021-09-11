@@ -7,41 +7,36 @@
 //
 #include "WordElement.hpp"
 
+#include <algorithm>
+
 namespace core
 {
-bool WordElement::matches(const itlib::const_memory_view<letter_t>& pattern) const
+
+WordElement::OptionIterator WordElement::firstOption() const
 {
-    if (empty()) return true; // empty matches everything
-
-    size_t i = 0;
-    if (front() == '-') ++i; // skip
-    size_t b = size();
-    if (back() == '-') --b;
-
-    auto len = b - i;
-    if (len > pattern.size()) return false;
-
-    auto p = pattern.data();
-
-    for (; i < b; ++i)
-    {
-        if (at(i) != *p++) return false;
-    }
-
-    return true;
+    return {
+        begin(),
+        std::find(begin(), end(), Delim_Sign),
+        end(),
+    };
 }
 
-size_t WordElement::matchLength() const
+void WordElement::OptionIterator::goToNext()
 {
-    if (length() <= 1) return length();
-    if (front() == '-' || back() == '-') return length() - 1;
-    return length();
+    srcFrom = srcTo + 1; // skip delimeter
+
+    // we currently support up to two options per element
+    // that's why we can afford this optimization
+    srcTo = srcEnd;
 }
 
-WordElement::const_iterator WordElement::lbegin() const
+itlib::const_memory_view<letter_t> WordElement::OptionIterator::getMatchSequence() const
 {
-    if (front() == '-') return begin() + 1;
-    return begin();
+    auto length = size_t(srcTo - srcFrom);
+    if (*srcFrom == Cont_Sign) return {srcFrom + 1, length - 1};
+    if (*(srcTo - 1) == Cont_Sign) return {srcFrom, length - 1};
+    return {srcFrom, length};
 }
+
 
 }

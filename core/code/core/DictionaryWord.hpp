@@ -14,13 +14,14 @@
 namespace core
 {
 
-class DictionaryWord
+struct DictionaryWord
 {
-public:
+    WordMatchSequence letters;
+    std::string_view displayString;
 
-private:
-    WordMatchSequence m_letters;
-    std::string_view m_displayString;
-}
+    // sort and compare by letters
+    bool operator==(const DictionaryWord& other) const { return letters == other.letters; }
+    bool operator<(const DictionaryWord& other) const { return letters < other.letters; }
+};
 
 }

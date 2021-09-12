@@ -9,12 +9,16 @@
 #include "API.h"
 
 #include <vector>
+#include <string_view>
 
 namespace core
 {
 
+struct DictionaryWord;
+
 class CORE_API Dictionary
 {
+    // TODO: add substitution rules
 public:
     Dictionary(std::vector<char> utf8Buffer);
     ~Dictionary();
@@ -26,7 +30,9 @@ public:
     Dictionary& operator=(const Dictionary&) = delete;
 
 private:
-    std::vector<Word> m_words;
+    void tryAddWord(std::string_view utf8Word);
+
+    std::vector<DictionaryWord> m_words;
     std::vector<char> m_utf8Buffer;
 };
 

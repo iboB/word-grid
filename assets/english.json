@@ -1,0 +1,22 @@
+{
+  "name": "English",
+  "dictionary": "common-en.txt",
+  "alphabet": {
+  },
+  "specials": [
+    "-ing",
+    "de-",
+    "-ed",
+    "a/o"
+  ],
+  "conversion": [
+    {
+      "from": "i",
+      "to": "i"
+    },
+    {
+      "from": "e",
+      "to": "e"
+    }
+  ]
+}

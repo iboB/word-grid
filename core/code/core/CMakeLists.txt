@@ -1,6 +1,8 @@
 
 icm_add_lib(core CORE
     lib/UnicodeCharFromUtf8.hpp
+    lib/UnicodeTolower.hpp
+    lib/UnicodeTolower.cpp
 
     Types.hpp
     WordTraits.hpp

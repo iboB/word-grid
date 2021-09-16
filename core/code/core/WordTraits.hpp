@@ -18,4 +18,4 @@ struct WordTraits
     static constexpr size_t Max_Length = 16;
 };
 
-}
+} // namespace core

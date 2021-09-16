@@ -29,4 +29,4 @@ using LetterConversionTable = itlib::flat_map<letter_t, LetterConversionTarget>;
 
 using Dictionary = std::vector<DictionaryWord>;
 
-}
+} // namespace core

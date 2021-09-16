@@ -17,7 +17,8 @@ TEST_CASE("Simple")
     core::LanguageBuilder b;
     b.setDisplayName("simple");
     b.setAlphabet({{'a', {1}}, {'b', {5}}, {'o', {3}}});
-    b.setDictionaryUtf8Buffer(u8R"(
+    b.setDictionaryUtf8Buffer(
+        u8R"(
 abob
 boa
 bbb

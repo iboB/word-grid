@@ -7,8 +7,8 @@
 //
 #pragma once
 
-#include <itlib/static_vector.hpp>
 #include <itlib/memory_view.hpp>
+#include <itlib/static_vector.hpp>
 
 namespace core
 {
@@ -18,4 +18,4 @@ using LetterSequence = itlib::static_vector<letter_t, L>;
 
 using LetterSequenceView = itlib::const_memory_view<letter_t>;
 
-}
+} // namespace core

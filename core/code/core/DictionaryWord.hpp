@@ -24,4 +24,4 @@ struct DictionaryWord
     bool operator<(const DictionaryWord& other) const { return letters < other.letters; }
 };
 
-}
+} // namespace core

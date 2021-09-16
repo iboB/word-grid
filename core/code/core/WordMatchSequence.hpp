@@ -16,7 +16,8 @@ namespace core
 {
 struct WordMatchSequence : public LetterSequence<WordTraits::Max_Length>
 {
-    bool operator<(const WordMatchSequence& b) const {
+    bool operator<(const WordMatchSequence& b) const
+    {
         auto ai = begin();
         auto aend = end();
         auto bi = b.begin();
@@ -30,4 +31,4 @@ struct WordMatchSequence : public LetterSequence<WordTraits::Max_Length>
     }
 };
 
-}
+} // namespace core

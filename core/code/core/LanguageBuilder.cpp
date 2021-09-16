@@ -11,8 +11,8 @@
 #include "lib/UnicodeTolower.hpp"
 
 #include <algorithm>
-#include <iostream>
 #include <cassert>
+#include <iostream>
 
 namespace core
 {
@@ -40,11 +40,7 @@ namespace
 LetterSequenceView convert(letter_t letter, const LetterConversionTable& conversionTable)
 {
     auto cf = conversionTable.find(letter);
-    if (cf == conversionTable.end())
-    {
-        return LetterSequenceView(&letter, 1);
-    }
-
+    if (cf == conversionTable.end()) return LetterSequenceView(&letter, 1);
     return itlib::make_memory_view(cf->second);
 }
 
@@ -79,13 +75,10 @@ void tryAddWord(Dictionary& words, std::string_view utf8Word, const LetterConver
             return;
         }
 
-        for (auto l : toAdd)
-        {
-            word.letters.push_back(l);
-        }
+        for (auto l : toAdd) word.letters.push_back(l);
     }
 
-    if (word.letters.size() << WordTraits::Min_Length)
+    if (word.letters.size() < WordTraits::Min_Length)
     {
         std::cout << "Skipping word '" << utf8Word << "' which is too short.\n";
         return;
@@ -94,7 +87,7 @@ void tryAddWord(Dictionary& words, std::string_view utf8Word, const LetterConver
     words.emplace_back(std::move(word));
 }
 
-}
+} // namespace
 
 void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 {
@@ -142,6 +135,8 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
         std::string_view utf8Word(std::addressof(*wb), length);
 
         tryAddWord(words, utf8Word, m_language.m_conversionTable);
+
+        wb = we;
     }
 
     // sort so searches can work
@@ -150,6 +145,12 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
     // while we're at it, also remove duplicates
     auto end = std::unique(words.begin(), words.end());
     words.erase(end, words.end());
+}
+
+void LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)
+{
+    std::vector<char> buf(constUtf8Buffer.begin(), constUtf8Buffer.end());
+    setDictionaryUtf8Buffer(std::move(buf));
 }
 
 Language LanguageBuilder::getLanguage()

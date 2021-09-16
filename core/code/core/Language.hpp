@@ -23,6 +23,8 @@ public:
         score_t score;
     };
 
+    const std::string& displayName() const { return m_displayName; }
+
 private:
     friend class LanguageBuilder;
 
@@ -36,4 +38,4 @@ private:
     std::vector<char> m_dictionaryUtf8Buffer;
 };
 
-}
+} // namespace core

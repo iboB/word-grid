@@ -23,6 +23,7 @@ public:
     void setConversionTable(LetterConversionTable table);
 
     void setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
+    void setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
 
     Language getLanguage();
 

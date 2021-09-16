@@ -1,0 +1,26 @@
+---
+Language: Cpp
+BasedOnStyle: Microsoft
+# custom overrides
+AccessModifierOffset: -4
+AlignAfterOpenBracket: DontAlign
+AlignEscapedNewlines: Left
+AlignTrailingComments: false
+AllowAllArgumentsOnNextLine: false
+AllowShortBlocksOnASingleLine: Empty
+AllowShortCaseLabelsOnASingleLine: true
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortLoopsOnASingleLine: true
+AlwaysBreakBeforeMultilineStrings: true
+AlwaysBreakTemplateDeclarations: Yes
+BraceWrapping:
+    AfterUnion: true
+    SplitEmptyFunction: false
+    SplitEmptyRecord: false
+BreakBeforeBinaryOperators: All
+BreakConstructorInitializers: BeforeComma
+ColumnLimit: 140
+IndentPPDirectives: AfterHash
+PointerAlignment: Left
+...

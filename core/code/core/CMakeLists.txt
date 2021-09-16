@@ -5,11 +5,15 @@ icm_add_lib(core CORE
     lib/UnicodeTolower.cpp
 
     Types.hpp
+    LetterSequence.hpp
     WordTraits.hpp
     WordMatchSequence.hpp
     DictionaryWord.hpp
-    Dictionary.hpp
-    Dictionary.cpp
+    LanguageTypes.hpp
+    Language.hpp
+    Language.cpp
+    LanguageBuilder.hpp
+    LanguageBuilder.cpp
 )
 
 target_include_directories(core INTERFACE ..)

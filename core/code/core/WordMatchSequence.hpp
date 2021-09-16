@@ -10,11 +10,11 @@
 #include "Types.hpp"
 #include "WordTraits.hpp"
 
-#include <itlib/static_vector.hpp>
+#include "LetterSequence.hpp"
 
 namespace core
 {
-struct WordMatchSequence : public itlib::static_vector<letter_t, WordTraits::Max_Length>
+struct WordMatchSequence : public LetterSequence<WordTraits::Max_Length>
 {
     bool operator<(const WordMatchSequence& b) const {
         auto ai = begin();

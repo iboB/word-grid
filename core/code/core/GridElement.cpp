@@ -5,14 +5,14 @@
 // See accompanying file LICENSE.txt or copy at
 // https://opensource.org/licenses/MIT
 //
-#include "WordElement.hpp"
+#include "GridElement.hpp"
 
 #include <algorithm>
 
 namespace core
 {
 
-WordElement::OptionIterator WordElement::firstOption() const
+GridElement::OptionIterator GridElement::firstOption() const
 {
     return {
         begin(),
@@ -21,7 +21,7 @@ WordElement::OptionIterator WordElement::firstOption() const
     };
 }
 
-void WordElement::OptionIterator::goToNext()
+void GridElement::OptionIterator::goToNext()
 {
     srcFrom = srcTo + 1; // skip delimeter
 
@@ -30,7 +30,7 @@ void WordElement::OptionIterator::goToNext()
     srcTo = srcEnd;
 }
 
-itlib::const_memory_view<letter_t> WordElement::OptionIterator::getMatchSequence() const
+itlib::const_memory_view<letter_t> GridElement::OptionIterator::getMatchSequence() const
 {
     auto length = size_t(srcTo - srcFrom);
     if (*srcFrom == Cont_Sign) return {srcFrom + 1, length - 1};
@@ -38,5 +38,4 @@ itlib::const_memory_view<letter_t> WordElement::OptionIterator::getMatchSequence
     return {srcFrom, length};
 }
 
-
-}
+} // namespace core

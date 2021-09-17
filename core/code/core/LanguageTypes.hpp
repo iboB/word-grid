@@ -24,7 +24,7 @@ struct AlphabetLetterData
 };
 using Alphabet = itlib::flat_map<letter_t, AlphabetLetterData>;
 
-using LetterConversionTarget = itlib::static_vector<letter_t, 3>;
+using LetterConversionTarget = LetterSequence<3>;
 using LetterConversionTable = itlib::flat_map<letter_t, LetterConversionTarget>;
 
 using Dictionary = std::vector<DictionaryWord>;

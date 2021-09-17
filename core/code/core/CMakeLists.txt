@@ -6,6 +6,7 @@ icm_add_lib(core CORE
 
     Types.hpp
     LetterSequence.hpp
+    LetterSequenceFromUtf8.hpp
     WordTraits.hpp
     WordMatchSequence.hpp
     DictionaryWord.hpp
@@ -14,6 +15,9 @@ icm_add_lib(core CORE
     Language.cpp
     LanguageBuilder.hpp
     LanguageBuilder.cpp
+    GridElementTraits.hpp
+    GridElement.hpp
+    GridElement.cpp
 )
 
 target_include_directories(core INTERFACE ..)

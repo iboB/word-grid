@@ -8,19 +8,19 @@
 #pragma once
 #include "API.h"
 
+#include "GridElementTraits.hpp"
 #include "LetterSequence.hpp"
-#include "WordElementTraits.hpp"
 
 #include <itlib/memory_view.hpp>
 
 namespace core
 {
-// a word element constists of one or more letters plus optional special characters
+// a grid element constists of one or more letters plus optional special characters
 // elements with no special characters match themeselves
 // "-xxx" - must end with "xxx"
 // "xxx-" - must begin with "xxx"
 // "a/b"  - is either 'a' or 'b'
-class CORE_API WordElement : public LetterSequence<WordElementTraits::Max_Length, WordElement>
+class CORE_API GridElement : public LetterSequence<GridElementTraits::Max_Length>
 {
 public:
     // sign signifies a continuation
@@ -41,9 +41,9 @@ public:
     // in multiple ways (for example "a/b" can be a or b)
     struct OptionIterator
     {
-        WordElement::const_iterator srcFrom; // begin of span
-        WordElement::const_iterator srcTo; // end of span
-        WordElement::const_iterator srcEnd; // end of source sequence
+        GridElement::const_iterator srcFrom; // begin of span
+        GridElement::const_iterator srcTo; // end of span
+        GridElement::const_iterator srcEnd; // end of source sequence
 
         // srcFrom can be beyond end since we skip the delimeter
         bool isEnd() const { return srcFrom >= srcEnd; }
@@ -54,4 +54,4 @@ public:
 
     OptionIterator firstOption() const;
 };
-}
+} // namespace core

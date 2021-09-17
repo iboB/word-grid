@@ -7,6 +7,8 @@
 //
 #pragma once
 
+#include "Types.hpp"
+
 #include <itlib/memory_view.hpp>
 #include <itlib/static_vector.hpp>
 

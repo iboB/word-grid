@@ -8,9 +8,8 @@
 #pragma once
 #include "API.h"
 
-#include "DictionaryWord.hpp"
-
 #include "LanguageTypes.hpp"
+#include "Dictionary.hpp"
 
 namespace core
 {

@@ -7,11 +7,9 @@
 //
 #pragma once
 
-#include "DictionaryWord.hpp"
+#include "LetterSequence.hpp"
 
 #include <itlib/flat_map.hpp>
-
-#include <vector>
 
 namespace core
 {
@@ -24,7 +22,5 @@ using Alphabet = itlib::flat_map<letter_t, AlphabetLetterData>;
 
 using LetterConversionTarget = LetterSequence<3>;
 using LetterConversionTable = itlib::flat_map<letter_t, LetterConversionTarget>;
-
-using Dictionary = std::vector<DictionaryWord>;
 
 } // namespace core

@@ -18,11 +18,6 @@ namespace core
 class CORE_API Language
 {
 public:
-    struct LetterData
-    {
-        score_t score;
-    };
-
     const std::string& displayName() const { return m_displayName; }
 
 private:

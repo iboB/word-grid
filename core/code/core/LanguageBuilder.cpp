@@ -11,7 +11,6 @@
 #include "lib/UnicodeTolower.hpp"
 
 #include <algorithm>
-#include <cassert>
 #include <iostream>
 
 namespace core
@@ -24,7 +23,6 @@ void LanguageBuilder::setDisplayName(std::string str)
 
 void LanguageBuilder::setAlphabet(Alphabet alphabet)
 {
-    assert(m_language.m_dictionaryUtf8Buffer.empty());
     m_language.m_alphabet = std::move(alphabet);
 }
 
@@ -91,7 +89,6 @@ void tryAddWord(Dictionary& words, std::string_view utf8Word, const LetterConver
 
 void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 {
-    assert(!m_language.m_alphabet.empty());
     auto& buf = m_language.m_dictionaryUtf8Buffer;
 
     buf = std::move(utf8Buffer);
@@ -155,8 +152,6 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)
 
 Language LanguageBuilder::getLanguage()
 {
-    assert(!m_language.m_displayName.empty());
-    assert(!m_language.m_dictionaryUtf8Buffer.empty());
     return std::move(m_language);
 }
 

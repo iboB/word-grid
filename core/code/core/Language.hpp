@@ -32,6 +32,8 @@ public:
     // (namely make use on the conversion table)
     itlib::expected<WordMatchSequence, FromUtf8Error> getWordMatchSequenceFromUtf8(std::string_view str) const;
 
+    const Dictionary& dictionary() const { return m_dictionary; }
+
 private:
     friend class LanguageBuilder;
 
@@ -41,7 +43,7 @@ private:
 
     LetterConversionTable m_conversionTable;
 
-    Dictionary m_words;
+    Dictionary m_dictionary;
     std::vector<char> m_dictionaryUtf8Buffer;
 };
 

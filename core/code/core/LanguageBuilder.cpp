@@ -47,17 +47,14 @@ void tryAddWord(Dictionary& words, std::string_view utf8Word, const Language& la
     auto errMsg = [&]() -> std::string_view {
         switch (converted.error())
         {
-        case Language::FromUtf8Error::InvalidUtf8:
-            return "invalid utf8 characters";
-        case Language::FromUtf8Error::TooLong:
-            return "too long";
-        case Language::FromUtf8Error::TooShort:
-            return "too short";
+        case Language::FromUtf8Error::InvalidUtf8: return "invalid utf8 characters";
+        case Language::FromUtf8Error::TooLong: return "too long";
+        case Language::FromUtf8Error::TooShort: return "too short";
         }
         return {};
     }();
 
-    std::cout << "Skipping word '" << utf8Word << "'. Reason: " << errMsg;
+    std::cout << "Skipping word '" << utf8Word << "'. Reason: " << errMsg << '\n';
 }
 
 } // namespace
@@ -70,7 +67,7 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 
     // fist count max number of words in buffer
     // this number can be an overestimation as some words withing the buffer can be filtered
-    // take the oportunity to make newline characters (\r and \n) to zeroes
+    // take the oportunity to set newline and tab characters (\r \n \t) to zeroes (separators)
     size_t maxWordsInBuffer = 0;
     for (auto& c : buf)
     {
@@ -79,13 +76,13 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
             ++maxWordsInBuffer;
             c = 0;
         }
-        else if (c == '\r')
+        else if (c == '\r' || c == '\t')
         {
             c = 0;
         }
     }
 
-    auto& words = m_language.m_words;
+    auto& words = m_language.m_dictionary;
     words.reserve(maxWordsInBuffer);
 
     // second pass: build dictionary
@@ -94,7 +91,11 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
     {
         while (true)
         {
-            if (wb == buf.end()) return; // no more words
+            if (wb == buf.end())
+            {
+                // no more words.
+                goto end; // lazy double loop exit with goto
+            }
 
             // skip to first nonzero
             if (*wb) break;
@@ -106,11 +107,16 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
         auto length = we - wb;
         std::string_view utf8Word(std::addressof(*wb), length);
 
-        tryAddWord(words, utf8Word, m_language);
+        // strip spaces from front and back (but keep ones inside)
+        while (!utf8Word.empty() && utf8Word.front() == ' ') utf8Word.remove_prefix(1);
+        while (!utf8Word.empty() && utf8Word.back() == ' ') utf8Word.remove_suffix(1);
+
+        // add if anything else remains
+        if (!utf8Word.empty()) tryAddWord(words, utf8Word, m_language);
 
         wb = we;
     }
-
+end:
     // sort so searches can work
     std::sort(words.begin(), words.end());
 

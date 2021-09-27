@@ -10,6 +10,7 @@ icm_add_lib(core CORE
     WordTraits.hpp
     WordMatchSequence.hpp
     DictionaryWord.hpp
+    Dictionary.hpp
     LanguageTypes.hpp
     Language.hpp
     Language.cpp

@@ -7,9 +7,6 @@
 //
 #include "LanguageBuilder.hpp"
 
-#include "lib/UnicodeCharFromUtf8.hpp"
-#include "lib/UnicodeTolower.hpp"
-
 #include <algorithm>
 #include <iostream>
 
@@ -35,54 +32,32 @@ void LanguageBuilder::setConversionTable(LetterConversionTable table)
 namespace
 {
 
-LetterSequenceView convert(letter_t letter, const LetterConversionTable& conversionTable)
+void tryAddWord(Dictionary& words, std::string_view utf8Word, const Language& language)
 {
-    auto cf = conversionTable.find(letter);
-    if (cf == conversionTable.end()) return LetterSequenceView(&letter, 1);
-    return itlib::make_memory_view(cf->second);
-}
+    auto converted = language.getWordMatchSequenceFromUtf8(utf8Word);
 
-void tryAddWord(Dictionary& words, std::string_view utf8Word, const LetterConversionTable& conversionTable)
-{
-    auto p = utf8Word.data();
-    const auto end = p + utf8Word.length();
-
-    DictionaryWord word;
-    word.displayString = utf8Word;
-
-    while (p < end)
+    if (converted)
     {
-        letter_t letter;
-        auto len = UnicodeCharFromUtf8(&letter, p, end);
-
-        if (!len)
-        {
-            std::cout << "Skipping word '" << utf8Word << "' with invalid utf8 characters.\n";
-            return;
-        }
-
-        p += len;
-
-        letter = UnicodeTolower(letter);
-
-        auto toAdd = convert(letter, conversionTable);
-
-        if (word.letters.size() + toAdd.size() > word.letters.capacity())
-        {
-            std::cout << "Skipping word '" << utf8Word << "' which is too long.\n";
-            return;
-        }
-
-        for (auto l : toAdd) word.letters.push_back(l);
-    }
-
-    if (word.letters.size() < WordTraits::Min_Length)
-    {
-        std::cout << "Skipping word '" << utf8Word << "' which is too short.\n";
+        auto& word = words.emplace_back();
+        word.displayString = utf8Word;
+        word.letters = *converted;
         return;
     }
 
-    words.emplace_back(std::move(word));
+    auto errMsg = [&]() -> std::string_view {
+        switch (converted.error())
+        {
+        case Language::FromUtf8Error::InvalidUtf8:
+            return "invalid utf8 characters";
+        case Language::FromUtf8Error::TooLong:
+            return "too long";
+        case Language::FromUtf8Error::TooShort:
+            return "too short";
+        }
+        return {};
+    }();
+
+    std::cout << "Skipping word '" << utf8Word << "'. Reason: " << errMsg;
 }
 
 } // namespace
@@ -131,7 +106,7 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
         auto length = we - wb;
         std::string_view utf8Word(std::addressof(*wb), length);
 
-        tryAddWord(words, utf8Word, m_language.m_conversionTable);
+        tryAddWord(words, utf8Word, m_language);
 
         wb = we;
     }

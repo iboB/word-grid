@@ -39,7 +39,7 @@ public:
     // options are the ways in which this element can be interpreted
     // in most cases there is only one option, but certain elements can be interpreted
     // in multiple ways (for example "a/b" can be a or b)
-    struct OptionIterator
+    struct CORE_API OptionIterator
     {
         GridElement::const_iterator srcFrom; // begin of span
         GridElement::const_iterator srcTo; // end of span

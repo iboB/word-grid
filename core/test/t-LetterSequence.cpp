@@ -7,33 +7,43 @@
 //
 #include <doctest/doctest.h>
 
-#include <core/Word.hpp>
-#include <core/WordElement.hpp>
+#include <core/WordMatchSequence.hpp>
+#include <core/GridElement.hpp>
+#include <core/LetterSequenceFromUtf8.hpp>
+
 
 using namespace core;
 
 TEST_SUITE_BEGIN("LetterSequence");
 
+WordMatchSequence wms(std::string_view str) {
+    return LetterSequence_FromUtf8<WordMatchSequence>(str);
+}
+
 TEST_CASE("construct")
 {
-    auto w1 = Word::fromAscii("asdf");
-    CHECK(w1.length() == 4);
-    auto w2 = Word::fromAscii("asdf");
+    auto w1 = wms("asdf");
+    CHECK(w1.size() == 4);
+    CHECK(w1[0] == 'a');
+    CHECK(w1[1] == 's');
+    CHECK(w1[2] == 'd');
+    CHECK(w1[3] == 'f');
+    auto w2 = wms("asdf");
     CHECK(w1 == w2);
 
-    w1 = Word::fromAscii("superextralongword");
-    CHECK(w1.length() == WordTraits::Max_Length);
-    w2 = Word::fromAscii("superextralongwo");
+    w1 = wms("superextralongword");
+    CHECK(w1.size() == WordTraits::Max_Length);
+    w2 = wms("superextralongwo");
     CHECK(w1 == w2);
 }
 
 TEST_CASE("cmp")
 {
-    auto w1 = Word::fromAscii("asdf");
-    auto w1a = Word::fromAscii("asdf");
-    auto w2 = Word::fromAscii("azdf");
-    auto w3 = Word::fromAscii("asdfa");
-    auto w4 = Word::fromAscii("asdfz");
+    auto w1 = wms("asdf");
+    auto w1a = wms("asdf");
+    auto w2 = wms("azdf");
+    auto w3 = wms("asdfa");
+    auto w4 = wms("asdfz");
 
     CHECK(!(w1 < w1a));
     CHECK(!(w1a < w1));
@@ -45,10 +55,14 @@ TEST_CASE("cmp")
     CHECK(w1 < w4);
 }
 
+GridElement ge(std::string_view str) {
+    return LetterSequence_FromUtf8<GridElement>(str);
+}
+
 TEST_CASE("elems basic")
 {
-    auto e = WordElement::fromAscii("a");
-    CHECK(e.length() == 1);
+    auto e = ge("a");
+    CHECK(e.size() == 1);
     CHECK(!e.frontOnly());
     CHECK(!e.backOnly());
 
@@ -60,8 +74,8 @@ TEST_CASE("elems basic")
     i.goToNext();
     CHECK(i.isEnd());
 
-    e = WordElement::fromAscii("-ed");
-    CHECK(e.length() == 3);
+    e = ge("-ed");
+    CHECK(e.size() == 3);
     CHECK(!e.frontOnly());
     CHECK(e.backOnly());
 
@@ -74,8 +88,8 @@ TEST_CASE("elems basic")
     i.goToNext();
     CHECK(i.isEnd());
 
-    e = WordElement::fromAscii("de-");
-    CHECK(e.length() == 3);
+    e = ge("de-");
+    CHECK(e.size() == 3);
     CHECK(e.frontOnly());
     CHECK(!e.backOnly());
 
@@ -88,8 +102,8 @@ TEST_CASE("elems basic")
     i.goToNext();
     CHECK(i.isEnd());
 
-    e = WordElement::fromAscii("a/b");
-    CHECK(e.length() == 3);
+    e = ge("a/b");
+    CHECK(e.size() == 3);
     CHECK(!e.frontOnly());
     CHECK(!e.backOnly());
 
@@ -106,5 +120,3 @@ TEST_CASE("elems basic")
     i.goToNext();
     CHECK(i.isEnd());
 }
-
-TEST_SUITE_END();

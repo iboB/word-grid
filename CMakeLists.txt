@@ -15,15 +15,15 @@ macro(dep packageName)
 endmacro()
 
 ######################
-# warnings
+# compiler specific flags: warnings, etc
 if(MSVC)
-    set(WG_WARNING_FLAGS "-D_CRT_SECURE_NO_WARNINGS=1 /Zc:__cplusplus /wd4251 /wd4275 /w34100")
+    set(WG_COMPILER_FLAGS "-D_CRT_SECURE_NO_WARNINGS=1 /Zc:__cplusplus /wd4251 /wd4275 /w34100 /permissive-")
 else()
-    set(WG_WARNING_FLAGS "-Wall -Wextra")
+    set(WG_COMPILER_FLAGS "-Wall -Wextra")
 endif()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WG_WARNING_FLAGS}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WG_WARNING_FLAGS}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${WG_COMPILER_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${WG_COMPILER_FLAGS}")
 
 ######################
 # cmake lib

@@ -38,7 +38,7 @@ template <typename LS>
 LS LetterSequence_FromUtf8(std::string_view str)
 {
     LS ret;
-    LetterSequenceFromUtf8(ret, str);
+    LetterSequence_FromUtf8(ret, str);
     return ret;
 }
 

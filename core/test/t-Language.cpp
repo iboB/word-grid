@@ -9,6 +9,7 @@
 
 #include <core/Language.hpp>
 #include <core/LanguageBuilder.hpp>
+#include <core/LetterSequenceFromUtf8.hpp>
 
 TEST_SUITE_BEGIN("Language");
 
@@ -16,7 +17,10 @@ TEST_CASE("Simple")
 {
     core::LanguageBuilder b;
     b.setDisplayName("simple");
-    b.setAlphabet({{'a', {1}}, {'b', {5}}, {'o', {3}}});
+    b.setConversionTable({
+        {'-', {}},
+        {'z', core::LetterSequence_FromUtf8<core::LetterConversionTarget>("cc")},
+    });
     b.setDictionaryUtf8Buffer(u8R"(
         abob
         boa
@@ -26,11 +30,12 @@ TEST_CASE("Simple")
         boa
         babababababababababa
         bozb
+        ooo-aaa
     )");
     auto l = b.getLanguage();
 
     auto& dic = l.dictionary();
-    REQUIRE(dic.size() == 5);
+    REQUIRE(dic.size() == 6);
 
     auto abob = dic.front();
     CHECK(abob.displayString == "abob");
@@ -43,5 +48,15 @@ TEST_CASE("Simple")
     CHECK(dic[1].letters == l.getWordMatchSequenceFromUtf8("bbb").value_or(fb));
     CHECK(dic[2].displayString == "boa");
     CHECK(dic[3].displayString == "bozb");
+    auto bozbLetters = dic[3].letters;
+    CHECK(bozbLetters.size() == 5);
+    CHECK(bozbLetters == core::LetterSequence_FromUtf8<core::WordMatchSequence>("boccb"));
+    CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("bozb").value_or(fb));
+    CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("boccb").value_or(fb));
     CHECK(dic[4].displayString == "obabo");
+    auto ooaaLetters = dic[5].letters;
+    CHECK(ooaaLetters.size() == 6);
+    CHECK(ooaaLetters == core::LetterSequence_FromUtf8<core::WordMatchSequence>("oooaaa"));
+    CHECK(ooaaLetters == l.getWordMatchSequenceFromUtf8("o-ooaa-a").value_or(fb));
+    CHECK(ooaaLetters == l.getWordMatchSequenceFromUtf8("oooaaa").value_or(fb));
 }

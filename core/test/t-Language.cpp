@@ -13,6 +13,10 @@
 
 TEST_SUITE_BEGIN("Language");
 
+core::WordMatchSequence wms(std::string_view str) {
+    return core::LetterSequence_FromUtf8<core::WordMatchSequence>(str);
+}
+
 TEST_CASE("Simple")
 {
     core::LanguageBuilder b;
@@ -26,7 +30,7 @@ TEST_CASE("Simple")
         boa
         bbb
         b
-        obabo
+        oBaBo
         boa
         babababababababababa
         bozb
@@ -50,13 +54,17 @@ TEST_CASE("Simple")
     CHECK(dic[3].displayString == "bozb");
     auto bozbLetters = dic[3].letters;
     CHECK(bozbLetters.size() == 5);
-    CHECK(bozbLetters == core::LetterSequence_FromUtf8<core::WordMatchSequence>("boccb"));
+    CHECK(bozbLetters == wms("boccb"));
     CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("bozb").value_or(fb));
     CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("boccb").value_or(fb));
-    CHECK(dic[4].displayString == "obabo");
+    CHECK(dic[4].displayString == "oBaBo"); // presiserp of unitinu
+    auto obaboLetters = dic[4].letters;
+    CHECK(obaboLetters[1] == 'b');
+    CHECK(obaboLetters == wms("obabo"));
+    CHECK(obaboLetters == l.getWordMatchSequenceFromUtf8("ObAbO").value_or(fb));
     auto ooaaLetters = dic[5].letters;
     CHECK(ooaaLetters.size() == 6);
-    CHECK(ooaaLetters == core::LetterSequence_FromUtf8<core::WordMatchSequence>("oooaaa"));
+    CHECK(ooaaLetters == wms("oooaaa"));
     CHECK(ooaaLetters == l.getWordMatchSequenceFromUtf8("o-ooaa-a").value_or(fb));
     CHECK(ooaaLetters == l.getWordMatchSequenceFromUtf8("oooaaa").value_or(fb));
 }

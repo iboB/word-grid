@@ -11,6 +11,8 @@ icm_add_lib(core CORE
     WordMatchSequence.hpp
     DictionaryWord.hpp
     Dictionary.hpp
+    DictionarySearch.hpp
+    DictionarySearch.cpp
     LanguageTypes.hpp
     Language.hpp
     Language.cpp

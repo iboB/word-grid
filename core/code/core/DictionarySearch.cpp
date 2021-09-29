@@ -16,6 +16,13 @@ DictionarySearch::DictionarySearch(const Dictionary& dictionary)
     : m_dictionary(dictionary)
 {}
 
+DictionarySearch::Range DictionarySearch::range() const
+{
+    if (m_ranges.empty()) return {m_dictionary.begin(), m_dictionary.end()};
+    if (m_overflow) return {m_dictionary.end(), m_dictionary.end()};
+    return m_ranges.back();
+}
+
 DictionarySearch::Result DictionarySearch::push(letter_t l)
 {
     auto& match = m_matchWord.letters;

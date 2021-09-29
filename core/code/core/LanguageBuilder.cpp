@@ -7,7 +7,6 @@
 //
 #include "LanguageBuilder.hpp"
 
-#include <algorithm>
 #include <iostream>
 
 namespace core
@@ -32,7 +31,7 @@ void LanguageBuilder::setConversionTable(LetterConversionTable table)
 namespace
 {
 
-void tryAddWord(Dictionary& words, std::string_view utf8Word, const Language& language)
+void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, const Language& language)
 {
     auto converted = language.getWordMatchSequenceFromUtf8(utf8Word);
 
@@ -82,7 +81,7 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
         }
     }
 
-    auto& words = m_language.m_dictionary;
+    std::vector<DictionaryWord> words;
     words.reserve(maxWordsInBuffer);
 
     // second pass: build dictionary
@@ -117,12 +116,8 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
         wb = we;
     }
 end:
-    // sort so searches can work
-    std::sort(words.begin(), words.end());
 
-    // while we're at it, also remove duplicates
-    auto end = std::unique(words.begin(), words.end());
-    words.erase(end, words.end());
+    m_language.m_dictionary = Dictionary(std::move(words));
 }
 
 void LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)

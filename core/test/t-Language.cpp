@@ -38,7 +38,7 @@ TEST_CASE("Simple")
     )");
     auto l = b.getLanguage();
 
-    auto& dic = l.dictionary();
+    auto& dic = l.dictionary().container();
     REQUIRE(dic.size() == 6);
 
     auto abob = dic.front();

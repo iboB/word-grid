@@ -9,9 +9,11 @@
 
 #include "DictionaryWord.hpp"
 
-#include <vector>
+#include <itlib/flat_set.hpp>
 
 namespace core
 {
-using Dictionary = std::vector<DictionaryWord>;
+using Dictionary = itlib::flat_set<DictionaryWord>;
+// this could've been a map<MatchSequence, string_view>, but instead of using first/second everywhere
+// it's much more readable to use letters/displayString
 }

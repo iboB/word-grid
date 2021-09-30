@@ -16,4 +16,7 @@ namespace core
 using Dictionary = itlib::flat_set<DictionaryWord>;
 // this could've been a map<MatchSequence, string_view>, but instead of using first/second everywhere
 // it's much more readable to use letters/displayString
+
+// perhaps this could be made into a trie in the future for even faster searches
+// no apparent need for now besides the coolness factor :)
 }

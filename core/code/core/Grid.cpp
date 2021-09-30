@@ -10,19 +10,11 @@
 namespace core
 {
 
-Grid::Grid(size_t w, size_t h, itlib::const_memory_view<WordElement> elements)
+Grid::Grid(size_t w, size_t h)
     : m_width(w)
     , m_height(h)
 {
-    if (elements.empty())
-    {
-        m_elements.resize(w * h);
-    }
-    else
-    {
-        assert(elements.size() >= w * h);
-        m_elements.assign(elements.begin(), elements.begin() + w*h);
-    }
+    m_elements.resize(w * h);
 }
 
 Grid::~Grid() = default;
@@ -30,4 +22,4 @@ Grid::~Grid() = default;
 Grid::Grid(Grid&&) noexcept = default;
 Grid& Grid::operator=(Grid&&) noexcept = default;
 
-}
+} // namespace core

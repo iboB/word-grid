@@ -7,16 +7,16 @@
 //
 #include <doctest/doctest.h>
 
-#include <core/WordMatchSequence.hpp>
 #include <core/GridElement.hpp>
 #include <core/LetterSequenceFromUtf8.hpp>
-
+#include <core/WordMatchSequence.hpp>
 
 using namespace core;
 
 TEST_SUITE_BEGIN("LetterSequence");
 
-WordMatchSequence wms(std::string_view str) {
+WordMatchSequence wms(std::string_view str)
+{
     return LetterSequence_FromUtf8<WordMatchSequence>(str);
 }
 
@@ -53,9 +53,12 @@ TEST_CASE("cmp")
     CHECK(w4 < w2);
     CHECK(w3 < w4);
     CHECK(w1 < w4);
+    CHECK(w3.getView() < w4.getView());
+    CHECK(w1.getView() < w4.getView());
 }
 
-GridElement ge(std::string_view str) {
+GridElement ge(std::string_view str)
+{
     return LetterSequence_FromUtf8<GridElement>(str);
 }
 

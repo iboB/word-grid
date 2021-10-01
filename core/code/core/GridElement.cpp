@@ -30,12 +30,12 @@ void GridElement::OptionIterator::goToNext()
     srcTo = srcEnd;
 }
 
-itlib::const_memory_view<letter_t> GridElement::OptionIterator::getMatchSequence() const
+LetterSequenceView GridElement::OptionIterator::getMatchSequence() const
 {
     auto length = size_t(srcTo - srcFrom);
     if (*srcFrom == Cont_Sign) return {srcFrom + 1, length - 1};
     if (*(srcTo - 1) == Cont_Sign) return {srcFrom, length - 1};
-    return {srcFrom, length};
+    return LetterSequenceView(srcFrom, length);
 }
 
 } // namespace core

@@ -49,7 +49,7 @@ public:
         bool isEnd() const { return srcFrom >= srcEnd; }
 
         void goToNext();
-        itlib::const_memory_view<letter_t> getMatchSequence() const;
+        LetterSequenceView getMatchSequence() const;
     };
 
     OptionIterator firstOption() const;

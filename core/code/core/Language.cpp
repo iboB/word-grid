@@ -20,7 +20,7 @@ LetterSequenceView convert(letter_t letter, const LetterConversionTable& convers
 {
     auto cf = conversionTable.find(letter);
     if (cf == conversionTable.end()) return LetterSequenceView(&letter, 1);
-    return itlib::make_memory_view(cf->second);
+    return cf->second.getView();
 }
 
 } // namespace

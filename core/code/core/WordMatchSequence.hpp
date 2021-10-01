@@ -14,21 +14,5 @@
 
 namespace core
 {
-struct WordMatchSequence : public LetterSequence<WordTraits::Max_Length>
-{
-    bool operator<(const WordMatchSequence& b) const
-    {
-        auto ai = begin();
-        auto aend = end();
-        auto bi = b.begin();
-        auto bend = b.end();
-        for (; (ai != aend) && (bi != bend); ++ai, ++bi)
-        {
-            if (*ai < *bi) return true;
-            if (*bi < *ai) return false;
-        }
-        return (ai == aend) && (bi != bend);
-    }
-};
-
+using WordMatchSequence = LetterSequence<WordTraits::Max_Length>;
 } // namespace core

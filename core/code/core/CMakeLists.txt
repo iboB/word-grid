@@ -23,6 +23,7 @@ icm_add_lib(core CORE
     GridElement.hpp
     GridElement.cpp
     GridCoord.hpp
+    GridPath.hpp
     Grid.hpp
 )
 

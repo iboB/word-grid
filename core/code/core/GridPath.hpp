@@ -7,12 +7,13 @@
 //
 #pragma once
 
-#include "WordTraits.hpp"
 #include "GridCoord.hpp"
+#include "WordTraits.hpp"
 
 #include <itlib/static_vector.hpp>
 
 namespace core
 {
-class GridPath : public itlib::static_vector<GridCoord, WordTraits::Max_Length> {};
-}
+class GridPath : public itlib::static_vector<GridCoord, WordTraits::Max_Length>
+{};
+} // namespace core

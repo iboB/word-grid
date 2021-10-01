@@ -25,6 +25,9 @@ icm_add_lib(core CORE
     GridCoord.hpp
     GridPath.hpp
     Grid.hpp
+    ScoredWord.hpp
+    BoardUtils.hpp
+    BoardUtils.cpp
 )
 
 target_include_directories(core INTERFACE ..)

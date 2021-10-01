@@ -7,11 +7,10 @@
 //
 #include "BoardUtils.hpp"
 
-#include "Word.hpp"
-#include "Grid.hpp"
-#include "WordElement.hpp"
 #include "Dictionary.hpp"
 #include "DictionarySearch.hpp"
+#include "Grid.hpp"
+#include "GridElement.hpp"
 #include "ScoredWord.hpp"
 
 #include <itlib/memory_view.hpp>
@@ -30,7 +29,7 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path);
 template <typename Visitor>
 bool visitItem(const Grid& g, const GridCoord& c, Visitor& v, GridPath& path)
 {
-    auto& gridElem = g.at(c);
+    auto& gridElem = g[c];
 
     if (gridElem.frontOnly() && !path.empty()) return false;
 
@@ -70,8 +69,7 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
             c.x = base.x + x;
             if (c.x >= g.w()) continue;
 
-            bool alreadyUsed = [&c, &path]()
-            {
+            bool alreadyUsed = [&c, &path]() {
                 for (auto& u : path)
                 {
                     if (u == c) return true;
@@ -104,8 +102,8 @@ void visitGrid(const Grid& g, Visitor& v, GridPath& path)
 
 struct TestPatternVisitor
 {
-    itlib::static_vector<itlib::const_memory_view<letter_t>, WordTraits::Max_Length + 1> top;
-    bool push(itlib::const_memory_view<letter_t> elem, const GridCoord&)
+    itlib::static_vector<LetterSequenceView, WordTraits::Max_Length + 1> top;
+    bool push(LetterSequenceView elem, const GridCoord&)
     {
         auto& pattern = top.back();
 
@@ -114,10 +112,7 @@ struct TestPatternVisitor
 
         while (ep != elem.end())
         {
-            if (pp == pattern.end())
-            {
-                return false;
-            }
+            if (pp == pattern.end()) { return false; }
             else if (*pp == '-')
             {
                 // skip hyphens
@@ -134,15 +129,12 @@ struct TestPatternVisitor
             ++pp;
         }
 
-        top.emplace_back(itlib::const_memory_view(pp, pattern.end() - pp));
+        top.emplace_back(LetterSequenceView(pp, pattern.end() - pp));
 
         return true;
     }
 
-    bool done() const
-    {
-        return top.back().empty();
-    }
+    bool done() const { return top.back().empty(); }
 
     void pop(itlib::const_memory_view<letter_t>)
     {
@@ -156,6 +148,7 @@ struct FindAllVisitor
     FindAllVisitor(const Dictionary& dic, std::vector<ScoredWord>& out)
         : d(dic)
         , out(out)
+        , ds(dic)
     {}
 
     const Dictionary& d;
@@ -163,30 +156,24 @@ struct FindAllVisitor
     DictionarySearch ds;
     GridPath path;
 
-    void addWord(const Word& word, const GridPath& path)
+    void addWord(const DictionaryWord& word, const GridPath& path)
     {
         auto& newWord = out.emplace_back();
-        newWord.word = word;
+        newWord.word = word.letters.getView();
+        newWord.displayString = word.displayString;
         newWord.path = path;
     }
-
 
     bool push(itlib::const_memory_view<letter_t> elem, const GridCoord& c)
     {
         path.push_back(c);
 
-        Dictionary::SearchResult result = Dictionary::SearchResult::None;
-        for (auto l : elem)
-        {
-            result = d.search(ds, l);
-        }
+        DictionarySearch::Result result = DictionarySearch::Result::None;
+        for (auto l : elem) { result = ds.push(l); }
 
-        if (result == Dictionary::SearchResult::Exact)
-        {
-            addWord(ds.word(), path);
-        }
+        if (result == DictionarySearch::Result::Exact) { addWord(*ds.range().begin, path); }
 
-        if (result == Dictionary::SearchResult::None)
+        if (result == DictionarySearch::Result::None)
         {
             pop(elem);
             return false;
@@ -195,26 +182,23 @@ struct FindAllVisitor
         return true; // partial match
     }
 
-    bool done()
-    {
-        return false;
-    }
+    bool done() { return false; }
 
     void pop(itlib::const_memory_view<letter_t> elem)
     {
         assert(!path.empty());
         path.pop_back();
 
-        assert(ds.length() >= elem.size());
+        assert(ds.curMatch().size() >= elem.size());
         for (size_t i = 0; i < elem.size(); ++i) ds.pop();
     }
 };
 
-}
+} // namespace
 
-GridPath testGridPattern(const Grid& grid, const Word& pattern)
+GridPath testGridPattern(const Grid& grid, LetterSequenceView pattern)
 {
-    TestPatternVisitor v = { { itlib::make_memory_view(pattern) }  };
+    TestPatternVisitor v = {{pattern}};
     GridPath ret;
     visitGrid(grid, v, ret);
     return ret;
@@ -229,4 +213,4 @@ std::vector<ScoredWord> findAllWordsInGrid(const Grid& grid, const Dictionary& d
     return ret;
 }
 
-}
+} // namespace core::impl

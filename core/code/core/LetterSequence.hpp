@@ -18,7 +18,7 @@ namespace core
 namespace impl
 {
 template <typename S>
-bool Compare_Letters(const S& a, const S& b)
+bool compareLetters(const S& a, const S& b)
 {
     auto ai = a.begin();
     auto aend = a.end();
@@ -37,7 +37,7 @@ struct LetterSequenceView : public itlib::const_memory_view<letter_t>
 {
     using itlib::const_memory_view<letter_t>::const_memory_view;
 
-    bool operator<(const LetterSequenceView& b) const { return impl::Compare_Letters(*this, b); }
+    bool operator<(const LetterSequenceView& b) const { return impl::compareLetters(*this, b); }
 };
 
 template <size_t L>
@@ -45,7 +45,7 @@ struct LetterSequence : public itlib::static_vector<letter_t, L>
 {
     LetterSequenceView getView() const { return LetterSequenceView(this->data(), this->size()); }
 
-    bool operator<(const LetterSequence& b) const { return impl::Compare_Letters(*this, b); }
+    bool operator<(const LetterSequence& b) const { return impl::compareLetters(*this, b); }
 };
 
 } // namespace core

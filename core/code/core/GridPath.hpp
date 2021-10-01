@@ -14,6 +14,5 @@
 
 namespace core
 {
-class GridPath : public itlib::static_vector<GridCoord, WordTraits::Max_Length>
-{};
+using GridPath = itlib::static_vector<GridCoord, WordTraits::Max_Length>;
 } // namespace core

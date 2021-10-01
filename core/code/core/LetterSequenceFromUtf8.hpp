@@ -13,25 +13,28 @@ namespace core
 {
 
 // convert string to letter sequence
-// will silently work around errors:
+// will work around errors:
 // * invalid utf8 characters - stop processing
 // * string longer than N - trimmed
+// returns false if any kind of error was encountered and true otherwise
 template <size_t N>
-void LetterSequence_FromUtf8(LetterSequence<N>& seq, std::string_view str)
+bool LetterSequence_FromUtf8(LetterSequence<N>& seq, std::string_view str)
 {
     auto p = str.data();
     const auto end = p + str.length();
     while (p < end)
     {
-        if (seq.size() == seq.capacity()) return;
+        if (seq.size() == seq.capacity()) return false;
 
         letter_t letter;
         auto len = UnicodeCharFromUtf8(&letter, p, end);
-        if (!len) return;
+        if (!len) return false;
 
         p += len;
         seq.push_back(letter);
     }
+
+    return true;
 }
 
 template <typename LS>

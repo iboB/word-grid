@@ -17,6 +17,15 @@ namespace core
 struct DictionaryWord
 {
     WordMatchSequence letters;
+
+    // The utf8 display string for the word. It it not necessarily the same as the letters
+    // It may have capitalization (which is ignored in letters)
+    // It may contain characters which are not present in letters (dont = don't)
+    // It may be subject to letter conversions
+    // WARNING: this is a string view. It needs to have data a carrier somewhere
+    // Languages have their own dictionary utf8 buffer
+    // Boards may optionally cary one in case they are not in the same address space as the language
+    // MIND THIS
     std::string_view displayString;
 
     // sort and compare by letters

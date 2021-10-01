@@ -8,9 +8,6 @@
 #include <doctest/doctest.h>
 
 #include <core/Grid.hpp>
-#include <core/Word.hpp>
-
-#include "g-Grids.hpp"
 
 using namespace core;
 using namespace std;

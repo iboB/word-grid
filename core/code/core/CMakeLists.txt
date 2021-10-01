@@ -23,7 +23,6 @@ icm_add_lib(core CORE
     GridElement.cpp
     GridCoord.hpp
     Grid.hpp
-    Grid.cpp
 )
 
 target_include_directories(core INTERFACE ..)

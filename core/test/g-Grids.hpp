@@ -8,7 +8,7 @@
 #pragma once
 
 #include <core/Grid.hpp>
-#include <core/Word.hpp>
+#include <core/LetterSequenceFromUtf8.hpp>
 
 namespace test
 {
@@ -19,39 +19,30 @@ namespace test
 // efgh
 // ijkl
 // mnop
-inline core::Grid Grid_alphabetical(size_t w = 4, size_t h = 4)
+inline core::Grid Grid_alphabetical()
 {
-    const auto size = w * h;
-    std::vector<core::WordElement> elems(size);
+    core::Grid g(4, 4);
     core::letter_t letter = 'a';
-    for (auto& e : elems)
+    for (auto& e : g.elements())
     {
         e.push_back(letter++);
-        if (letter == 'z' + 1) throw 0;
     }
-
-    core::Grid g(w, h, make_memory_view(elems));
     return g;
 }
 
 // a  b  c    d
-// zy f  beg- h
-// i  j  k    l
+// zy b  beg- h
+// i  j  a/l  l
 // m  n  o    -end
 inline core::Grid Grid_fancy()
 {
-    using namespace core;
-    std::vector<WordElement> elems(16);
-    for (int i=0; i<16; ++i)
-    {
-        elems[i].push_back('a' + i);
-    }
-
-    elems[4] = WordElement::fromAscii("zy");
-    elems[6] = WordElement::fromAscii("beg-");
-    elems[15] = WordElement::fromAscii("-end");
-
-    core::Grid g(4, 4, make_memory_view(elems));
+    auto g = Grid_alphabetical();
+    auto elems = g.elements();
+    core::LetterSequence_FromUtf8(elems[4], "zy");
+    core::LetterSequence_FromUtf8(elems[5], "b");
+    core::LetterSequence_FromUtf8(elems[6], "beg-");
+    core::LetterSequence_FromUtf8(elems[10], "a/l");
+    core::LetterSequence_FromUtf8(elems[15], "-end");
     return g;
 }
 }

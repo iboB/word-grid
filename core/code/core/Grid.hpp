@@ -41,7 +41,7 @@ public:
     GridCoord coordOf(size_t i) const
     {
         auto dm = std::div(int(i), int(m_width));
-        return {uint8_t(dm.quot), uint8_t(dm.rem)};
+        return {uint8_t(dm.rem), uint8_t(dm.quot)};
     }
     const GridElement& operator[](const GridCoord& c) const { return m_elements[indexOf(c)]; }
     GridElement& operator[](const GridCoord& c) { return m_elements[indexOf(c)]; }

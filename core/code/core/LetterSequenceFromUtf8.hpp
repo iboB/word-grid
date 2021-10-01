@@ -20,6 +20,7 @@ namespace core
 template <size_t N>
 bool LetterSequence_FromUtf8(LetterSequence<N>& seq, std::string_view str)
 {
+    seq.clear();
     auto p = str.data();
     const auto end = p + str.length();
     while (p < end)

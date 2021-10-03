@@ -38,16 +38,17 @@ bool visitItem(const Grid& g, const GridCoord& c, Visitor& v, GridPath& path)
         auto seq = option.getMatchSequence();
 
         if (!v.push(seq, c)) continue;
+        path.push_back(c);
         if (v.done()) return true;
 
         if (!gridElem.backOnly())
         {
-            path.push_back(c);
+            // only recurse if this is not a back-only grid elem
             if (visitGridR(g, v, path)) return true;
-            path.pop_back();
         }
 
         v.pop(seq);
+        path.pop_back();
     }
 
     return false;
@@ -103,6 +104,7 @@ void visitGrid(const Grid& g, Visitor& v, GridPath& path)
 struct TestPatternVisitor
 {
     itlib::static_vector<LetterSequenceView, WordTraits::Max_Length + 1> top;
+
     bool push(LetterSequenceView elem, const GridCoord&)
     {
         auto& pattern = top.back();
@@ -112,18 +114,8 @@ struct TestPatternVisitor
 
         while (ep != elem.end())
         {
-            if (pp == pattern.end()) { return false; }
-            else if (*pp == '-')
-            {
-                // skip hyphens
-                ++pp;
-                continue;
-            }
-            else if (*ep != *pp)
-            {
-                // no match
-                return false;
-            }
+            if (pp == pattern.end()) return false; // end of pattern before end of element
+            if (*ep != *pp) return false; // no match
 
             ++ep;
             ++pp;
@@ -196,9 +188,9 @@ struct FindAllVisitor
 
 } // namespace
 
-GridPath testGridPattern(const Grid& grid, LetterSequenceView pattern)
+GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern)
 {
-    TestPatternVisitor v = {{pattern}};
+    TestPatternVisitor v = {{pattern.getView()}};
     GridPath ret;
     visitGrid(grid, v, ret);
     return ret;

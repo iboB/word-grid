@@ -9,8 +9,8 @@
 #include "API.h"
 
 #include "GridPath.hpp"
-#include "LetterSequence.hpp"
 #include "Types.hpp"
+#include "WordMatchSequence.hpp"
 
 #include <vector>
 
@@ -26,7 +26,7 @@ namespace impl
 
 // tests a pattern (word)
 // return coordinates of elements of first occurance found on the grid or empty path if not found
-CORE_API GridPath testGridPattern(const Grid& grid, LetterSequenceView pattern);
+CORE_API GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern);
 
 // searches entire grid for words in dictionary and adds returns them along with paths
 // WARNING: will return a vector of incomplete ScoredWord-s

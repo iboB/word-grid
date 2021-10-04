@@ -49,6 +49,9 @@ TEST_CASE("matching")
     path = testGridPattern(grid, wms("dgjnka"));
     CHECK(path.size() == 0);
 
+    path = testGridPattern(grid, wms("aa"));
+    CHECK(path.size() == 0);
+
     path = testGridPattern(grid, wms("zz"));
     CHECK(path.size() == 0);
 
@@ -65,11 +68,10 @@ TEST_CASE("matching")
     path = testGridPattern(grid, wms("dgjnk"));
     CHECK(path.size() == 0);
 
-    /*
-    path = testGridPattern(grid, wms("dbeg-"));
+    path = testGridPattern(grid, wms("dbeg"));
     CHECK(path.size() == 0);
 
-    path = testGridPattern(grid, wms("dbeg"));
+    path = testGridPattern(grid, wms("beg-d"));
     CHECK(path.size() == 0);
 
     path = testGridPattern(grid, wms("begd"));
@@ -78,7 +80,22 @@ TEST_CASE("matching")
     path = testGridPattern(grid, wms("beg"));
     CHECK(path.size() == 1);
 
-    path = testGridPattern(grid, wms("begfzy"));
+    path = testGridPattern(grid, wms("be"));
+    CHECK(path.size() == 0);
+
+    path = testGridPattern(grid, wms("oen"));
+    CHECK(path.size() == 0);
+
+    path = testGridPattern(grid, wms("begbb"));
+    CHECK(path.size() == 3);
+
+    path = testGridPattern(grid, wms("begend"));
+    CHECK(path.size() == 0);
+
+    path = testGridPattern(grid, wms("bbcc"));
+    CHECK(path.size() == 0);
+
+    path = testGridPattern(grid, wms("bbc"));
     CHECK(path.size() == 3);
 
     path = testGridPattern(grid, wms("endo"));
@@ -88,7 +105,7 @@ TEST_CASE("matching")
     CHECK(path.size() == 2);
 
     path = testGridPattern(grid, wms("o-end"));
-    CHECK(path.size() == 2);
+    CHECK(path.size() == 0);
 
     path = testGridPattern(grid, wms("end"));
     CHECK(path.size() == 1);
@@ -96,35 +113,13 @@ TEST_CASE("matching")
     path = testGridPattern(grid, wms("-end"));
     CHECK(path.size() == 0);
 
-    path = testGridPattern(grid, wms("begbzyjkend"));
-    CHECK(path.size() == 6);
+    path = testGridPattern(grid, wms("beglend"));
+    CHECK(path.size() == 3);
 
-    path = testGridPattern(grid, wms("begbzy-jkend"));
-    CHECK(path.size() == 6);
+    path = testGridPattern(grid, wms("begaend"));
+    CHECK(path.size() == 3);
 
-    */
+    path = testGridPattern(grid, wms("zyjllend"));
+    CHECK(path.size() == 5);
 }
 
-TEST_CASE("find all")
-{
-    // abcd
-    // efgh
-    // ijkl
-    // mnop
-//     auto grid = test::Grid_alphabetical();
-
-//     const uint8_t d1[] = R"d1c(
-// zog
-// afe
-// pokl
-// abop
-// jiebcd
-// klij
-// efkl
-// jkkl
-// iijk
-// )d1c";
-    // auto dic = Dictionary::fromUtf8Buffer(itlib::make_memory_view(d1));
-}
-
-TEST_SUITE_END();

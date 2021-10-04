@@ -41,11 +41,7 @@ TEST_CASE("matching basic")
 
     path = testGridPattern(grid, wms("dgjnk"));
     CHECK(path.size() == 5);
-    CHECK(path[0] == GridCoord{3, 0});
-    CHECK(path[1] == GridCoord{2, 1});
-    CHECK(path[2] == GridCoord{1, 2});
-    CHECK(path[3] == GridCoord{1, 3});
-    CHECK(path[4] == GridCoord{2, 2});
+    CHECK(path == GridPath{{3, 0}, {2, 1}, {1, 2}, {1, 3}, {2, 2}});
 
     path = testGridPattern(grid, wms("dgjnka"));
     CHECK(path.size() == 0);
@@ -158,7 +154,9 @@ TEST_CASE("find all basic")
     auto found = findAllWordsInGrid(grid, d);
     REQUIRE(found.size() == 4);
     CHECK(found[0].displayString == "afe");
+    CHECK(found[0].path == GridPath{{0, 0}, {1, 1}, {0, 1}});
     CHECK(found[1].displayString == "efkl");
+    CHECK(found[1].path == GridPath{{0, 1}, {1, 1}, {2, 2}, {3, 2}});
     CHECK(found[2].displayString == "jiebcd");
     CHECK(found[3].displayString == "pokl");
 }

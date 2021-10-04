@@ -23,4 +23,10 @@ inline bool operator==(const GridCoord& a, const GridCoord& b)
     return a.x == b.x && a.y == b.y;
 }
 
+inline bool operator!=(const GridCoord& a, const GridCoord& b)
+{
+    return a.x != b.x || a.y != b.y;
+}
+
+
 } // namespace core

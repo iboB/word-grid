@@ -10,6 +10,7 @@
 #include <core/BoardUtils.hpp>
 #include <core/Dictionary.hpp>
 #include <core/Grid.hpp>
+#include <core/ScoredWord.hpp>
 #include <core/WordMatchSequence.hpp>
 
 #include "g-Grids.hpp"
@@ -24,7 +25,7 @@ WordMatchSequence wms(std::string_view str)
     return LetterSequence_FromUtf8<WordMatchSequence>(str);
 }
 
-TEST_CASE("matching")
+TEST_CASE("matching basic")
 {
     // abcd
     // efgh
@@ -58,14 +59,17 @@ TEST_CASE("matching")
     path = testGridPattern(grid, wms("p"));
     CHECK(path.size() == 1);
     CHECK(path[0] == GridCoord{3, 3});
+}
 
+TEST_CASE("matching fancy")
+{
     // a  b  c    d
     // zy b  beg- h
     // i  j  a/l  l
     // m  n  o    -end
-    grid = test::Grid_fancy();
+    auto grid = test::Grid_fancy();
 
-    path = testGridPattern(grid, wms("dgjnk"));
+    auto path = testGridPattern(grid, wms("dgjnk"));
     CHECK(path.size() == 0);
 
     path = testGridPattern(grid, wms("dbeg"));
@@ -123,3 +127,38 @@ TEST_CASE("matching")
     CHECK(path.size() == 5);
 }
 
+DictionaryWord dw(std::string_view str)
+{
+    DictionaryWord ret;
+    LetterSequence_FromUtf8(ret.letters, str);
+    ret.displayString = str;
+    return ret;
+}
+
+TEST_CASE("find all basic")
+{
+    // abcd
+    // efgh
+    // ijkl
+    // mnop
+    auto grid = test::Grid_alphabetical();
+
+    Dictionary d = {
+        dw("zog"),
+        dw("afe"), //
+        dw("pokl"), //
+        dw("abop"),
+        dw("jiebcd"), //
+        dw("klij"),
+        dw("efkl"), //
+        dw("jkkl"),
+        dw("iijk"),
+    };
+
+    auto found = findAllWordsInGrid(grid, d);
+    REQUIRE(found.size() == 4);
+    CHECK(found[0].displayString == "afe");
+    CHECK(found[1].displayString == "efkl");
+    CHECK(found[2].displayString == "jiebcd");
+    CHECK(found[3].displayString == "pokl");
+}

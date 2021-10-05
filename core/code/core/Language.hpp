@@ -48,6 +48,7 @@ private:
     std::string m_displayName;
 
     Alphabet m_alphabet;
+    Specials m_specials;
 
     LetterConversionTable m_conversionTable;
 

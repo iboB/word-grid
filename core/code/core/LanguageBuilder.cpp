@@ -22,6 +22,11 @@ void LanguageBuilder::setAlphabet(Alphabet alphabet)
     m_language.m_alphabet = std::move(alphabet);
 }
 
+void LanguageBuilder::setSpecials(Specials specials)
+{
+    m_language.m_specials = std::move(specials);
+}
+
 void LanguageBuilder::setConversionTable(LetterConversionTable table)
 {
     assert(m_language.m_dictionaryUtf8Buffer.empty());

@@ -37,6 +37,7 @@ TEST_CASE("Simple")
         ooo-aaa
     )");
     auto l = b.getLanguage();
+    CHECK(l.displayName() == "simple");
 
     auto& dic = l.dictionary().container();
     REQUIRE(dic.size() == 6);

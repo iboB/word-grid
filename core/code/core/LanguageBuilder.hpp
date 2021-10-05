@@ -19,6 +19,7 @@ public:
     void setDisplayName(std::string str);
 
     void setAlphabet(Alphabet alphabet);
+    void setSpecials(Specials specials);
 
     void setConversionTable(LetterConversionTable table);
 

@@ -7,18 +7,15 @@
 //
 #pragma once
 
-#include "LetterSequence.hpp"
+#include "GridElement.hpp"
 
 #include <itlib/flat_map.hpp>
 
 namespace core
 {
 
-struct AlphabetLetterData
-{
-    score_t score;
-};
-using Alphabet = itlib::flat_map<letter_t, AlphabetLetterData>;
+using Alphabet = std::vector<GridElement>;
+using Specials = std::vector<GridElement>;
 
 using LetterConversionTarget = LetterSequence<3>;
 using LetterConversionTable = itlib::flat_map<letter_t, LetterConversionTarget>;

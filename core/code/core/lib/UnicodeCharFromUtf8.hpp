@@ -74,4 +74,4 @@ inline int UnicodeCharFromUtf8(uint32_t* out_char, const char* in_text, const ch
     return 0;
 }
 
-}
+} // namespace core

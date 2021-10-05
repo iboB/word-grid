@@ -17,7 +17,7 @@ int Utf8LengthOfUnicodeChar(uint32_t cp)
     if (cp <= 0x7f) return 1;
     if (cp <= 0x7ff) return 2;
     if (cp <= 0xffff) return 3;
-    
+
     return 4;
 }
 

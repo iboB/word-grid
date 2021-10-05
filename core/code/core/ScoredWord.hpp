@@ -7,8 +7,8 @@
 //
 #pragma once
 
-#include "LetterSequence.hpp"
 #include "GridPath.hpp"
+#include "LetterSequence.hpp"
 
 #include <string_view>
 
@@ -29,4 +29,4 @@ struct ScoredWord
     score_t score = 0; // total score
     bool special = 0; // word is a bonus word (score is not necessarily simply aggregated over path)
 };
-}
+} // namespace core

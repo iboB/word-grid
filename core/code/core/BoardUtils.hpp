@@ -8,10 +8,10 @@
 #pragma once
 #include "API.h"
 
+#include "DictionaryWord.hpp"
 #include "GridPath.hpp"
 #include "Types.hpp"
 #include "WordMatchSequence.hpp"
-#include "DictionaryWord.hpp"
 
 #include <vector>
 

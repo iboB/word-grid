@@ -153,12 +153,12 @@ TEST_CASE("find all basic")
 
     auto found = findAllWordsInGrid(grid, d);
     REQUIRE(found.size() == 4);
-    CHECK(found[0].displayString == "afe");
+    CHECK(found[0].word.displayString == "afe");
     CHECK(found[0].path == GridPath{{0, 0}, {1, 1}, {0, 1}});
-    CHECK(found[1].displayString == "efkl");
+    CHECK(found[1].word.displayString == "efkl");
     CHECK(found[1].path == GridPath{{0, 1}, {1, 1}, {2, 2}, {3, 2}});
-    CHECK(found[2].displayString == "jiebcd");
-    CHECK(found[3].displayString == "pokl");
+    CHECK(found[2].word.displayString == "jiebcd");
+    CHECK(found[3].word.displayString == "pokl");
 }
 
 TEST_CASE("find all fancy")
@@ -189,35 +189,35 @@ TEST_CASE("find all fancy")
     auto found = findAllWordsInGrid(grid, d);
     REQUIRE(found.size() == 14);
     auto f = found.begin();
-    CHECK(f->displayString == "abbj");
+    CHECK(f->word.displayString == "abbj");
     ++f;
-    CHECK(f->displayString == "cba");
+    CHECK(f->word.displayString == "cba");
     ++f;
-    CHECK(f->displayString == "cba");
+    CHECK(f->word.displayString == "cba");
     ++f;
-    CHECK(f->displayString == "cba");
+    CHECK(f->word.displayString == "cba");
     ++f;
-    CHECK(f->displayString == "zybblend");
+    CHECK(f->word.displayString == "zybblend");
     ++f;
-    CHECK(f->displayString == "beg");
+    CHECK(f->word.displayString == "beg");
     ++f;
-    CHECK(f->displayString == "begh");
+    CHECK(f->word.displayString == "begh");
     ++f;
-    CHECK(f->displayString == "begaend");
+    CHECK(f->word.displayString == "begaend");
     ++f;
-    CHECK(f->displayString == "beglh");
+    CHECK(f->word.displayString == "beglh");
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {3, 1}});
     ++f;
-    CHECK(f->displayString == "begln");
+    CHECK(f->word.displayString == "begln");
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {1, 3}});
     ++f;
-    CHECK(f->displayString == "beglh");
+    CHECK(f->word.displayString == "beglh");
     ++f;
-    CHECK(f->displayString == "hlo");
+    CHECK(f->word.displayString == "hlo");
     ++f;
-    CHECK(f->displayString == "hlo");
+    CHECK(f->word.displayString == "hlo");
     ++f;
-    CHECK(f->displayString == "end");
+    CHECK(f->word.displayString == "end");
     CHECK(f->path == GridPath{{3, 3}});
 
     CHECK(++f == found.end());

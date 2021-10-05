@@ -137,24 +137,16 @@ struct TestPatternVisitor
 
 struct FindAllVisitor
 {
-    FindAllVisitor(const Dictionary& dic, std::vector<ScoredWord>& out)
+    FindAllVisitor(const Dictionary& dic, std::vector<FindAllWord>& out)
         : d(dic)
         , out(out)
         , ds(dic)
     {}
 
     const Dictionary& d;
-    std::vector<ScoredWord>& out;
+    std::vector<FindAllWord>& out;
     DictionarySearch ds;
     GridPath path;
-
-    void addWord(const DictionaryWord& word, const GridPath& path)
-    {
-        auto& newWord = out.emplace_back();
-        newWord.word = word.letters.getView();
-        newWord.displayString = word.displayString;
-        newWord.path = path;
-    }
 
     bool push(itlib::const_memory_view<letter_t> elem, const GridCoord& c)
     {
@@ -163,7 +155,11 @@ struct FindAllVisitor
         DictionarySearch::Result result = DictionarySearch::Result::None;
         for (auto l : elem) { result = ds.push(l); }
 
-        if (result == DictionarySearch::Result::Exact) { addWord(*ds.range().begin, path); }
+        if (result == DictionarySearch::Result::Exact)
+        {
+            out.push_back({*ds.range().begin, path});
+            // Don't return. Search deeper for words which also contain this word as it's beginning
+        }
 
         if (result == DictionarySearch::Result::None)
         {
@@ -196,9 +192,9 @@ GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern)
     return ret;
 }
 
-std::vector<ScoredWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary)
+std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary)
 {
-    std::vector<ScoredWord> ret;
+    std::vector<FindAllWord> ret;
     FindAllVisitor v(dictionary, ret);
     GridPath path;
     visitGrid(grid, v, path);

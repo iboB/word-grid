@@ -11,6 +11,7 @@
 #include "GridPath.hpp"
 #include "Types.hpp"
 #include "WordMatchSequence.hpp"
+#include "DictionaryWord.hpp"
 
 #include <vector>
 
@@ -29,9 +30,12 @@ namespace impl
 CORE_API GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern);
 
 // searches entire grid for words in dictionary and adds returns them along with paths
-// WARNING: will return a vector of incomplete ScoredWord-s
-// score-related stuff won't be touched
-CORE_API std::vector<ScoredWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary);
+struct FindAllWord
+{
+    const DictionaryWord& word;
+    GridPath path;
+};
+CORE_API std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary);
 
 } // namespace impl
 } // namespace core

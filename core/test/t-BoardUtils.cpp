@@ -160,3 +160,65 @@ TEST_CASE("find all basic")
     CHECK(found[2].displayString == "jiebcd");
     CHECK(found[3].displayString == "pokl");
 }
+
+TEST_CASE("find all fancy")
+{
+    // a  b  c    d
+    // zy b  beg- h
+    // i  j  a/l  l
+    // m  n  o    -end
+    auto grid = test::Grid_fancy();
+
+    Dictionary d = {
+        dw("zog"),
+        dw("beg"), //
+        dw("begh"), //
+        dw("begaend"), //
+        dw("beglh"), // x2
+        dw("zybbeg"),
+        dw("zybblend"), //
+        dw("byzb"), dw("yza"),
+        dw("abbj"), //
+        dw("endo"), dw("dhlm"),
+        dw("hlo"), // x2
+        dw("cba"), // x3
+        dw("begln"), //
+        dw("end"), //
+    };
+
+    auto found = findAllWordsInGrid(grid, d);
+    REQUIRE(found.size() == 14);
+    auto f = found.begin();
+    CHECK(f->displayString == "abbj");
+    ++f;
+    CHECK(f->displayString == "cba");
+    ++f;
+    CHECK(f->displayString == "cba");
+    ++f;
+    CHECK(f->displayString == "cba");
+    ++f;
+    CHECK(f->displayString == "zybblend");
+    ++f;
+    CHECK(f->displayString == "beg");
+    ++f;
+    CHECK(f->displayString == "begh");
+    ++f;
+    CHECK(f->displayString == "begaend");
+    ++f;
+    CHECK(f->displayString == "beglh");
+    CHECK(f->path == GridPath{{2, 1}, {2, 2}, {3, 1}});
+    ++f;
+    CHECK(f->displayString == "begln");
+    CHECK(f->path == GridPath{{2, 1}, {2, 2}, {1, 3}});
+    ++f;
+    CHECK(f->displayString == "beglh");
+    ++f;
+    CHECK(f->displayString == "hlo");
+    ++f;
+    CHECK(f->displayString == "hlo");
+    ++f;
+    CHECK(f->displayString == "end");
+    CHECK(f->path == GridPath{{3, 3}});
+
+    CHECK(++f == found.end());
+}

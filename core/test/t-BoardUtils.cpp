@@ -14,6 +14,7 @@
 #include <core/WordMatchSequence.hpp>
 
 #include "g-Grids.hpp"
+#include "tu-GridPath.hpp"
 
 using namespace core;
 using namespace core::impl;
@@ -35,9 +36,11 @@ TEST_CASE("matching basic")
 
     auto path = testGridPattern(grid, wms("r"));
     CHECK(path.empty());
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("a"));
     REQUIRE(path.size() == 1);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("dgjnk"));
     CHECK(path.size() == 5);
@@ -67,6 +70,7 @@ TEST_CASE("matching fancy")
 
     auto path = testGridPattern(grid, wms("dgjnk"));
     CHECK(path.size() == 0);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("dbeg"));
     CHECK(path.size() == 0);
@@ -76,9 +80,11 @@ TEST_CASE("matching fancy")
 
     path = testGridPattern(grid, wms("begd"));
     CHECK(path.size() == 2);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("beg"));
     CHECK(path.size() == 1);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("be"));
     CHECK(path.size() == 0);
@@ -88,6 +94,7 @@ TEST_CASE("matching fancy")
 
     path = testGridPattern(grid, wms("begbb"));
     CHECK(path.size() == 3);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("begend"));
     CHECK(path.size() == 0);
@@ -97,6 +104,7 @@ TEST_CASE("matching fancy")
 
     path = testGridPattern(grid, wms("bbc"));
     CHECK(path.size() == 3);
+    CHECK(test::isValidGridPath(path, grid));
 
     path = testGridPattern(grid, wms("endo"));
     CHECK(path.size() == 0);
@@ -121,6 +129,7 @@ TEST_CASE("matching fancy")
 
     path = testGridPattern(grid, wms("zyjllend"));
     CHECK(path.size() == 5);
+    CHECK(test::isValidGridPath(path, grid));
 }
 
 DictionaryWord dw(std::string_view str)
@@ -158,7 +167,9 @@ TEST_CASE("find all basic")
     CHECK(found[1].word.displayString == "efkl");
     CHECK(found[1].path == GridPath{{0, 1}, {1, 1}, {2, 2}, {3, 2}});
     CHECK(found[2].word.displayString == "jiebcd");
+    CHECK(test::isValidGridPath(found[2].path, grid));
     CHECK(found[3].word.displayString == "pokl");
+    CHECK(test::isValidGridPath(found[3].path, grid));
 }
 
 TEST_CASE("find all fancy")
@@ -190,20 +201,28 @@ TEST_CASE("find all fancy")
     REQUIRE(found.size() == 14);
     auto f = found.begin();
     CHECK(f->word.displayString == "abbj");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "cba");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "cba");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "cba");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "zybblend");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "beg");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "begh");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "begaend");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "beglh");
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {3, 1}});
@@ -212,10 +231,13 @@ TEST_CASE("find all fancy")
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {1, 3}});
     ++f;
     CHECK(f->word.displayString == "beglh");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "hlo");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "hlo");
+    CHECK(test::isValidGridPath(f->path, grid));
     ++f;
     CHECK(f->word.displayString == "end");
     CHECK(f->path == GridPath{{3, 3}});

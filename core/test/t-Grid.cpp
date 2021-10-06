@@ -50,7 +50,7 @@ TEST_CASE("alphabetical")
         CHECK(e.size() == 1);
         CHECK(e[0] == l++);
     }
-    CHECK(g[GridCoord{1, 2}][0] == 'j');
+    CHECK(g.at({1, 2})[0] == 'j');
     CHECK(g.coordOf(11) == GridCoord{3, 2});
 }
 

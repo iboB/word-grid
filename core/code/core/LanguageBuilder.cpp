@@ -8,6 +8,7 @@
 #include "LanguageBuilder.hpp"
 
 #include <iostream>
+#include <numeric>
 
 namespace core
 {
@@ -19,7 +20,47 @@ void LanguageBuilder::setDisplayName(std::string str)
 
 void LanguageBuilder::setAlphabet(Alphabet alphabet)
 {
+    score_t highestScore = 0; // highest score within the alphabet
+    for (auto& l : alphabet)
+    {
+        if (l.score() > highestScore) highestScore = l.score();
+    }
+    if (highestScore == 0)
+    {
+        std::cout << "Rejecting alphabet with no positive scores\n";
+        return;
+    }
+
     m_language.m_alphabet = std::move(alphabet);
+
+    // prepare frequency table
+    const auto& ab = m_language.m_alphabet;
+    auto& ft = m_language.m_alphabetFrequencyTable;
+    ft.clear();
+
+    auto scoreFor = [highestScore](const GridElement& item) {
+        // score if positive, otherwise highest + abs
+        return item.score() > 0 ? item.score() : highestScore + std::abs(item.score());
+    };
+
+    auto ftLcm = 1;
+    for (auto& l : ab)
+    {
+        const auto score = scoreFor(l);
+        ftLcm = std::lcm(ftLcm, score);
+    }
+
+    // we could make another loop to calculate a size to reserver here, but why bother
+
+    for (auto& l : ab)
+    {
+        const auto score = scoreFor(l);
+        auto freq = ftLcm / score;
+        while (freq-- > 0) // "freq --> 0" looks cooler, but we'll live without it for clang-format's sake
+        {
+            ft.emplace_back(l);
+        }
+    }
 }
 
 void LanguageBuilder::setSpecials(Specials specials)

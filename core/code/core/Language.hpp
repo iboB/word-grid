@@ -31,6 +31,15 @@ public:
 
     const std::string& displayName() const { return m_displayName; }
 
+    const Alphabet& alphabet() const { return m_alphabet; }
+
+    // an array with repeated values per letter, such that taking a random element from it
+    // will produce an alphabet item with probablity inverse to the score
+    // if the score of an item is non-positive the probability is equal calculated as if the item's score is
+    // equal to the item with the highest positive score positive score + the provided score
+    using AlphabetFrequencyTable = std::vector<std::reference_wrapper<const GridElement>>;
+    const AlphabetFrequencyTable& alphabetFrequencyTable() const { return m_alphabetFrequencyTable; }
+
     enum class FromUtf8Error
     {
         TooShort,
@@ -56,6 +65,8 @@ private:
     std::string m_displayName;
 
     Alphabet m_alphabet;
+    AlphabetFrequencyTable m_alphabetFrequencyTable;
+
     Specials m_specials;
 
     LetterConversionTable m_conversionTable;

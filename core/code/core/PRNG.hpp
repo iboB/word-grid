@@ -30,7 +30,7 @@ public:
     template <typename T>
     T randomInteger(T t)
     {
-        return T(get()) % t;
+        return T(get() % t);
     }
 
     // get a random element from a std::vector-like container

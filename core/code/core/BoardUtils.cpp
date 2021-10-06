@@ -11,6 +11,7 @@
 #include "DictionarySearch.hpp"
 #include "Grid.hpp"
 #include "GridElement.hpp"
+#include "PRNG.hpp"
 #include "ScoredWord.hpp"
 
 #include <itlib/memory_view.hpp>
@@ -198,6 +199,77 @@ std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& 
     FindAllVisitor v(dictionary, ret);
     GridPath path;
     visitGrid(grid, v, path);
+    return ret;
+}
+
+namespace
+{
+
+using AvailableNeighbors = itlib::static_vector<GridCoord, 8>;
+
+AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, uint32_t w, uint32_t h, const GridPath& path)
+{
+    AvailableNeighbors ret;
+
+    for (int y = -1; y <= 1; ++y)
+    {
+        GridCoord c;
+        c.y = coord.y + y;
+        if (c.y >= h) continue;
+        for (int x = -1; x <= 1; ++x)
+        {
+            if (x == 0 && y == 0) continue;
+            c.x = coord.x + x;
+            if (c.x >= w) continue;
+
+            bool alreadyUsed = [&c, &path]() {
+                for (auto& u : path)
+                {
+                    if (u == c) return true;
+                }
+                return false;
+            }();
+
+            if (alreadyUsed) continue;
+
+            ret.push_back(c);
+        }
+    }
+
+    return ret;
+}
+
+bool randomPathR(GridPath& path, uint32_t targetLength, uint32_t w, uint32_t h, PRNG& rng)
+{
+    if (path.size() == targetLength) return true;
+
+    auto neighbors = generateAvailableNeighbors(path.back(), w, h, path);
+
+    while (!neighbors.empty())
+    {
+        auto i = rng.randomInteger(neighbors.size());
+        path.push_back(neighbors[i]);
+        neighbors.erase(neighbors.begin() + i);
+        if (randomPathR(path, targetLength, w, h, rng)) return true;
+        path.pop_back();
+    }
+
+    return false;
+}
+
+} // namespace
+
+GridPath generateRandomPath(uint32_t length, uint32_t w, uint32_t h, PRNG& rng)
+{
+    if (length > w * h || length > WordTraits::Max_Length) return {};
+    if (length == 0) return {};
+
+    GridPath ret;
+    // choose starting element
+    ret.push_back({rng.randomInteger(uint8_t(w)), rng.randomInteger(uint8_t(h))});
+
+    randomPathR(ret, length, w, h, rng);
+
     return ret;
 }
 

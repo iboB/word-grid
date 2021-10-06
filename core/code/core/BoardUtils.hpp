@@ -22,6 +22,7 @@ namespace core
 
 class Grid;
 class Dictionary;
+class PRNG;
 struct ScoredWord;
 
 namespace impl
@@ -38,6 +39,10 @@ struct FindAllWord
     GridPath path;
 };
 CORE_API std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary);
+
+// generate a random path of a given length for a [w x h] grid
+// if length is greater than w*h, the behavior is undefined
+CORE_API GridPath generateRandomPath(uint32_t length, uint32_t w, uint32_t h, PRNG& rng);
 
 } // namespace impl
 } // namespace core

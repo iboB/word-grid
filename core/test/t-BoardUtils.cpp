@@ -12,6 +12,7 @@
 #include <core/Grid.hpp>
 #include <core/ScoredWord.hpp>
 #include <core/WordMatchSequence.hpp>
+#include <core/PRNG.hpp>
 
 #include "g-Grids.hpp"
 #include "tu-GridPath.hpp"
@@ -243,4 +244,23 @@ TEST_CASE("find all fancy")
     CHECK(f->path == GridPath{{3, 3}});
 
     CHECK(++f == found.end());
+}
+
+TEST_CASE("random path")
+{
+    PRNG rng;
+    auto p = generateRandomPath(0, 4, 4, rng);
+    CHECK(p.empty());
+
+    p = generateRandomPath(1, 4, 4, rng);
+    CHECK(p.size() == 1);
+    CHECK(test::isValidGridPath(p, 4, 4));
+
+    p = generateRandomPath(8, 4, 4, rng);
+    CHECK(p.size() == 8);
+    CHECK(test::isValidGridPath(p, 4, 4));
+
+    p = generateRandomPath(16, 4, 4, rng);
+    CHECK(p.size() == 16);
+    CHECK(test::isValidGridPath(p, 4, 4));
 }

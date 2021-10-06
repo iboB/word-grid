@@ -23,8 +23,22 @@ public:
     PRNG(const PRNG&) = delete;
     PRNG& operator=(const PRNG&) = delete;
 
-    // returns a random number from 0 to INT_MAX
-    int operator()();
+    // random number from 0 to INT_MAX
+    int get();
+
+    // return a random number from 0 to t (t must be <= INT_MAX)
+    template <typename T>
+    T randomInteger(T t)
+    {
+        return T(get()) % t;
+    }
+
+    // get a random element from a std::vector-like container
+    template <typename T>
+    auto randomElement(const T& t) -> typename T::const_reference
+    {
+        return t[randomInteger(t.size())];
+    }
 
 private:
     static inline constexpr long IMPL_SIZE = 8;

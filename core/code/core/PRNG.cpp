@@ -45,7 +45,7 @@ PRNG::~PRNG()
 }
 
 // returns a random number from 0 to INT_MAX
-int PRNG::operator()()
+int PRNG::get()
 {
     return m_impl.rng();
 }

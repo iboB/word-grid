@@ -4,6 +4,7 @@
 #include <core/LetterSequenceFromUtf8.hpp>
 #include <core/PRNG.hpp>
 #include <core/Grid.hpp>
+#include <core/BoardUtils.hpp>
 
 using namespace std;
 
@@ -51,10 +52,18 @@ int main()
     core::Grid g(4, 4);
 
     core::PRNG rng;
+
+    std::string_view str = "hoarse";
+    auto p = core::impl::generateRandomPath(str.length(), 4, 4, rng);
+    for (size_t i = 0; i < str.length(); ++i)
+    {
+        g[p[i]] = lang.alphabet()[str[i] - 'a'];
+    }
+
     auto& ft = lang.alphabetFrequencyTable();
     for (auto& e : g.elements())
     {
-        e = rng.randomElement(ft);
+        if (e.score() == 0) e = rng.randomElement(ft);
     }
 
     for (uint8_t y = 0; y < g.h(); ++y)

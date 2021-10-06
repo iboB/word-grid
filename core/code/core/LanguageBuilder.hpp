@@ -21,6 +21,8 @@ public:
     void setAlphabet(Alphabet alphabet);
     void setSpecials(Specials specials);
 
+    void setMinWordLength(uint32_t length);
+
     void setConversionTable(LetterConversionTable table);
 
     void setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);

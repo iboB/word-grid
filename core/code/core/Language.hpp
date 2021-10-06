@@ -51,6 +51,8 @@ public:
     // (namely make use on the conversion table)
     itlib::expected<WordMatchSequence, FromUtf8Error> getWordMatchSequenceFromUtf8(std::string_view str) const;
 
+    uint32_t minWordLength() const { return m_minWordLength; }
+
     const Dictionary& dictionary() const { return m_dictionary; }
 
     // limits for score
@@ -71,6 +73,7 @@ private:
 
     LetterConversionTable m_conversionTable;
 
+    uint32_t m_minWordLength = 1;
     Dictionary m_dictionary;
     std::vector<char> m_dictionaryUtf8Buffer;
 

@@ -50,7 +50,7 @@ itlib::expected<WordMatchSequence, Language::FromUtf8Error> Language::getWordMat
         for (auto l : toAdd) ret.push_back(l);
     }
 
-    if (ret.size() < WordTraits::Min_Length) return itlib::unexpected(FromUtf8Error::TooShort);
+    if (ret.size() < m_minWordLength) return itlib::unexpected(FromUtf8Error::TooShort);
 
     return ret;
 }

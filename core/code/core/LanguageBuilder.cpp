@@ -73,8 +73,23 @@ void LanguageBuilder::setSpecials(Specials specials)
     m_language.m_specials = std::move(specials);
 }
 
+void LanguageBuilder::setMinWordLength(uint32_t length)
+{
+    // conversion table must be set before dictionary
+    assert(m_language.m_dictionaryUtf8Buffer.empty());
+
+    if (length < 1)
+    {
+        std::cout << "Rejecting zero min word length\n";
+        return;
+    }
+
+    m_language.m_minWordLength = length;
+}
+
 void LanguageBuilder::setConversionTable(LetterConversionTable table)
 {
+    // conversion table, if present, must be set before dictionary
     assert(m_language.m_dictionaryUtf8Buffer.empty());
     m_language.m_conversionTable = std::move(table);
 }

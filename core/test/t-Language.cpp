@@ -30,6 +30,7 @@ TEST_CASE("Simple")
 {
     core::LanguageBuilder b;
     b.setDisplayName("simple");
+    b.setMinWordLength(3);
     b.setConversionTable({
         {'-', {}},
         {'z', core::LetterSequence_FromUtf8<core::LetterConversionTarget>("cc")},

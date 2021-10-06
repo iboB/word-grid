@@ -23,6 +23,11 @@ void LanguageBuilder::setAlphabet(Alphabet alphabet)
     score_t highestScore = 0; // highest score within the alphabet
     for (auto& l : alphabet)
     {
+        if (l.empty())
+        {
+            std::cout << "Rejecting alphabet with empty items\n";
+            return;
+        }
         if (l.score() > highestScore) highestScore = l.score();
     }
     if (highestScore == 0)

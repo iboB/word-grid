@@ -53,7 +53,7 @@ TEST_CASE("Simple")
         ab("a", 1),
         ab("b", 3),
         ab("c", 2),
-        ab("", 0),
+        ab(" ", 0),
         ab("e", -1),
         ab("d", 4),
         ab("z", 5),
@@ -99,7 +99,7 @@ TEST_CASE("Simple")
     CHECK(abc[0].size() == 1);
     CHECK(abc[0][0] == 'a');
     CHECK(abc[0].score() == 1);
-    CHECK(abc[3].size() == 0);
+    CHECK(abc[3].letterSequence() == wms(" "));
     CHECK(abc[3].score() == 0);
 
     auto& fq = l.alphabetFrequencyTable();
@@ -109,7 +109,7 @@ TEST_CASE("Simple")
         ab("a", 60),
         ab("b", 20),
         ab("c", 30),
-        ab("", 12),
+        ab(" ", 12),
         ab("e", 10),
         ab("d", 15),
         ab("z", 12),

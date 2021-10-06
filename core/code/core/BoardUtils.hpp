@@ -8,6 +8,8 @@
 #pragma once
 #include "API.h"
 
+// this functions should be rearranged better
+
 #include "DictionaryWord.hpp"
 #include "GridPath.hpp"
 #include "Types.hpp"

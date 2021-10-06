@@ -68,6 +68,16 @@ TEST_CASE("elems basic")
     CHECK(e.size() == 1);
     CHECK(!e.frontOnly());
     CHECK(!e.backOnly());
+    CHECK(e.score() == 0);
+    e.setScore(7);
+    CHECK(e.score() == 7);
+
+    auto e2 = e;
+    CHECK(e2 == e);
+    e2.setScore(43);
+    CHECK(e2 != e);
+    e.setScore(43);
+    CHECK(e2 == e);
 
     auto i = e.firstOption();
     CHECK(!i.isEnd());
@@ -81,6 +91,7 @@ TEST_CASE("elems basic")
     CHECK(e.size() == 3);
     CHECK(!e.frontOnly());
     CHECK(e.backOnly());
+    CHECK(e.score() == 0);
 
     i = e.firstOption();
     CHECK(!i.isEnd());

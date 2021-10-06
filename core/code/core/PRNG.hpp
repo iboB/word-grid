@@ -27,7 +27,7 @@ public:
     int operator()();
 
 private:
-    static inline constexpr size_t IMPL_SIZE = 4;
+    static inline constexpr long IMPL_SIZE = 8;
 
     char m_implBuf[IMPL_SIZE];
 

@@ -36,8 +36,13 @@ TEST_CASE("Simple")
         bozb
         ooo-aaa
     )");
+    b.setMinScore(213);
+    b.setMaxScore(3050);
+
     auto l = b.getLanguage();
     CHECK(l.displayName() == "simple");
+    CHECK(l.minScore() == 213);
+    CHECK(l.maxScore() == 3050);
 
     auto& dic = l.dictionary().container();
     REQUIRE(dic.size() == 6);

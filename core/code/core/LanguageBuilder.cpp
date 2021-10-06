@@ -131,6 +131,16 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)
     setDictionaryUtf8Buffer(std::move(buf));
 }
 
+void LanguageBuilder::setMinScore(score_t score)
+{
+    m_language.m_minScore = score;
+}
+
+void LanguageBuilder::setMaxScore(score_t score)
+{
+    m_language.m_maxScore = score;
+}
+
 Language LanguageBuilder::getLanguage()
 {
     return std::move(m_language);

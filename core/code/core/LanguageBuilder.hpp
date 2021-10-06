@@ -26,6 +26,9 @@ public:
     void setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
     void setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
 
+    void setMinScore(score_t score);
+    void setMaxScore(score_t score);
+
     Language getLanguage();
 
 private:

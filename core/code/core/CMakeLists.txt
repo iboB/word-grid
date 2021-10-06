@@ -28,6 +28,9 @@ icm_add_lib(core CORE
     ScoredWord.hpp
     BoardUtils.hpp
     BoardUtils.cpp
+
+    PRNG.hpp
+    PRNG.cpp
 )
 
 target_include_directories(core INTERFACE ..)

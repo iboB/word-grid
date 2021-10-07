@@ -1,5 +1,7 @@
 #include <iostream>
 
+#include "PlatformUtil.hpp"
+
 #include <core/LanguageBuilder.hpp>
 #include <core/LetterSequenceFromUtf8.hpp>
 #include <core/PRNG.hpp>
@@ -14,6 +16,25 @@ core::GridElement ab(std::string_view str, core::score_t s)
     core::LetterSequence_FromUtf8(ret, str);
     ret.setScore(s);
     return ret;
+}
+
+std::vector<char> readFile(const char* path)
+{
+    auto f = fopen(path, "rb");
+
+    if (!f) return {};
+
+    int pos = ftell(f);
+    fseek(f, 0, SEEK_END);
+    size_t fileSize = ftell(f);
+    fseek(f, pos, SEEK_SET);
+
+    std::vector<char> r(fileSize);
+
+    fread(r.data(), 1, fileSize, f);
+
+    fclose(f);
+    return r;
 }
 
 int main()
@@ -47,17 +68,39 @@ int main()
         ab("y", 5), //
         ab("z", 8), //
     });
+    lb.setConversionTable({
+        {'-', {}},
+        {'\'', {}},
+    });
+    lb.setMinWordLength(3);
+
+    auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
+    auto dicPath = assetPath + "/dictionaries/common-en.txt";
+    auto buf = readFile(dicPath.c_str());
+    lb.setDictionaryUtf8Buffer(buf);
+
     auto lang = lb.getLanguage();
 
     core::Grid g({4, 4});
 
     core::PRNG rng;
 
-    std::string_view str = "hoarse";
-    auto p = core::impl::generateRandomEmptyPath(str.length(), g, rng);
-    for (size_t i = 0; i < str.length(); ++i)
+    auto addWord = [&](std::string_view str) {
+        auto p = core::impl::generateRandomEmptyPath(str.length(), g, rng);
+        if (p.empty()) return false;
+        for (size_t i = 0; i < str.length(); ++i)
+        {
+            g[p[i]] = lang.alphabet()[str[i] - 'a'];
+        }
+
+        return true;
+    };
+
+    while (true)
     {
-        g[p[i]] = lang.alphabet()[str[i] - 'a'];
+        auto& word = rng.randomElement(lang.dictionary().container());
+        if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
+        else break;
     }
 
     auto& ft = lang.alphabetFrequencyTable();
@@ -73,6 +116,12 @@ int main()
             cout << char(g[core::GridCoord{x, y}][0]);
         }
         cout << '\n';
+    }
+
+    auto words = core::impl::findAllWordsInGrid(g, lang.dictionary());
+
+    for (auto& w : words) {
+        cout << w.word.displayString << ", ";
     }
 
     return 0;

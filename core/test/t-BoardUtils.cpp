@@ -249,18 +249,19 @@ TEST_CASE("find all fancy")
 TEST_CASE("random path")
 {
     PRNG rng;
-    auto p = generateRandomPath(0, 4, 4, rng);
+    const GridDimensions dim = {4, 4};
+    auto p = generateRandomPath(0, dim, rng);
     CHECK(p.empty());
 
-    p = generateRandomPath(1, 4, 4, rng);
+    p = generateRandomPath(1, dim, rng);
     CHECK(p.size() == 1);
-    CHECK(test::isValidGridPath(p, 4, 4));
+    CHECK(test::isValidGridPath(p, dim));
 
-    p = generateRandomPath(8, 4, 4, rng);
+    p = generateRandomPath(8, dim, rng);
     CHECK(p.size() == 8);
-    CHECK(test::isValidGridPath(p, 4, 4));
+    CHECK(test::isValidGridPath(p, dim));
 
-    p = generateRandomPath(16, 4, 4, rng);
+    p = generateRandomPath(16, dim, rng);
     CHECK(p.size() == 16);
-    CHECK(test::isValidGridPath(p, 4, 4));
+    CHECK(test::isValidGridPath(p, dim));
 }

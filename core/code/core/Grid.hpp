@@ -8,7 +8,7 @@
 #pragma once
 #include "API.h"
 
-#include "GridCoord.hpp"
+#include "GridDimensions.hpp"
 #include "GridElement.hpp"
 
 #include <itlib/memory_view.hpp>
@@ -21,10 +21,9 @@ namespace core
 class Grid
 {
 public:
-    Grid(uint32_t w, uint32_t h)
-        : m_width(w)
-        , m_height(h)
-        , m_elements(w* h)
+    Grid(GridDimensions dim)
+        : m_dim(dim)
+        , m_elements(dim.area())
     {}
 
     Grid(const Grid&) = delete;
@@ -33,13 +32,10 @@ public:
     Grid(Grid&&) noexcept = default;
     Grid& operator=(Grid&&) noexcept = default;
 
-    uint32_t w() const { return m_width; }
-    uint32_t h() const { return m_height; }
+    const GridDimensions& dim() const { return m_dim; }
 
-    uint32_t indexOf(const GridCoord& c) const { return c.toIndex(m_width); }
-    GridCoord coordOf(uint32_t i) const { return GridCoord::fromIndex(i, m_width); }
-    const GridElement& at(const GridCoord& c) const { return m_elements[indexOf(c)]; }
-    GridElement& at(const GridCoord& c) { return m_elements[indexOf(c)]; }
+    const GridElement& at(const GridCoord& c) const { return m_elements[m_dim.indexOf(c)]; }
+    GridElement& at(const GridCoord& c) { return m_elements[m_dim.indexOf(c)]; }
     const GridElement& operator[](const GridCoord& c) const { return at(c); }
     GridElement& operator[](const GridCoord& c) { return at(c); }
     const GridElement& operator[](uint32_t index) const { return m_elements[index]; }
@@ -51,14 +47,14 @@ public:
     MutableElementsView elements() { return itlib::make_memory_view(m_elements); }
 
     using ElementsView = itlib::const_memory_view<GridElement>;
-    ElementsView row(uint32_t y) const { return itlib::make_memory_view(rowPtr(y), m_width); }
-    MutableElementsView row(uint32_t y) { return itlib::make_memory_view(rowPtr(y), m_width); }
+    ElementsView row(uint32_t y) const { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
+    MutableElementsView row(uint32_t y) { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
 
 private:
-    const GridElement* rowPtr(uint32_t y) const { return m_elements.data() + m_width * y; }
-    GridElement* rowPtr(uint32_t y) { return m_elements.data() + m_width * y; }
+    const GridElement* rowPtr(uint32_t y) const { return m_elements.data() + m_dim.w * y; }
+    GridElement* rowPtr(uint32_t y) { return m_elements.data() + m_dim.w * y; }
 
-    uint32_t m_width = 0, m_height = 0;
+    GridDimensions m_dim;
     ElementsVector m_elements;
 };
 

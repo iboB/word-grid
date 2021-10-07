@@ -13,14 +13,14 @@
 namespace test
 {
 
-inline bool isValidGridPath(const core::GridPath& path, size_t width, size_t height)
+inline bool isValidGridPath(const core::GridPath& path, const core::GridDimensions& dim)
 {
     if (path.empty()) return true;
 
     for (auto& coord : path)
     {
         // out of bounds
-        if (coord.x >= width || coord.y >= height) return false;
+        if (coord.x >= dim.w || coord.y >= dim.h) return false;
     }
 
     for (size_t i = 0; i < path.size() - 1; ++i)
@@ -38,7 +38,7 @@ inline bool isValidGridPath(const core::GridPath& path, size_t width, size_t hei
 
 inline bool isValidGridPath(const core::GridPath& path, const core::Grid& g)
 {
-    return isValidGridPath(path, g.w(), g.h());
+    return isValidGridPath(path, g.dim());
 }
 
 } // namespace test

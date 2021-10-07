@@ -18,15 +18,15 @@ TEST_SUITE_BEGIN("Grid");
 template <typename G>
 void check_7x12()
 {
-    G g(7, 12);
-    CHECK(g.w() == 7);
-    CHECK(g.h() == 12);
+    G g({7, 12});
+    CHECK(g.dim().w == 7);
+    CHECK(g.dim().h == 12);
     CHECK(g.elements().size() == 84);
-    CHECK(g.coordOf(1) == GridCoord{1, 0});
-    CHECK(g.indexOf(GridCoord{1, 0}) == 1);
-    CHECK(g.indexOf(GridCoord{0, 1}) == 7);
-    CHECK(g.coordOf(18) == GridCoord{4, 2});
-    CHECK(g.indexOf(GridCoord{4, 2}) == 18);
+    CHECK(g.dim().coordOf(1) == GridCoord{1, 0});
+    CHECK(g.dim().indexOf(GridCoord{1, 0}) == 1);
+    CHECK(g.dim().indexOf(GridCoord{0, 1}) == 7);
+    CHECK(g.dim().coordOf(18) == GridCoord{4, 2});
+    CHECK(g.dim().indexOf(GridCoord{4, 2}) == 18);
     CHECK(g.row(0).size() == 7);
     CHECK(&g.row(0)[0] == g.elements().data());
     CHECK(&g.row(0)[1] == &g[GridCoord{1, 0}]);
@@ -42,8 +42,8 @@ TEST_CASE("Basic")
 TEST_CASE("alphabetical")
 {
     const auto g = test::Grid_alphabetical();
-    CHECK(g.w() == 4);
-    CHECK(g.h() == 4);
+    CHECK(g.dim().w == 4);
+    CHECK(g.dim().h == 4);
     core::letter_t l = 'a';
     for (auto& e : g.elements())
     {
@@ -51,7 +51,7 @@ TEST_CASE("alphabetical")
         CHECK(e[0] == l++);
     }
     CHECK(g.at({1, 2})[0] == 'j');
-    CHECK(g.coordOf(11) == GridCoord{3, 2});
+    CHECK(g.dim().coordOf(11) == GridCoord{3, 2});
 }
 
 TEST_CASE("fancy")

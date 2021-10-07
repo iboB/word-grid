@@ -16,18 +16,7 @@ namespace core
 struct GridCoord
 {
     uint8_t x;
-    uint8_t y;
-
-    static GridCoord fromIndex(uint32_t i, uint32_t width)
-    {
-        auto dm = std::div(int(i), int(width));
-        return {uint8_t(dm.rem), uint8_t(dm.quot)};
-    }
-
-    uint32_t toIndex(uint32_t width) const
-    {
-        return width * y + x;
-    }
+    uint8_t y;    
 };
 
 inline bool operator==(const GridCoord& a, const GridCoord& b)

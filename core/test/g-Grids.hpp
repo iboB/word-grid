@@ -21,12 +21,9 @@ namespace test
 // mnop
 inline core::Grid Grid_alphabetical()
 {
-    core::Grid g(4, 4);
+    core::Grid g({4, 4});
     core::letter_t letter = 'a';
-    for (auto& e : g.elements())
-    {
-        e.push_back(letter++);
-    }
+    for (auto& e : g.elements()) e.push_back(letter++);
     return g;
 }
 
@@ -45,4 +42,4 @@ inline core::Grid Grid_fancy()
     core::LetterSequence_FromUtf8(elems[15], "-end");
     return g;
 }
-}
+} // namespace test

@@ -49,12 +49,12 @@ int main()
     });
     auto lang = lb.getLanguage();
 
-    core::Grid g(4, 4);
+    core::Grid g({4, 4});
 
     core::PRNG rng;
 
     std::string_view str = "hoarse";
-    auto p = core::impl::generateRandomPath(str.length(), 4, 4, rng);
+    auto p = core::impl::generateRandomPath(str.length(), g.dim(), rng);
     for (size_t i = 0; i < str.length(); ++i)
     {
         g[p[i]] = lang.alphabet()[str[i] - 'a'];
@@ -66,9 +66,9 @@ int main()
         if (e.score() == 0) e = rng.randomElement(ft);
     }
 
-    for (uint8_t y = 0; y < g.h(); ++y)
+    for (uint8_t y = 0; y < g.dim().h; ++y)
     {
-        for (uint8_t x = 0; x < g.w(); ++x)
+        for (uint8_t x = 0; x < g.dim().w; ++x)
         {
             cout << char(g[core::GridCoord{x, y}][0]);
         }

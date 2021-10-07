@@ -64,12 +64,12 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
     {
         GridCoord c;
         c.y = base.y + y;
-        if (c.y >= g.h()) continue;
+        if (c.y >= g.dim().h) continue;
         for (int x = -1; x <= 1; ++x)
         {
             if (x == 0 && y == 0) continue;
             c.x = base.x + x;
-            if (c.x >= g.w()) continue;
+            if (c.x >= g.dim().w) continue;
 
             bool alreadyUsed = [&c, &path]() {
                 for (auto& u : path)
@@ -93,9 +93,9 @@ void visitGrid(const Grid& g, Visitor& v, GridPath& path)
 {
     assert(path.empty());
     GridCoord c;
-    for (c.y = 0; c.y < g.h(); ++c.y)
+    for (c.y = 0; c.y < g.dim().h; ++c.y)
     {
-        for (c.x = 0; c.x < g.w(); ++c.x)
+        for (c.x = 0; c.x < g.dim().w; ++c.x)
         {
             if (visitItem(g, c, v, path)) return;
         }
@@ -207,7 +207,7 @@ namespace
 
 using AvailableNeighbors = itlib::static_vector<GridCoord, 8>;
 
-AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, uint32_t w, uint32_t h, const GridPath& path)
+AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, const GridDimensions& dim, const GridPath& path)
 {
     AvailableNeighbors ret;
 
@@ -215,12 +215,12 @@ AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, uint32_t w
     {
         GridCoord c;
         c.y = coord.y + y;
-        if (c.y >= h) continue;
+        if (c.y >= dim.h) continue;
         for (int x = -1; x <= 1; ++x)
         {
             if (x == 0 && y == 0) continue;
             c.x = coord.x + x;
-            if (c.x >= w) continue;
+            if (c.x >= dim.w) continue;
 
             bool alreadyUsed = [&c, &path]() {
                 for (auto& u : path)
@@ -239,18 +239,18 @@ AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, uint32_t w
     return ret;
 }
 
-bool randomPathR(GridPath& path, uint32_t targetLength, uint32_t w, uint32_t h, PRNG& rng)
+bool randomPathR(GridPath& path, uint32_t targetLength, const GridDimensions& dim, PRNG& rng)
 {
     if (path.size() == targetLength) return true;
 
-    auto neighbors = generateAvailableNeighbors(path.back(), w, h, path);
+    auto neighbors = generateAvailableNeighbors(path.back(), dim, path);
 
     while (!neighbors.empty())
     {
         auto i = rng.randomInteger(neighbors.size());
         path.push_back(neighbors[i]);
         neighbors.erase(neighbors.begin() + i);
-        if (randomPathR(path, targetLength, w, h, rng)) return true;
+        if (randomPathR(path, targetLength, dim, rng)) return true;
         path.pop_back();
     }
 
@@ -259,16 +259,16 @@ bool randomPathR(GridPath& path, uint32_t targetLength, uint32_t w, uint32_t h, 
 
 } // namespace
 
-GridPath generateRandomPath(uint32_t length, uint32_t w, uint32_t h, PRNG& rng)
+GridPath generateRandomPath(uint32_t length, const GridDimensions& dim, PRNG& rng)
 {
-    if (length > w * h || length > WordTraits::Max_Length) return {};
+    if (length > dim.area() || length > WordTraits::Max_Length) return {};
     if (length == 0) return {};
 
     GridPath ret;
     // choose starting element
-    ret.push_back({rng.randomInteger(uint8_t(w)), rng.randomInteger(uint8_t(h))});
+    ret.push_back({rng.randomInteger(uint8_t(dim.w)), rng.randomInteger(uint8_t(dim.h))});
 
-    randomPathR(ret, length, w, h, rng);
+    randomPathR(ret, length, dim, rng);
 
     return ret;
 }

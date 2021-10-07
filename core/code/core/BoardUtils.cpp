@@ -207,50 +207,61 @@ namespace
 
 using AvailableNeighbors = itlib::static_vector<GridCoord, 8>;
 
-AvailableNeighbors generateAvailableNeighbors(const GridCoord& coord, const GridDimensions& dim, const GridPath& path)
+struct Dir
 {
-    AvailableNeighbors ret;
+    int8_t x;
+    int8_t y;
+};
 
-    for (int y = -1; y <= 1; ++y)
-    {
-        GridCoord c;
-        c.y = coord.y + y;
-        if (c.y >= dim.h) continue;
-        for (int x = -1; x <= 1; ++x)
-        {
-            if (x == 0 && y == 0) continue;
-            c.x = coord.x + x;
-            if (c.x >= dim.w) continue;
+// clang-format off
+static const Dir int2dir[] = {
+    {-1,-1},
+    { 0,-1},
+    { 1,-1},
 
-            bool alreadyUsed = [&c, &path]() {
-                for (auto& u : path)
-                {
-                    if (u == c) return true;
-                }
-                return false;
-            }();
+    {-1, 0},
+    { 1, 0},
 
-            if (alreadyUsed) continue;
+    {-1, 1},
+    { 0, 1},
+    { 1, 1},
+};
+// clang-format on
 
-            ret.push_back(c);
-        }
-    }
-
-    return ret;
-}
-
-bool randomPathR(GridPath& path, uint32_t targetLength, const GridDimensions& dim, PRNG& rng)
+bool randomPathR(GridPath& path, uint32_t targetLength, const Grid& grid, PRNG& rng)
 {
     if (path.size() == targetLength) return true;
 
-    auto neighbors = generateAvailableNeighbors(path.back(), dim, path);
+    auto base = path.back();
 
-    while (!neighbors.empty())
+    auto start = rng.randomInteger(8);
+    for (int i = 0; i < 8; ++i)
     {
-        auto i = rng.randomInteger(neighbors.size());
-        path.push_back(neighbors[i]);
-        neighbors.erase(neighbors.begin() + i);
-        if (randomPathR(path, targetLength, dim, rng)) return true;
+        auto dir = int2dir[(start + i) % 8];
+
+        GridCoord attempt = base;
+        attempt.x += dir.x;
+        attempt.y += dir.y;
+
+        // bounds check
+        if (attempt.x >= grid.dim().w) continue;
+        if (attempt.y >= grid.dim().h) continue;
+
+        // empty check
+        if (!grid[attempt].empty()) continue;
+
+        // used check
+        bool alreadyUsed = [&attempt, &path]() {
+            for (auto& u : path)
+            {
+                if (u == attempt) return true;
+            }
+            return false;
+        }();
+        if (alreadyUsed) continue;
+
+        path.push_back(attempt);
+        if (randomPathR(path, targetLength, grid, rng)) return true;
         path.pop_back();
     }
 
@@ -259,18 +270,39 @@ bool randomPathR(GridPath& path, uint32_t targetLength, const GridDimensions& di
 
 } // namespace
 
-GridPath generateRandomPath(uint32_t length, const GridDimensions& dim, PRNG& rng)
+GridPath generateRandomEmptyPath(uint32_t length, const Grid& grid, PRNG& rng)
 {
-    if (length > dim.area() || length > WordTraits::Max_Length) return {};
+    auto area = grid.dim().area();
+    if (length > area || length > WordTraits::Max_Length) return {};
     if (length == 0) return {};
 
+    // check if we even have enough free cells for the path
+    auto haveEnough = [&]() {
+        uint32_t empty = length;
+        for (auto& elem : grid.elements())
+        {
+            if (!elem.empty()) continue;
+            --empty;
+            if (empty == 0) return true;
+        }
+        return false;
+    }();
+    if (!haveEnough) return {};
+
+    // start search
     GridPath ret;
-    // choose starting element
-    ret.push_back({rng.randomInteger(uint8_t(dim.w)), rng.randomInteger(uint8_t(dim.h))});
 
-    randomPathR(ret, length, dim, rng);
+    auto start = rng.randomInteger(area);
+    for (uint32_t i = 0; i < area; ++i)
+    {
+        auto c = (i + start) % area;
+        if (!grid[c].empty()) continue;
+        ret.push_back(grid.dim().coordOf(c));
+        if (randomPathR(ret, length, grid, rng)) { return ret; }
+        ret.pop_back();
+    }
 
-    return ret;
+    return {};
 }
 
 } // namespace core::impl

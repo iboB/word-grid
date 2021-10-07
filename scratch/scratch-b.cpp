@@ -54,7 +54,7 @@ int main()
     core::PRNG rng;
 
     std::string_view str = "hoarse";
-    auto p = core::impl::generateRandomPath(str.length(), g.dim(), rng);
+    auto p = core::impl::generateRandomEmptyPath(str.length(), g, rng);
     for (size_t i = 0; i < str.length(); ++i)
     {
         g[p[i]] = lang.alphabet()[str[i] - 'a'];

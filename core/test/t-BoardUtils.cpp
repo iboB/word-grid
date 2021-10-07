@@ -10,9 +10,9 @@
 #include <core/BoardUtils.hpp>
 #include <core/Dictionary.hpp>
 #include <core/Grid.hpp>
+#include <core/PRNG.hpp>
 #include <core/ScoredWord.hpp>
 #include <core/WordMatchSequence.hpp>
-#include <core/PRNG.hpp>
 
 #include "g-Grids.hpp"
 #include "tu-GridPath.hpp"
@@ -249,19 +249,86 @@ TEST_CASE("find all fancy")
 TEST_CASE("random path")
 {
     PRNG rng;
-    const GridDimensions dim = {4, 4};
-    auto p = generateRandomPath(0, dim, rng);
+    Grid grid({4, 4});
+    auto p = generateRandomEmptyPath(0, grid, rng);
     CHECK(p.empty());
 
-    p = generateRandomPath(1, dim, rng);
+    p = generateRandomEmptyPath(23, grid, rng);
+    CHECK(p.empty());
+
+    p = generateRandomEmptyPath(1, grid, rng);
     CHECK(p.size() == 1);
-    CHECK(test::isValidGridPath(p, dim));
+    CHECK(test::isEmptyGridPath(p, grid));
 
-    p = generateRandomPath(8, dim, rng);
+    p = generateRandomEmptyPath(8, grid, rng);
     CHECK(p.size() == 8);
-    CHECK(test::isValidGridPath(p, dim));
+    CHECK(test::isEmptyGridPath(p, grid));
 
-    p = generateRandomPath(16, dim, rng);
+    p = generateRandomEmptyPath(16, grid, rng);
     CHECK(p.size() == 16);
-    CHECK(test::isValidGridPath(p, dim));
+    CHECK(test::isEmptyGridPath(p, grid));
+
+    grid.at({2, 2}).push_back('x');
+    p = generateRandomEmptyPath(8, grid, rng);
+    CHECK(p.size() == 8);
+    CHECK(test::isEmptyGridPath(p, grid));
+
+    p = generateRandomEmptyPath(15, grid, rng);
+    CHECK(p.size() == 15);
+    CHECK(test::isEmptyGridPath(p, grid));
+
+    p = generateRandomEmptyPath(16, grid, rng);
+    CHECK(p.empty());
+
+    grid.at({2, 1}).push_back('x');
+    grid.at({2, 0}).push_back('x');
+    grid.at({3, 0}).push_back('x');
+    grid.at({3, 1}).push_back('x');
+    grid.at({3, 2}).push_back('x');
+
+    // _ _ x x
+    // _ _ x x
+    // _ _ x x
+    // _ _ _ _
+
+    p = generateRandomEmptyPath(11, grid, rng);
+    CHECK(p.empty());
+
+    p = generateRandomEmptyPath(10, grid, rng);
+    REQUIRE(p.size() == 10);
+    CHECK(test::isEmptyGridPath(p, grid));
+    // fron or back must be this coord
+    CHECK((p.front() == GridCoord{3, 3} || p.back() == GridCoord{3, 3}));
+
+    grid.at({3, 0}).clear();
+
+    // _ _ x _
+    // _ _ x x
+    // _ _ x x
+    // _ _ _ _
+
+    p = generateRandomEmptyPath(11, grid, rng);
+    CHECK(p.empty());
+
+    grid.at({2, 1}).clear();
+
+    // _ _ x _
+    // _ _ _ x
+    // _ _ x x
+    // _ _ _ _
+
+    p = generateRandomEmptyPath(12, grid, rng);
+    REQUIRE(p.size() == 12);
+    CHECK(test::isEmptyGridPath(p, grid));
+
+    if (p.front() == GridCoord{3, 0})
+    {
+        // front and back must be these coords
+        CHECK(p.back() == GridCoord{3, 3});
+    }
+    else
+    {
+        CHECK(p.front() == GridCoord{3, 3});
+        CHECK(p.back() == GridCoord{3, 0});
+    }
 }

@@ -21,7 +21,7 @@ namespace core
 class Grid
 {
 public:
-    Grid(GridDimensions dim)
+    explicit Grid(GridDimensions dim)
         : m_dim(dim)
         , m_elements(dim.area())
     {}

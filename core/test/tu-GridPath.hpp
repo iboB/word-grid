@@ -7,8 +7,8 @@
 //
 #pragma once
 
-#include <core/GridPath.hpp>
 #include <core/Grid.hpp>
+#include <core/GridPath.hpp>
 
 namespace test
 {
@@ -39,6 +39,18 @@ inline bool isValidGridPath(const core::GridPath& path, const core::GridDimensio
 inline bool isValidGridPath(const core::GridPath& path, const core::Grid& g)
 {
     return isValidGridPath(path, g.dim());
+}
+
+inline bool isEmptyGridPath(const core::GridPath& path, const core::Grid& g)
+{
+    if (!isValidGridPath(path, g)) return false;
+
+    for (auto& c : path)
+    {
+        if (!g[c].empty()) return false;
+    }
+
+    return true;
 }
 
 } // namespace test

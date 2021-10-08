@@ -270,8 +270,9 @@ bool randomPathR(GridPath& path, uint32_t targetLength, const Grid& grid, PRNG& 
 
 } // namespace
 
-GridPath generateRandomEmptyPath(uint32_t length, const Grid& grid, PRNG& rng)
+GridPath generateRandomEmptyPath(size_t slength, const Grid& grid, PRNG& rng)
 {
+    auto length = uint32_t(slength);
     auto area = grid.dim().area();
     if (length > area || length > WordTraits::Max_Length) return {};
     if (length == 0) return {};

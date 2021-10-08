@@ -95,7 +95,7 @@ int main()
 
     core::Grid g({4, 4});
 
-    core::PRNG rng;
+    core::PRNG rng(core::PRNG::randomDevice());
 
     auto addWord = [&](std::string_view str) {
         auto p = core::impl::generateRandomEmptyPath(str.length(), g, rng);

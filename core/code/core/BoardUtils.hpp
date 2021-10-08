@@ -42,7 +42,7 @@ CORE_API std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dic
 
 // generate a random path of a free elements for a given grid
 // return an empty path if it's not possible
-CORE_API GridPath generateRandomEmptyPath(uint32_t length, const Grid& grid, PRNG& rng);
+CORE_API GridPath generateRandomEmptyPath(size_t length, const Grid& grid, PRNG& rng);
 
 } // namespace impl
 } // namespace core

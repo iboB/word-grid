@@ -13,6 +13,11 @@
 namespace core
 {
 
+Language::Language() = default;
+Language::~Language() = default;
+Language::Language(Language&&) noexcept = default;
+Language& Language::operator=(Language&&) noexcept = default;
+
 namespace
 {
 

@@ -21,13 +21,14 @@ namespace core
 class CORE_API Language
 {
 public:
-    Language() = default;
+    Language();
+    ~Language();
 
     Language(const Language&) = delete;
     Language& operator=(const Language&) = delete;
 
-    Language(Language&&) noexcept = default;
-    Language& operator=(Language&&) noexcept = default;
+    Language(Language&&) noexcept;
+    Language& operator=(Language&&) noexcept;
 
     const std::string& displayName() const { return m_displayName; }
 

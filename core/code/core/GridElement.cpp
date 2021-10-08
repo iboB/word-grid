@@ -38,4 +38,31 @@ LetterSequenceView GridElement::OptionIterator::getMatchSequence() const
     return LetterSequenceView(srcFrom, length);
 }
 
+bool GridElement::matchesWord(LetterSequenceView word) const
+{
+    if (frontOnly() || backOnly())
+    {
+        auto ms = firstOption().getMatchSequence();
+        if (frontOnly())
+        {
+            // slice guarantees no errors even if out of bounds
+            word = word.slice(0, ms.size());
+        }
+        else
+        {
+            word = word.slice(word.size() - ms.size());
+        }
+        return ms == word;
+    }
+
+    for (auto option = firstOption(); !option.isEnd(); option.goToNext())
+    {
+        auto ms = option.getMatchSequence();
+        auto f = std::search(word.begin(), word.end(), ms.begin(), ms.end());
+        if (f != word.end()) return true;
+    }
+
+    return false;
+}
+
 } // namespace core

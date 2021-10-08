@@ -59,6 +59,16 @@ public:
 
     OptionIterator firstOption() const;
 
+    // return whether the word in question can possibly be constructed with this grid element
+    bool matchesWord(LetterSequenceView word) const;
+
+    // overload to extend the lifetime of a temporary
+    template <size_t N>
+    bool matchesWord(const LetterSequence<N>& seq) const
+    {
+        return matchesWord(seq.getView());
+    }
+
     bool operator==(const GridElement& other) const
     {
         return letterSequence() == letterSequence() && m_score == other.m_score;

@@ -20,6 +20,7 @@ namespace impl
 template <typename S>
 int compareLetters(const S& a, const S& b)
 {
+    // could go with std::lexicographical_compare here, but we don't want to drag <algorithm> into this
     auto ai = a.begin();
     auto aend = a.end();
     auto bi = b.begin();

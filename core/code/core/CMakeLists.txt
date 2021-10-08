@@ -10,6 +10,8 @@ icm_add_lib(core CORE
     LetterSequenceFromUtf8.hpp
     WordTraits.hpp
     WordMatchSequence.hpp
+    BasicLanguage.hpp
+    BasicLanguage.cpp
     DictionaryWord.hpp
     Dictionary.hpp
     DictionarySearch.hpp

@@ -154,18 +154,18 @@ struct FindAllVisitor
         path.push_back(c);
 
         DictionarySearch::Result result = DictionarySearch::Result::None;
-        for (auto l : elem) { result = ds.push(l); }
-
-        if (result == DictionarySearch::Result::Exact)
-        {
-            out.push_back({*ds.range().begin, path});
-            // Don't return. Search deeper for words which also contain this word as it's beginning
-        }
+        for (auto l : elem) result = ds.push(l);
 
         if (result == DictionarySearch::Result::None)
         {
             pop(elem);
             return false;
+        }
+
+        if (result == DictionarySearch::Result::Exact)
+        {
+            out.push_back({*ds.range().begin, path});
+            // Don't return. Search deeper for words which also contain this word as it's beginning
         }
 
         return true; // partial match

@@ -16,12 +16,16 @@ namespace core
 class CORE_API PRNG
 {
 public:
-    // negative seed seeds with std::random_device
-    PRNG(int seed = -1);
+    explicit PRNG(unsigned seed);
     ~PRNG();
 
     PRNG(const PRNG&) = delete;
     PRNG& operator=(const PRNG&) = delete;
+    PRNG(PRNG&&) = delete;
+    PRNG& operator=(PRNG&&) = delete;
+
+    // wrap std::random_device
+    static unsigned randomDevice();
 
     // random number from 0 to INT_MAX
     int get();

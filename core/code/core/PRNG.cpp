@@ -26,17 +26,13 @@ void PRNG::makeStaticAssert()
     static_assert(sizeof(Impl) <= IMPL_SIZE);
 }
 
-namespace
+unsigned PRNG::randomDevice()
 {
-unsigned fixupSeed(int seed)
-{
-    if (seed < 0) return std::random_device()();
-    return unsigned(seed);
+    return std::random_device()();
 }
-} // namespace
 
-PRNG::PRNG(int seed)
-    : m_impl(*new (m_implBuf) Impl(fixupSeed(seed)))
+PRNG::PRNG(unsigned seed)
+    : m_impl(*new (m_implBuf) Impl(seed))
 {}
 
 PRNG::~PRNG()

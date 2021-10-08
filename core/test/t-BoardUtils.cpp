@@ -10,12 +10,12 @@
 #include <core/BoardUtils.hpp>
 #include <core/Dictionary.hpp>
 #include <core/Grid.hpp>
-#include <core/PRNG.hpp>
 #include <core/ScoredWord.hpp>
 #include <core/WordMatchSequence.hpp>
 
 #include "g-Grids.hpp"
 #include "tu-GridPath.hpp"
+#include "tu-PRNG.hpp"
 
 using namespace core;
 using namespace core::impl;
@@ -248,7 +248,8 @@ TEST_CASE("find all fancy")
 
 TEST_CASE("random path")
 {
-    PRNG rng;
+    auto rng = test::makePrng();
+
     Grid grid({4, 4});
     auto p = generateRandomEmptyPath(0, grid, rng);
     CHECK(p.empty());

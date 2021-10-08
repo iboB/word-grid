@@ -8,6 +8,7 @@
 #pragma once
 
 #include "ScoredWord.hpp"
+#include "WordMatchSequence.hpp"
 
 #include <vector>
 
@@ -26,7 +27,7 @@ public:
 
 private:
     std::vector<char> m_displayStringBuffer;
-    std::vector<letter_t> m_wordLetterBuffer;
+    std::vector<WordMatchSequence> m_wordBuffer;
 };
 
 }

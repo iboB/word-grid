@@ -25,8 +25,7 @@ DictionarySearch::Range DictionarySearch::range() const
 
 DictionarySearch::Result DictionarySearch::push(letter_t l)
 {
-    auto& match = m_matchWord.letters;
-    if (match.size() == match.capacity())
+    if (m_matchWord.size() == m_matchWord.capacity())
     {
         ++m_overflow;
         return Result::None;
@@ -41,15 +40,20 @@ DictionarySearch::Result DictionarySearch::push(letter_t l)
         end = m_ranges.back().end;
     }
 
-    match.push_back(l + 1); // somewhat hacky +1 for lower bound of end
-    end = std::lower_bound(begin, end, m_matchWord);
-    match.back() = l; // real back
-    begin = std::lower_bound(begin, end, m_matchWord);
+    m_matchWord.push_back(l + 1); // somewhat hacky +1 for lower bound of end
+
+    // this temporary dictionary here is so we would type less for lower_bound below
+    // it only cares about the letters anyway
+    DictionaryWord tmp;
+    tmp.letters = m_matchWord.getView();
+    end = std::lower_bound(begin, end, tmp);
+    m_matchWord.back() = l; // real back
+    begin = std::lower_bound(begin, end, tmp);
 
     m_ranges.push_back({begin, end});
 
     if (begin == end) return Result::None;
-    if (begin->letters == match) return Result::Exact;
+    if (begin->letters == m_matchWord.getView()) return Result::Exact;
     return Result::Partial;
 }
 
@@ -60,10 +64,9 @@ void DictionarySearch::pop()
         --m_overflow;
         return;
     }
-    auto& match = m_matchWord.letters;
-    assert(match.size() > 0);
-    assert(m_ranges.size() == match.size());
-    match.pop_back();
+    assert(m_matchWord.size() > 0);
+    assert(m_ranges.size() == m_matchWord.size());
+    m_matchWord.pop_back();
     m_ranges.pop_back();
 }
 

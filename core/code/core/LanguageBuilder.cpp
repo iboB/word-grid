@@ -112,9 +112,24 @@ void LanguageBuilder::tryAddWord(std::vector<DictionaryWord>& words, std::string
 
     if (converted)
     {
+        // put converted word in letter buffer
+        auto& letterBuf = m_language.m_dictionaryLetterBuffer;
+        if (letterBuf.size() + converted->size() >= letterBuf.capacity())
+        {
+            auto& warning = m_warnings.emplace_back();
+            warning += "Letter buffer overflow at: ";
+            warning += utf8Word;
+            return;
+        }
+
+        auto ptr = letterBuf.data() + letterBuf.size();
+        letterBuf.insert(letterBuf.end(), converted->begin(), converted->end());
+
+        // add word to list
         auto& word = words.emplace_back();
         word.displayString = utf8Word;
-        word.letters = *converted;
+        word.letters.reset(ptr, converted->size());
+
         return;
     }
 
@@ -145,6 +160,11 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8
     // this number can be an overestimation as some words withing the buffer can be filtered
     // take the oportunity to set newline and tab characters (\r \n \t) to zeroes (separators)
     size_t maxWordsInBuffer = 0;
+
+    // also find max length of letter buffer so we can reserve it
+    // this is much more likely an overestimation as we count bytes here as many utf8 bytes can lead to a single letter
+    size_t maxLengthOfLetterBuffer = 0;
+
     for (auto& c : buf)
     {
         if (c == '\n')
@@ -156,7 +176,12 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8
         {
             c = 0;
         }
+        else
+        {
+            ++maxLengthOfLetterBuffer;
+        }
     }
+    m_language.m_dictionaryLetterBuffer.reserve(maxLengthOfLetterBuffer);
 
     std::vector<DictionaryWord> words;
     words.reserve(maxWordsInBuffer);

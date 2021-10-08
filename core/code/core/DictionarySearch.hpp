@@ -19,12 +19,12 @@ class CORE_API DictionarySearch
 public:
     DictionarySearch(const Dictionary& dictionary);
 
-    const WordMatchSequence& curMatch() const { return m_matchWord.letters; }
+    const WordMatchSequence& curMatch() const { return m_matchWord; }
 
     // how many times push has been called and how many times pop needs to be called to clear
-    size_t size() const { return m_matchWord.letters.size() + m_overflow; }
+    size_t size() const { return m_matchWord.size() + m_overflow; }
 
-    bool empty() const { return m_matchWord.letters.empty(); }
+    bool empty() const { return m_matchWord.empty(); }
 
     enum class Result
     {
@@ -50,10 +50,7 @@ public:
 private:
     const Dictionary& m_dictionary;
 
-    // we don't really need a word here a WordMatchSequence would do
-    // but it's much easier to use this for the binary searches inside
-    // its previewString member is ignored throughout
-    DictionaryWord m_matchWord;
+    WordMatchSequence m_matchWord;
 
     // range per each letter of the current match sequence
     itlib::static_vector<Range, WordTraits::Max_Length> m_ranges;

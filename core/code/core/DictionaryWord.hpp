@@ -7,7 +7,7 @@
 //
 #pragma once
 
-#include "WordMatchSequence.hpp"
+#include "LetterSequence.hpp"
 
 #include <string_view>
 
@@ -16,7 +16,7 @@ namespace core
 
 struct DictionaryWord
 {
-    WordMatchSequence letters;
+    LetterSequenceView letters;
 
     // The utf8 display string for the word. It it not necessarily the same as the letters
     // It may have capitalization (which is ignored in letters)

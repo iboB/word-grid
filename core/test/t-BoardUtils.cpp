@@ -149,6 +149,7 @@ TEST_CASE("find all basic")
     // mnop
     auto grid = test::Grid_alphabetical();
 
+    std::vector<letter_t> letterBuf;
     Dictionary d = {
         dw("zog"),
         dw("afe"), //

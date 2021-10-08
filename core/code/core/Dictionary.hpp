@@ -20,6 +20,7 @@ class Dictionary : public itlib::flat_set<DictionaryWord>
 // perhaps this could be made into a trie in the future for even faster searches
 // no apparent need for now besides the coolness factor :)
 {
+public:
     using itlib::flat_set<DictionaryWord>::flat_set;
 };
 } // namespace core

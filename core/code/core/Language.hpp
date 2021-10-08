@@ -10,6 +10,7 @@
 
 #include "Dictionary.hpp"
 #include "LanguageTypes.hpp"
+#include "WordMatchSequence.hpp"
 
 #include <itlib/expected.hpp>
 
@@ -77,6 +78,7 @@ private:
     uint32_t m_minWordLength = 1;
     Dictionary m_dictionary;
     std::vector<char> m_dictionaryUtf8Buffer;
+    std::vector<letter_t> m_dictionaryLetterBuffer;
 
     score_t m_minScore = 0;
     score_t m_maxScore = std::numeric_limits<score_t>::max();

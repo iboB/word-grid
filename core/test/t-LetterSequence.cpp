@@ -7,7 +7,6 @@
 //
 #include <doctest/doctest.h>
 
-#include <core/GridElement.hpp>
 #include <core/LetterSequenceFromUtf8.hpp>
 #include <core/WordMatchSequence.hpp>
 
@@ -55,82 +54,4 @@ TEST_CASE("cmp")
     CHECK(w1 < w4);
     CHECK(w3.getView() < w4.getView());
     CHECK(w1.getView() < w4.getView());
-}
-
-GridElement ge(std::string_view str)
-{
-    return LetterSequence_FromUtf8<GridElement>(str);
-}
-
-TEST_CASE("elems basic")
-{
-    auto e = ge("a");
-    CHECK(e.size() == 1);
-    CHECK(!e.frontOnly());
-    CHECK(!e.backOnly());
-    CHECK(e.score() == 0);
-    e.setScore(7);
-    CHECK(e.score() == 7);
-
-    auto e2 = e;
-    CHECK(e2 == e);
-    e2.setScore(43);
-    CHECK(e2 != e);
-    e.setScore(43);
-    CHECK(e2 == e);
-
-    auto i = e.firstOption();
-    CHECK(!i.isEnd());
-    auto seq = i.getMatchSequence();
-    CHECK(seq.size() == 1);
-    CHECK(seq.front() == 'a');
-    i.goToNext();
-    CHECK(i.isEnd());
-
-    e = ge("-ed");
-    CHECK(e.size() == 3);
-    CHECK(!e.frontOnly());
-    CHECK(e.backOnly());
-    CHECK(e.score() == 0);
-
-    i = e.firstOption();
-    CHECK(!i.isEnd());
-    seq = i.getMatchSequence();
-    CHECK(seq.size() == 2);
-    CHECK(seq.front() == 'e');
-    CHECK(seq.back() == 'd');
-    i.goToNext();
-    CHECK(i.isEnd());
-
-    e = ge("de-");
-    CHECK(e.size() == 3);
-    CHECK(e.frontOnly());
-    CHECK(!e.backOnly());
-
-    i = e.firstOption();
-    CHECK(!i.isEnd());
-    seq = i.getMatchSequence();
-    CHECK(seq.size() == 2);
-    CHECK(seq.front() == 'd');
-    CHECK(seq.back() == 'e');
-    i.goToNext();
-    CHECK(i.isEnd());
-
-    e = ge("a/b");
-    CHECK(e.size() == 3);
-    CHECK(!e.frontOnly());
-    CHECK(!e.backOnly());
-
-    i = e.firstOption();
-    CHECK(!i.isEnd());
-    seq = i.getMatchSequence();
-    CHECK(seq.size() == 1);
-    CHECK(seq.front() == 'a');
-    i.goToNext();
-    CHECK(!i.isEnd());
-    seq = i.getMatchSequence();
-    CHECK(seq.size() == 1);
-    CHECK(seq.front() == 'b');
-    i.goToNext();
-    CHECK(i.isEnd());
 }

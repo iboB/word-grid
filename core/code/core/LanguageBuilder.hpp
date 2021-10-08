@@ -16,20 +16,20 @@ namespace core
 class CORE_API LanguageBuilder
 {
 public:
-    void setDisplayName(std::string str);
+    LanguageBuilder& setDisplayName(std::string str);
 
-    void setAlphabet(Alphabet alphabet);
-    void setSpecials(Specials specials);
+    LanguageBuilder& setAlphabet(Alphabet alphabet);
+    LanguageBuilder& setSpecials(Specials specials);
 
-    void setMinWordLength(uint32_t length);
+    LanguageBuilder& setMinWordLength(uint32_t length);
 
-    void setConversionTable(LetterConversionTable table);
+    LanguageBuilder& setConversionTable(LetterConversionTable table);
 
-    void setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
-    void setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
+    LanguageBuilder& setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
+    LanguageBuilder& setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
 
-    void setMinScore(score_t score);
-    void setMaxScore(score_t score);
+    LanguageBuilder& setMinScore(score_t score);
+    LanguageBuilder& setMaxScore(score_t score);
 
     Language getLanguage();
 

@@ -13,12 +13,13 @@
 namespace core
 {
 
-void LanguageBuilder::setDisplayName(std::string str)
+LanguageBuilder& LanguageBuilder::setDisplayName(std::string str)
 {
     m_language.m_displayName = std::move(str);
+    return *this;
 }
 
-void LanguageBuilder::setAlphabet(Alphabet alphabet)
+LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
 {
     score_t highestScore = 0; // highest score within the alphabet
     for (auto& l : alphabet)
@@ -26,14 +27,14 @@ void LanguageBuilder::setAlphabet(Alphabet alphabet)
         if (l.empty())
         {
             std::cout << "Rejecting alphabet with empty items\n";
-            return;
+            return *this;
         }
         if (l.score() > highestScore) highestScore = l.score();
     }
     if (highestScore == 0)
     {
         std::cout << "Rejecting alphabet with no positive scores\n";
-        return;
+        return *this;
     }
 
     m_language.m_alphabet = std::move(alphabet);
@@ -66,14 +67,17 @@ void LanguageBuilder::setAlphabet(Alphabet alphabet)
             ft.emplace_back(l);
         }
     }
+
+    return *this;
 }
 
-void LanguageBuilder::setSpecials(Specials specials)
+LanguageBuilder& LanguageBuilder::setSpecials(Specials specials)
 {
     m_language.m_specials = std::move(specials);
+    return *this;
 }
 
-void LanguageBuilder::setMinWordLength(uint32_t length)
+LanguageBuilder& LanguageBuilder::setMinWordLength(uint32_t length)
 {
     // conversion table must be set before dictionary
     assert(m_language.m_dictionaryUtf8Buffer.empty());
@@ -81,17 +85,19 @@ void LanguageBuilder::setMinWordLength(uint32_t length)
     if (length < 1)
     {
         std::cout << "Rejecting zero min word length\n";
-        return;
+        return *this;
     }
 
     m_language.m_minWordLength = length;
+    return *this;
 }
 
-void LanguageBuilder::setConversionTable(LetterConversionTable table)
+LanguageBuilder& LanguageBuilder::setConversionTable(LetterConversionTable table)
 {
     // conversion table, if present, must be set before dictionary
     assert(m_language.m_dictionaryUtf8Buffer.empty());
     m_language.m_conversionTable = std::move(table);
+    return *this;
 }
 
 namespace
@@ -124,7 +130,7 @@ void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, c
 
 } // namespace
 
-void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
+LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 {
     auto& buf = m_language.m_dictionaryUtf8Buffer;
 
@@ -184,22 +190,27 @@ void LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 end:
 
     m_language.m_dictionary = Dictionary(std::move(words));
+
+    return *this;
 }
 
-void LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)
+LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::string_view constUtf8Buffer)
 {
     std::vector<char> buf(constUtf8Buffer.begin(), constUtf8Buffer.end());
     setDictionaryUtf8Buffer(std::move(buf));
+    return *this;
 }
 
-void LanguageBuilder::setMinScore(score_t score)
+LanguageBuilder& LanguageBuilder::setMinScore(score_t score)
 {
     m_language.m_minScore = score;
+    return *this;
 }
 
-void LanguageBuilder::setMaxScore(score_t score)
+LanguageBuilder& LanguageBuilder::setMaxScore(score_t score)
 {
     m_language.m_maxScore = score;
+    return *this;
 }
 
 Language LanguageBuilder::getLanguage()

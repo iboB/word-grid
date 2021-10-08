@@ -29,36 +29,35 @@ core::GridElement ab(std::string_view str, core::score_t s)
 TEST_CASE("Simple")
 {
     core::LanguageBuilder b;
-    b.setDisplayName("simple");
-    b.setMinWordLength(3);
-    b.setConversionTable({
-        {'-', {}},
-        {'z', core::LetterSequence_FromUtf8<core::LetterConversionTarget>("cc")},
-    });
-    b.setDictionaryUtf8Buffer(
-        u8R"(
-        abob
-        boa
-        bbb
-        b
-        oBaBo
-        boa
-        babababababababababa
-        bozb
-        ooo-aaa
-    )");
-    b.setMinScore(213);
-    b.setMaxScore(3050);
-
-    b.setAlphabet({
-        ab("a", 1),
-        ab("b", 3),
-        ab("c", 2),
-        ab(" ", 0),
-        ab("e", -1),
-        ab("d", 4),
-        ab("z", 5),
-    });
+    b.setDisplayName("simple")
+        .setMinWordLength(3)
+        .setConversionTable({
+            {'-', {}},
+            {'z', core::LetterSequence_FromUtf8<core::LetterConversionTarget>("cc")},
+        })
+        .setDictionaryUtf8Buffer(
+            u8R"(
+            abob
+            boa
+            bbb
+            b
+            oBaBo
+            boa
+            babababababababababa
+            bozb
+            ooo-aaa
+        )")
+        .setMinScore(213)
+        .setMaxScore(3050)
+        .setAlphabet({
+            ab("a", 1),
+            ab("b", 3),
+            ab("c", 2),
+            ab(" ", 0),
+            ab("e", -1),
+            ab("d", 4),
+            ab("z", 5),
+        });
 
     auto l = b.getLanguage();
     CHECK(l.displayName() == "simple");

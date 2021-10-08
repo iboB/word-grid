@@ -52,7 +52,7 @@ private:
 
     // we don't really need a word here a WordMatchSequence would do
     // but it's much easier to use this for the binary searches inside
-    // its previewString member is ignored throughout
+    // its members other than letters are ignored throughout
     DictionaryWord m_matchWord;
 
     // range per each letter of the current match sequence

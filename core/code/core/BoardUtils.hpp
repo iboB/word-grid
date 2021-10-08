@@ -16,6 +16,7 @@
 #include "WordMatchSequence.hpp"
 
 #include <vector>
+#include <functional>
 
 namespace core
 {
@@ -33,12 +34,11 @@ namespace impl
 CORE_API GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern);
 
 // searches entire grid for words in dictionary and adds returns them along with paths
-struct FindAllWord
-{
-    const DictionaryWord& word;
-    GridPath path;
-};
-CORE_API std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary);
+using FoundWordCB = std::function<void(const DictionaryWord&, const GridPath&)>;
+CORE_API void findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary, FoundWordCB cb);
+
+// temp function to find words in a vector (won't touch score)
+CORE_API std::vector<ScoredWord> findAllWordsInGridTmp(const Grid& grid, const Dictionary& dictionary);
 
 // generate a random path of a free elements for a given grid
 // return an empty path if it's not possible

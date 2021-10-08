@@ -12,6 +12,7 @@
 #include "Grid.hpp"
 #include "GridElement.hpp"
 #include "PRNG.hpp"
+#include "ScoredWord.hpp"
 
 #include "GridVisiting.hpp"
 
@@ -61,14 +62,14 @@ struct TestPatternVisitor
 
 struct FindAllVisitor
 {
-    FindAllVisitor(const Dictionary& dic, std::vector<FindAllWord>& out)
+    FindAllVisitor(const Dictionary& dic, FoundWordCB cb)
         : d(dic)
-        , out(out)
+        , cb(std::move(cb))
         , ds(dic)
     {}
 
     const Dictionary& d;
-    std::vector<FindAllWord>& out;
+    FoundWordCB cb;
     DictionarySearch ds;
     GridPath path;
 
@@ -87,7 +88,7 @@ struct FindAllVisitor
 
         if (result == DictionarySearch::Result::Exact)
         {
-            out.push_back({*ds.range().begin, path});
+            cb(*ds.range().begin, path);
             // Don't return. Search deeper for words which also contain this word as it's beginning
         }
 
@@ -114,11 +115,21 @@ GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern)
     return visitGrid(grid, v);
 }
 
-std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary)
+void findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary, FoundWordCB cb)
 {
-    std::vector<FindAllWord> ret;
-    FindAllVisitor v(dictionary, ret);
+    FindAllVisitor v(dictionary, std::move(cb));
     visitGrid(grid, v);
+}
+
+std::vector<ScoredWord> findAllWordsInGridTmp(const Grid& grid, const Dictionary& dictionary)
+{
+    std::vector<ScoredWord> ret;
+    findAllWordsInGrid(grid, dictionary, [&ret](const DictionaryWord& word, const GridPath& path) {
+        auto& w = ret.emplace_back();
+        w.word = word.letters.getView();
+        w.displayString = word.displayString;
+        w.path = path;
+    });
     return ret;
 }
 

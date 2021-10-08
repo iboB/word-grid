@@ -7,6 +7,7 @@
 #include <core/PRNG.hpp>
 #include <core/Grid.hpp>
 #include <core/BoardUtils.hpp>
+#include <core/ScoredWord.hpp>
 
 using namespace std;
 
@@ -130,10 +131,10 @@ int main()
         cout << '\n';
     }
 
-    auto words = core::impl::findAllWordsInGrid(g, lang.dictionary());
+    auto words = core::impl::findAllWordsInGridTmp(g, lang.dictionary());
 
     for (auto& w : words) {
-        cout << w.word.displayString << ", ";
+        cout << w.displayString << ", ";
     }
 
     return 0;

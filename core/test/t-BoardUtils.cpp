@@ -161,15 +161,15 @@ TEST_CASE("find all basic")
         dw("iijk"),
     };
 
-    auto found = findAllWordsInGrid(grid, d);
+    auto found = findAllWordsInGridTmp(grid, d);
     REQUIRE(found.size() == 4);
-    CHECK(found[0].word.displayString == "afe");
+    CHECK(found[0].displayString == "afe");
     CHECK(found[0].path == GridPath{{0, 0}, {1, 1}, {0, 1}});
-    CHECK(found[1].word.displayString == "efkl");
+    CHECK(found[1].displayString == "efkl");
     CHECK(found[1].path == GridPath{{0, 1}, {1, 1}, {2, 2}, {3, 2}});
-    CHECK(found[2].word.displayString == "jiebcd");
+    CHECK(found[2].displayString == "jiebcd");
     CHECK(test::isValidGridPath(found[2].path, grid));
-    CHECK(found[3].word.displayString == "pokl");
+    CHECK(found[3].displayString == "pokl");
     CHECK(test::isValidGridPath(found[3].path, grid));
 }
 
@@ -198,49 +198,49 @@ TEST_CASE("find all fancy")
         dw("end"), //
     };
 
-    auto found = findAllWordsInGrid(grid, d);
+    auto found = findAllWordsInGridTmp(grid, d);
     REQUIRE(found.size() == 14);
     auto f = found.begin();
-    CHECK(f->word.displayString == "abbj");
+    CHECK(f->displayString == "abbj");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "cba");
+    CHECK(f->displayString == "cba");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "cba");
+    CHECK(f->displayString == "cba");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "cba");
+    CHECK(f->displayString == "cba");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "zybblend");
+    CHECK(f->displayString == "zybblend");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "beg");
+    CHECK(f->displayString == "beg");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "begh");
+    CHECK(f->displayString == "begh");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "begaend");
+    CHECK(f->displayString == "begaend");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "beglh");
+    CHECK(f->displayString == "beglh");
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {3, 1}});
     ++f;
-    CHECK(f->word.displayString == "begln");
+    CHECK(f->displayString == "begln");
     CHECK(f->path == GridPath{{2, 1}, {2, 2}, {1, 3}});
     ++f;
-    CHECK(f->word.displayString == "beglh");
+    CHECK(f->displayString == "beglh");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "hlo");
+    CHECK(f->displayString == "hlo");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "hlo");
+    CHECK(f->displayString == "hlo");
     CHECK(test::isValidGridPath(f->path, grid));
     ++f;
-    CHECK(f->word.displayString == "end");
+    CHECK(f->displayString == "end");
     CHECK(f->path == GridPath{{3, 3}});
 
     CHECK(++f == found.end());

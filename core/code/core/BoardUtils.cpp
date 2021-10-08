@@ -12,7 +12,8 @@
 #include "Grid.hpp"
 #include "GridElement.hpp"
 #include "PRNG.hpp"
-#include "ScoredWord.hpp"
+
+#include "GridVisiting.hpp"
 
 #include <itlib/memory_view.hpp>
 
@@ -23,76 +24,6 @@ namespace core::impl
 
 namespace
 {
-
-template <typename Visitor>
-bool visitGridR(const Grid& g, Visitor& v, GridPath& path);
-
-template <typename Visitor>
-bool visitItem(const Grid& g, const GridCoord& c, Visitor& v, GridPath& path)
-{
-    auto& gridElem = g[c];
-
-    if (gridElem.frontOnly() && !path.empty()) return false;
-
-    for (auto option = gridElem.firstOption(); !option.isEnd(); option.goToNext())
-    {
-        auto seq = option.getMatchSequence();
-
-        if (!v.push(seq, c)) continue;
-        path.push_back(c);
-        if (v.done()) return true;
-
-        if (!gridElem.backOnly())
-        {
-            // only recurse if this is not a back-only grid elem
-            if (visitGridR(g, v, path)) return true;
-        }
-
-        v.pop(seq);
-        path.pop_back();
-    }
-
-    return false;
-}
-
-template <typename Visitor>
-bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
-{
-    const auto& base = path.back();
-
-    for (int y = -1; y <= 1; ++y)
-    {
-        GridCoord c;
-        c.y = base.y + y;
-        if (c.y >= g.dim().h) continue;
-        for (int x = -1; x <= 1; ++x)
-        {
-            if (x == 0 && y == 0) continue;
-            c.x = base.x + x;
-            if (c.x >= g.dim().w) continue;
-
-            if (path.contains(c)) continue;
-
-            if (visitItem(g, c, v, path)) return true;
-        }
-    }
-
-    return false;
-}
-
-template <typename Visitor>
-void visitGrid(const Grid& g, Visitor& v, GridPath& path)
-{
-    assert(path.empty());
-    GridCoord c;
-    for (c.y = 0; c.y < g.dim().h; ++c.y)
-    {
-        for (c.x = 0; c.x < g.dim().w; ++c.x)
-        {
-            if (visitItem(g, c, v, path)) return;
-        }
-    }
-}
 
 struct TestPatternVisitor
 {
@@ -180,17 +111,14 @@ struct FindAllVisitor
 GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pattern)
 {
     TestPatternVisitor v = {{pattern.getView()}};
-    GridPath ret;
-    visitGrid(grid, v, ret);
-    return ret;
+    return visitGrid(grid, v);
 }
 
 std::vector<FindAllWord> findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary)
 {
     std::vector<FindAllWord> ret;
     FindAllVisitor v(dictionary, ret);
-    GridPath path;
-    visitGrid(grid, v, path);
+    visitGrid(grid, v);
     return ret;
 }
 

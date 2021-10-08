@@ -44,6 +44,11 @@ TEST_CASE("cmp")
     auto w3 = wms("asdfa");
     auto w4 = wms("asdfz");
 
+    CHECK(w1 == w1);
+    CHECK(w1 == w1a);
+    CHECK(w1.getView() == w1.getView());
+    CHECK(w1.getView() == w1a.getView());
+
     CHECK(!(w1 < w1a));
     CHECK(!(w1a < w1));
     CHECK(w1 < w2);

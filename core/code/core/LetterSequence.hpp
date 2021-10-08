@@ -18,7 +18,7 @@ namespace core
 namespace impl
 {
 template <typename S>
-bool compareLetters(const S& a, const S& b)
+int compareLetters(const S& a, const S& b)
 {
     auto ai = a.begin();
     auto aend = a.end();
@@ -26,18 +26,26 @@ bool compareLetters(const S& a, const S& b)
     auto bend = b.end();
     for (; (ai != aend) && (bi != bend); ++ai, ++bi)
     {
-        if (*ai < *bi) return true;
-        if (*bi < *ai) return false;
+        if (*ai < *bi) return -1;
+        if (*bi < *ai) return 1;
     }
-    return (ai == aend) && (bi != bend);
+    if (ai == aend)
+    {
+        if (bi == bend) return 0;
+        return -1;
+    }
+    return 1;
 }
 } // namespace impl
 
 struct LetterSequenceView : public itlib::const_memory_view<letter_t>
 {
-    using itlib::const_memory_view<letter_t>::const_memory_view;
+    using Super = itlib::const_memory_view<letter_t>;
+    using Super::const_memory_view;
+    using Super::operator=;
 
-    bool operator<(const LetterSequenceView& b) const { return impl::compareLetters(*this, b); }
+    bool operator==(const LetterSequenceView& b) const { return impl::compareLetters(*this, b) == 0; }
+    bool operator<(const LetterSequenceView& b) const { return impl::compareLetters(*this, b) == -1; }
 };
 
 template <size_t L>
@@ -45,7 +53,7 @@ struct LetterSequence : public itlib::static_vector<letter_t, L>
 {
     LetterSequenceView getView() const { return LetterSequenceView(this->data(), this->size()); }
 
-    bool operator<(const LetterSequence& b) const { return impl::compareLetters(*this, b); }
+    bool operator<(const LetterSequence& b) const { return impl::compareLetters(*this, b) == -1 ; }
 };
 
 } // namespace core

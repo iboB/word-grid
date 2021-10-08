@@ -18,11 +18,11 @@ namespace core
 
 struct GridDimensions;
 
-using _GridPathBase = itlib::static_vector<GridCoord, WordTraits::Max_Length>;
-class CORE_API GridPath : public _GridPathBase
+using B_GridPath = itlib::static_vector<GridCoord, WordTraits::Max_Length>;
+class CORE_API GridPath : public B_GridPath
 {
 public:
-    using _GridPathBase::static_vector;
+    using B_GridPath::static_vector;
 
     // returns whether this is a valid grid path for the given dims
     // check positions, checks if each element follows the previous one

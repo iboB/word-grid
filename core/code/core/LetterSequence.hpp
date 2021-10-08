@@ -39,11 +39,11 @@ int compareLetters(const S& a, const S& b)
 }
 } // namespace impl
 
-struct LetterSequenceView : public itlib::const_memory_view<letter_t>
+using B_LetterSequenceView = itlib::const_memory_view<letter_t>;
+struct LetterSequenceView : public B_LetterSequenceView
 {
-    using Super = itlib::const_memory_view<letter_t>;
-    using Super::const_memory_view;
-    using Super::operator=;
+    using B_LetterSequenceView::const_memory_view;
+    using B_LetterSequenceView::operator=;
 
     bool operator==(const LetterSequenceView& b) const { return impl::compareLetters(*this, b) == 0; }
     bool operator<(const LetterSequenceView& b) const { return impl::compareLetters(*this, b) == -1; }

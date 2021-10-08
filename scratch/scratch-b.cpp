@@ -40,6 +40,7 @@ std::vector<char> readFile(const char* path)
 int main()
 {
     core::LanguageBuilder lb;
+    lb.setDisplayName("foo");
     lb.setAlphabet({
         ab("a", 2), //
         ab("b", 5), //
@@ -73,13 +74,25 @@ int main()
         {'\'', {}},
     });
     lb.setMinWordLength(3);
+    lb.setSpecials({});
 
     auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
     auto dicPath = assetPath + "/dictionaries/common-en.txt";
     auto buf = readFile(dicPath.c_str());
     lb.setDictionaryUtf8Buffer(buf);
 
-    auto lang = lb.getLanguage();
+    {
+        auto warnings = lb.getWarnings();
+        for (auto& w : warnings) cout << w << '\n';
+    }
+
+    auto el = lb.getLanguage();
+    if (!el)
+    {
+        cerr << "couldn't initialize language\n";
+        return 1;
+    }
+    auto& lang = *el;
 
     core::Grid g({4, 4});
 

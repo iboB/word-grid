@@ -29,6 +29,7 @@ core::GridElement ab(std::string_view str, core::score_t s)
 TEST_CASE("Simple")
 {
     core::LanguageBuilder b;
+    CHECK(b.missingRequiredFields().all());
     b.setDisplayName("simple")
         .setMinWordLength(3)
         .setConversionTable({
@@ -57,9 +58,14 @@ TEST_CASE("Simple")
             ab("e", -1),
             ab("d", 4),
             ab("z", 5),
-        });
+        })
+        .setSpecials({});
 
-    auto l = b.getLanguage();
+    CHECK(b.missingRequiredFields().none());
+    auto el = b.getLanguage();
+    REQUIRE(el.has_value());
+
+    auto& l = *el;
     CHECK(l.displayName() == "simple");
     CHECK(l.minScore() == 213);
     CHECK(l.maxScore() == 3050);

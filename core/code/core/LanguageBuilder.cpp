@@ -7,15 +7,20 @@
 //
 #include "LanguageBuilder.hpp"
 
-#include <iostream>
 #include <numeric>
 
 namespace core
 {
 
+LanguageBuilder::LanguageBuilder()
+{
+    m_missingFields.set();
+}
+
 LanguageBuilder& LanguageBuilder::setDisplayName(std::string str)
 {
     m_language.m_displayName = std::move(str);
+    m_missingFields[Lang_DisplayName] = false;
     return *this;
 }
 
@@ -26,14 +31,14 @@ LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
     {
         if (l.empty())
         {
-            std::cout << "Rejecting alphabet with empty items\n";
+            m_warnings.push_back("Rejecting alphabet with empty items");
             return *this;
         }
         if (l.score() > highestScore) highestScore = l.score();
     }
     if (highestScore == 0)
     {
-        std::cout << "Rejecting alphabet with no positive scores\n";
+        m_warnings.push_back("Rejecting alphabet with no positive scores");
         return *this;
     }
 
@@ -68,12 +73,14 @@ LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
         }
     }
 
+    m_missingFields[Lang_Alphabet] = false;
     return *this;
 }
 
 LanguageBuilder& LanguageBuilder::setSpecials(Specials specials)
 {
     m_language.m_specials = std::move(specials);
+    m_missingFields[Lang_Specials] = false;
     return *this;
 }
 
@@ -84,7 +91,7 @@ LanguageBuilder& LanguageBuilder::setMinWordLength(uint32_t length)
 
     if (length < 1)
     {
-        std::cout << "Rejecting zero min word length\n";
+        m_warnings.push_back("Rejecting zero min word length");
         return *this;
     }
 
@@ -100,12 +107,9 @@ LanguageBuilder& LanguageBuilder::setConversionTable(LetterConversionTable table
     return *this;
 }
 
-namespace
+void LanguageBuilder::tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word)
 {
-
-void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, const Language& language)
-{
-    auto converted = language.getWordMatchSequenceFromUtf8(utf8Word);
+    auto converted = m_language.getWordMatchSequenceFromUtf8(utf8Word);
 
     if (converted)
     {
@@ -125,10 +129,12 @@ void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, c
         return {};
     }();
 
-    std::cout << "Skipping word '" << utf8Word << "'. Reason: " << errMsg << '\n';
+    auto& warning = m_warnings.emplace_back();
+    warning += "Skipping word '";
+    warning += utf8Word;
+    warning += "'. Reason: ";
+    warning += errMsg;
 }
-
-} // namespace
 
 LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8Buffer)
 {
@@ -183,14 +189,14 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8
         while (!utf8Word.empty() && utf8Word.back() == ' ') utf8Word.remove_suffix(1);
 
         // add if anything else remains
-        if (!utf8Word.empty()) tryAddWord(words, utf8Word, m_language);
+        if (!utf8Word.empty()) tryAddWord(words, utf8Word);
 
         wb = we;
     }
 end:
 
     m_language.m_dictionary = Dictionary(std::move(words));
-
+    m_missingFields[Lang_Dictionary] = false;
     return *this;
 }
 
@@ -213,9 +219,23 @@ LanguageBuilder& LanguageBuilder::setMaxScore(score_t score)
     return *this;
 }
 
-Language LanguageBuilder::getLanguage()
+std::vector<std::string> LanguageBuilder::getWarnings()
 {
-    return std::move(m_language);
+    std::vector<std::string> ret;
+    m_warnings.swap(ret);
+    return ret;
+}
+
+itlib::expected<Language, LanguageBuilder::MissingFields> LanguageBuilder::getLanguage()
+{
+    if (!m_missingFields.none()) return itlib::unexpected(m_missingFields);
+
+    m_missingFields.reset();
+    m_warnings.clear();
+
+    Language ret;
+    std::swap(m_language, ret);
+    return std::move(ret);
 }
 
 } // namespace core

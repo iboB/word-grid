@@ -10,12 +10,30 @@
 
 #include "Language.hpp"
 
+#include <itlib/expected.hpp>
+
+#include <bitset>
+
 namespace core
 {
 
 class CORE_API LanguageBuilder
 {
 public:
+    LanguageBuilder();
+
+    enum RequiredLanguageFields
+    {
+        Lang_DisplayName,
+        Lang_Alphabet,
+        Lang_Specials,
+        Lang_Dictionary,
+        Num_RequiredLanguageFields
+    };
+    using MissingFields = std::bitset<Num_RequiredLanguageFields>;
+
+    const MissingFields& missingRequiredFields() const { return m_missingFields; }
+
     LanguageBuilder& setDisplayName(std::string str);
 
     LanguageBuilder& setAlphabet(Alphabet alphabet);
@@ -31,10 +49,18 @@ public:
     LanguageBuilder& setMinScore(score_t score);
     LanguageBuilder& setMaxScore(score_t score);
 
-    Language getLanguage();
+    std::vector<std::string> getWarnings();
+
+    // if this function succeeds it will clear all warnings and missing fields
+    // essenially making the builder reusable to build another language
+    itlib::expected<Language, MissingFields> getLanguage();
 
 private:
+    void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word);
+
     Language m_language;
+    MissingFields m_missingFields;
+    std::vector<std::string> m_warnings;
 };
 
 } // namespace core

@@ -71,15 +71,7 @@ bool visitGridR(const Grid& g, Visitor& v, GridPath& path)
             c.x = base.x + x;
             if (c.x >= g.dim().w) continue;
 
-            bool alreadyUsed = [&c, &path]() {
-                for (auto& u : path)
-                {
-                    if (u == c) return true;
-                }
-                return false;
-            }();
-
-            if (alreadyUsed) continue;
+            if (path.contains(c)) continue;
 
             if (visitItem(g, c, v, path)) return true;
         }
@@ -251,14 +243,7 @@ bool randomPathR(GridPath& path, uint32_t targetLength, const Grid& grid, PRNG& 
         if (!grid[attempt].empty()) continue;
 
         // used check
-        bool alreadyUsed = [&attempt, &path]() {
-            for (auto& u : path)
-            {
-                if (u == attempt) return true;
-            }
-            return false;
-        }();
-        if (alreadyUsed) continue;
+        if (path.contains(attempt)) continue;
 
         path.push_back(attempt);
         if (randomPathR(path, targetLength, grid, rng)) return true;

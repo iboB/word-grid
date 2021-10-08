@@ -24,6 +24,7 @@ icm_add_lib(core CORE
     GridElement.cpp
     GridCoord.hpp
     GridPath.hpp
+    GridPath.cpp
     Grid.hpp
     ScoredWord.hpp
     BoardUtils.hpp

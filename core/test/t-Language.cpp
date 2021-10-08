@@ -58,8 +58,7 @@ TEST_CASE("Simple")
             ab("e", -1),
             ab("d", 4),
             ab("z", 5),
-        })
-        .setSpecials({});
+        });
 
     CHECK(b.missingRequiredFields().none());
     auto el = b.getLanguage();

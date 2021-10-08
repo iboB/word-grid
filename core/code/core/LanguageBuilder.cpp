@@ -80,7 +80,6 @@ LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
 LanguageBuilder& LanguageBuilder::setSpecials(Specials specials)
 {
     m_language.m_specials = std::move(specials);
-    m_missingFields[Lang_Specials] = false;
     return *this;
 }
 

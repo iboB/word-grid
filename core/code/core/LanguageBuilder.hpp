@@ -26,7 +26,6 @@ public:
     {
         Lang_DisplayName,
         Lang_Alphabet,
-        Lang_Specials,
         Lang_Dictionary,
         Num_RequiredLanguageFields
     };

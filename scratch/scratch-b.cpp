@@ -74,7 +74,6 @@ int main()
         {'\'', {}},
     });
     lb.setMinWordLength(3);
-    lb.setSpecials({});
 
     auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
     auto dicPath = assetPath + "/dictionaries/common-en.txt";

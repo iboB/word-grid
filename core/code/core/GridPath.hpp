@@ -29,7 +29,14 @@ public:
     bool valid(const GridDimensions& dim) const;
 
     // check if path contains coord
-    bool contains(GridCoord coord) const;
+    bool contains(GridCoord coord) const
+    {
+        for (auto& c : *this)
+        {
+            if (c == coord) return true;
+        }
+        return false;
+    }
 };
 
 } // namespace core

@@ -38,13 +38,4 @@ bool GridPath::valid(const GridDimensions& dim) const
     return true;
 }
 
-bool GridPath::contains(GridCoord coord) const
-{
-    for (auto& c : *this)
-    {
-        if (c == coord) return true;
-    }
-    return false;
-}
-
 } // namespace core

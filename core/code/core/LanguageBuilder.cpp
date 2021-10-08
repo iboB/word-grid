@@ -234,7 +234,7 @@ itlib::expected<Language, LanguageBuilder::MissingFields> LanguageBuilder::getLa
 
     Language ret;
     std::swap(m_language, ret);
-    return std::move(ret);
+    return ret;
 }
 
 } // namespace core

@@ -129,6 +129,7 @@ std::vector<ScoredWord> findAllWordsInGridTmp(const Grid& grid, const Dictionary
         w.word = word.letters.getView();
         w.displayString = word.displayString;
         w.path = path;
+        w.uncommon = word.uncommon;
     });
     return ret;
 }

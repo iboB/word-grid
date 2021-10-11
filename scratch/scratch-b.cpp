@@ -9,6 +9,8 @@
 #include <core/BoardUtils.hpp>
 #include <core/ScoredWord.hpp>
 
+#include <set>
+
 using namespace std;
 
 core::GridElement ab(std::string_view str, core::score_t s)
@@ -159,10 +161,27 @@ int main()
     }
 
     auto words = core::impl::findAllWordsInGridTmp(g, lang.dictionary());
-    cout << "Found " << words.size() << " words\n";
+
+    std::set<std::string_view> common;
+    std::set<std::string_view> uncommon;
+
     for (auto& w : words) {
-        cout << w.displayString << ", ";
+        if (w.uncommon) uncommon.insert(w.displayString);
+        else common.insert(w.displayString);
     }
+
+    cout << "Found " << (common.size() + uncommon.size()) << " words\n";
+
+    cout << "\n\ncommon (" << common.size() << "): ";
+    for (auto& w : common) {
+        cout << w << ", ";
+    }
+    cout << "\n\nuncommon (" << uncommon.size() << "): ";
+    for (auto& w : uncommon) {
+        cout << w << ", ";
+    }
+
+    cout << endl;
 
     return 0;
 }

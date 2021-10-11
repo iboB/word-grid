@@ -27,6 +27,9 @@ struct ScoredWord
     GridPath path;
 
     score_t score = 0; // total score
+
+    bool uncommon = false; // uncommon word
+
     bool special = 0; // word is a bonus word (score is not necessarily simply aggregated over path)
 };
 } // namespace core

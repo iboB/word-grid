@@ -37,7 +37,7 @@ CORE_API GridPath testGridPattern(const Grid& grid, const WordMatchSequence& pat
 using FoundWordCB = std::function<void(const DictionaryWord&, const GridPath&)>;
 CORE_API void findAllWordsInGrid(const Grid& grid, const Dictionary& dictionary, FoundWordCB cb);
 
-// temp function to find words in a vector (won't touch score)
+// temp function to find words in a vector (won't touch score and special)
 CORE_API std::vector<ScoredWord> findAllWordsInGridTmp(const Grid& grid, const Dictionary& dictionary);
 
 // generate a random path of a free elements for a given grid

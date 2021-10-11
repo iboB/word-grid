@@ -40,6 +40,9 @@ public:
 
     const Dictionary& dictionary() const { return m_dictionary; }
 
+    using HelperList = std::vector<std::reference_wrapper<const DictionaryWord>>;
+    const HelperList& commonWords() const { return m_commonWords; }
+
     // limits for score
     // a produced board is not considered playable if its total score is below minScore or above maxScore
     // this allows us to have a somewhat uniform ranking of players across boards in the same language
@@ -56,6 +59,9 @@ private:
 
     Dictionary m_dictionary;
     std::vector<char> m_dictionaryUtf8Buffer;
+
+    // helper lists
+    HelperList m_commonWords;
 
     score_t m_minScore = 0;
     score_t m_maxScore = std::numeric_limits<score_t>::max();

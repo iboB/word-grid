@@ -28,6 +28,9 @@ struct DictionaryWord
     // MIND THIS
     std::string_view displayString;
 
+    // is it an uncommon word
+    bool uncommon = false;
+
     // sort and compare by letters
     bool operator==(const DictionaryWord& other) const { return letters == other.letters; }
     bool operator<(const DictionaryWord& other) const { return letters < other.letters; }

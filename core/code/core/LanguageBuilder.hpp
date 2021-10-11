@@ -42,6 +42,9 @@ public:
 
     LanguageBuilder& setConversionTable(LetterConversionTable table);
 
+    // add all words from a single buffer
+    // will look for a the separator and interpret all words after the separtor as uncommon
+    static inline constexpr std::string_view Uncommon_Separator = "----------------";
     LanguageBuilder& setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
     LanguageBuilder& setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
 
@@ -55,7 +58,7 @@ public:
     itlib::expected<Language, MissingFields> getLanguage();
 
 private:
-    void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word);
+    void tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, bool uncommon);
 
     Language m_language;
     MissingFields m_missingFields;

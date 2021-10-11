@@ -44,6 +44,7 @@ TEST_CASE("Simple")
             b
             oBaBo
             boa
+            ----------------
             babababababababababa
             bozb
             ooo-aaa
@@ -74,25 +75,31 @@ TEST_CASE("Simple")
 
     auto abob = dic.front();
     CHECK(abob.displayString == "abob");
+    CHECK_FALSE(abob.uncommon);
     auto abob2 = l.getWordMatchSequenceFromUtf8("abob");
     REQUIRE(abob2.has_value());
     CHECK(abob.letters == *abob2);
 
     core::WordMatchSequence fb;
     CHECK(dic[1].displayString == "bbb");
+    CHECK_FALSE(dic[1].uncommon);
     CHECK(dic[1].letters == l.getWordMatchSequenceFromUtf8("bbb").value_or(fb));
     CHECK(dic[2].displayString == "boa");
+    CHECK_FALSE(dic[2].uncommon);
     CHECK(dic[3].displayString == "bozb");
+    CHECK(dic[3].uncommon);
     auto bozbLetters = dic[3].letters;
     CHECK(bozbLetters.size() == 5);
     CHECK(bozbLetters == wms("boccb"));
     CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("bozb").value_or(fb));
     CHECK(bozbLetters == l.getWordMatchSequenceFromUtf8("boccb").value_or(fb));
     CHECK(dic[4].displayString == "oBaBo"); // presiserp of unitinu
+    CHECK_FALSE(dic[4].uncommon);
     auto obaboLetters = dic[4].letters;
     CHECK(obaboLetters[1] == 'b');
     CHECK(obaboLetters == wms("obabo"));
     CHECK(obaboLetters == l.getWordMatchSequenceFromUtf8("ObAbO").value_or(fb));
+    CHECK(dic[5].uncommon);
     auto ooaaLetters = dic[5].letters;
     CHECK(ooaaLetters.size() == 6);
     CHECK(ooaaLetters == wms("oooaaa"));
@@ -107,9 +114,16 @@ TEST_CASE("Simple")
     CHECK(abc[3].letterSequence() == wms(" "));
     CHECK(abc[3].score() == 0);
 
+    auto& commons = l.commonWords();
+    CHECK(commons.size() == 4);
+    CHECK(commons[0].get().displayString == "abob");
+    CHECK(commons[1].get().displayString == "bbb");
+    CHECK(commons[2].get().displayString == "boa");
+    CHECK(commons[3].get().displayString == "oBaBo");
+
     auto& fq = l.alphabetFrequencyTable();
 
-    // reuse GridElement to but add expected counts in score
+    // reuse GridElement type but add expected counts in score
     core::Alphabet counts = {
         ab("a", 60),
         ab("b", 20),

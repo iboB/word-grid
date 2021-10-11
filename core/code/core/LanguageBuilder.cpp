@@ -106,7 +106,7 @@ LanguageBuilder& LanguageBuilder::setConversionTable(LetterConversionTable table
     return *this;
 }
 
-void LanguageBuilder::tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word)
+void LanguageBuilder::tryAddWord(std::vector<DictionaryWord>& words, std::string_view utf8Word, bool uncommon)
 {
     auto converted = m_language.getWordMatchSequenceFromUtf8(utf8Word);
 
@@ -115,6 +115,7 @@ void LanguageBuilder::tryAddWord(std::vector<DictionaryWord>& words, std::string
         auto& word = words.emplace_back();
         word.displayString = utf8Word;
         word.letters = *converted;
+        word.uncommon = uncommon;
         return;
     }
 
@@ -162,6 +163,8 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8
     words.reserve(maxWordsInBuffer);
 
     // second pass: build dictionary
+    bool foundUncommonSeparator = false;
+    size_t maxCommonWordsInfBuffer = 0;
     auto wb = buf.begin();
     while (true)
     {
@@ -187,14 +190,30 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::vector<char> utf8
         while (!utf8Word.empty() && utf8Word.front() == ' ') utf8Word.remove_prefix(1);
         while (!utf8Word.empty() && utf8Word.back() == ' ') utf8Word.remove_suffix(1);
 
-        // add if anything else remains
-        if (!utf8Word.empty()) tryAddWord(words, utf8Word);
-
         wb = we;
+
+        if (utf8Word == Uncommon_Separator)
+        {
+            foundUncommonSeparator = true;
+            continue;
+        }
+
+        maxCommonWordsInfBuffer += !foundUncommonSeparator;
+
+        // add if anything else remains
+        if (!utf8Word.empty()) tryAddWord(words, utf8Word, foundUncommonSeparator);
     }
 end:
 
     m_language.m_dictionary = Dictionary(std::move(words));
+
+    // build helper lists
+    m_language.m_commonWords.reserve(maxCommonWordsInfBuffer);
+    for (auto& w : m_language.m_dictionary)
+    {
+        if (!w.uncommon) m_language.m_commonWords.push_back(w);
+    }
+
     m_missingFields[Lang_Dictionary] = false;
     return *this;
 }

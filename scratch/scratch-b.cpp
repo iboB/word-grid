@@ -73,11 +73,12 @@ int main()
     lb.setConversionTable({
         {'-', {}},
         {'\'', {}},
+        {241, core::LetterSequence_FromUtf8<core::LetterConversionTarget>("n")}
     });
     lb.setMinWordLength(3);
 
     auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
-    auto dicPath = assetPath + "/dictionaries/common-en.txt";
+    auto dicPath = assetPath + "/dictionaries/sowpods+12d.txt";
     auto buf = readFile(dicPath.c_str());
     lb.setDictionaryUtf8Buffer(buf);
 
@@ -96,7 +97,9 @@ int main()
 
     core::Grid g({4, 4});
 
-    core::PRNG rng(core::PRNG::randomDevice());
+    auto rseed = core::PRNG::randomDevice();
+    cout << "Seeding with: " << rseed << '\n';
+    core::PRNG rng(rseed);
 
     auto addWord = [&](std::string_view str) {
         auto p = core::impl::generateRandomEmptyPath(str.length(), g, rng);
@@ -109,17 +112,41 @@ int main()
         return true;
     };
 
-    while (true)
-    {
-        auto& word = rng.randomElement(lang.dictionary().container());
-        if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
-        else break;
-    }
+    //std::vector<std::string_view> seedWords = {"ape", "horse", "cow"};
+    //for (auto w : seedWords)
+    //{
+    //    addWord(w);
+    //}
+    ////while (true)
+    ////{
+    ////    auto& word = rng.randomElement(lang.dictionary().container());
+    ////    if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
+    ////    else break;
+    ////}
 
-    auto& ft = lang.alphabetFrequencyTable();
-    for (auto& e : g.elements())
+    //auto& ft = lang.alphabetFrequencyTable();
+    //for (auto& e : g.elements())
+    //{
+    //    if (e.score() == 0) e = rng.randomElement(ft);
+    //}
+
+    std::string_view gridData =
+        //"gore"
+        //"aapr"
+        //"chto"
+        //"osif";
+        //"nori"
+        //"hgut"
+        //"wahp"
+        //"resy";
+        "dona"
+        "awer"
+        "isef"
+        "reso";
+
+    for (uint32_t i = 0; i < 16; ++i)
     {
-        if (e.score() == 0) e = rng.randomElement(ft);
+        g[i].push_back(gridData[i]);
     }
 
     for (uint8_t y = 0; y < g.dim().h; ++y)
@@ -132,7 +159,7 @@ int main()
     }
 
     auto words = core::impl::findAllWordsInGridTmp(g, lang.dictionary());
-
+    cout << "Found " << words.size() << " words\n";
     for (auto& w : words) {
         cout << w.displayString << ", ";
     }

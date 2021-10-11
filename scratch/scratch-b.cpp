@@ -81,6 +81,7 @@ int main()
 
     auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
     auto dicPath = assetPath + "/dictionaries/sowpods+12d.txt";
+    //auto dicPath = assetPath + "/dictionaries/12dicts.txt";
     auto buf = readFile(dicPath.c_str());
     lb.setDictionaryUtf8Buffer(buf);
 
@@ -119,37 +120,37 @@ int main()
     //{
     //    addWord(w);
     //}
-    ////while (true)
-    ////{
-    ////    auto& word = rng.randomElement(lang.dictionary().container());
-    ////    if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
-    ////    else break;
-    ////}
-
-    //auto& ft = lang.alphabetFrequencyTable();
-    //for (auto& e : g.elements())
-    //{
-    //    if (e.score() == 0) e = rng.randomElement(ft);
-    //}
-
-    std::string_view gridData =
-        //"gore"
-        //"aapr"
-        //"chto"
-        //"osif";
-        //"nori"
-        //"hgut"
-        //"wahp"
-        //"resy";
-        "dona"
-        "awer"
-        "isef"
-        "reso";
-
-    for (uint32_t i = 0; i < 16; ++i)
+    while (true)
     {
-        g[i].push_back(gridData[i]);
+       auto& word = rng.randomElement(lang.commonWords()).get();
+       if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
+       else break;
     }
+
+    auto& ft = lang.alphabetFrequencyTable();
+    for (auto& e : g.elements())
+    {
+       if (e.score() == 0) e = rng.randomElement(ft);
+    }
+
+    // std::string_view gridData =
+    //     // "gore"
+    //     // "aapr"
+    //     // "chto"
+    //     // "osif";
+    //     "nori"
+    //     "hgut"
+    //     "wahp"
+    //     "resy";
+    //     // "dona"
+    //     // "awer"
+    //     // "isef"
+    //     // "reso";
+
+    // for (uint32_t i = 0; i < 16; ++i)
+    // {
+    //     g[i].push_back(gridData[i]);
+    // }
 
     for (uint8_t y = 0; y < g.dim().h; ++y)
     {

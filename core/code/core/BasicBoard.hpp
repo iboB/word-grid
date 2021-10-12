@@ -16,18 +16,13 @@ namespace core
 {
 
 // a basic board holds a grid and an list of scored words for that grid
-// it may optionally (depending on construction) own buffers for the letters and display strings of the words
-// For example, if it's in the same address space as the langauge, it does not need to own the buffers too
-// the language will do this job for us
+// ScoredWords are a view so there needs to be a holder of the data!
+// The holder is determined by the users of this helper
 class BasicBoard
 {
 public:
     Grid grid;
     std::vector<ScoredWord> words;
-
-private:
-    std::vector<char> m_displayStringBuffer;
-    std::vector<WordMatchSequence> m_wordBuffer;
 };
 
 }

@@ -122,7 +122,7 @@ int main()
     //}
     while (true)
     {
-       auto& word = rng.randomElement(lang.commonWords()).get();
+       auto& word = rng.randomElement(lang.commonWordsByLength()).get();
        if (addWord(word.displayString)) cout << "added " << word.displayString << '\n';
        else break;
     }

@@ -208,10 +208,15 @@ end:
     m_language.m_dictionary = Dictionary(std::move(words));
 
     // build helper lists
-    m_language.m_commonWords.reserve(maxCommonWordsInfBuffer);
-    for (auto& w : m_language.m_dictionary)
     {
-        if (!w.uncommon) m_language.m_commonWords.push_back(w);
+        auto& cw = m_language.m_commonWordsByLength;
+        cw.reserve(maxCommonWordsInfBuffer);
+        for (auto& w : m_language.m_dictionary)
+        {
+            if (!w.uncommon) cw.push_back(w);
+        }
+        std::stable_sort(cw.begin(), cw.end(),
+            [](const DictionaryWord& a, const DictionaryWord& b) { return a.letters.size() < b.letters.size(); });
     }
 
     m_missingFields[Lang_Dictionary] = false;

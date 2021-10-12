@@ -114,11 +114,11 @@ TEST_CASE("Simple")
     CHECK(abc[3].letterSequence() == wms(" "));
     CHECK(abc[3].score() == 0);
 
-    auto& commons = l.commonWords();
+    auto& commons = l.commonWordsByLength();
     CHECK(commons.size() == 4);
-    CHECK(commons[0].get().displayString == "abob");
-    CHECK(commons[1].get().displayString == "bbb");
-    CHECK(commons[2].get().displayString == "boa");
+    CHECK(commons[0].get().displayString == "bbb");
+    CHECK(commons[1].get().displayString == "boa");
+    CHECK(commons[2].get().displayString == "abob");
     CHECK(commons[3].get().displayString == "oBaBo");
 
     auto& fq = l.alphabetFrequencyTable();

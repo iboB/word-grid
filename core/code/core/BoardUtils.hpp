@@ -8,7 +8,7 @@
 #pragma once
 #include "API.h"
 
-// this functions should be rearranged better
+// these functions should be rearranged better
 
 #include "DictionaryWord.hpp"
 #include "GridPath.hpp"

@@ -31,6 +31,8 @@ icm_add_lib(core CORE
     ScoredWord.hpp
     BoardUtils.hpp
     BoardUtils.cpp
+    ScoreUtils.hpp
+    ScoreUtils.cpp
 
     PRNG.hpp
     PRNG.cpp

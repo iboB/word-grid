@@ -7,6 +7,8 @@
 //
 #include "LanguageBuilder.hpp"
 
+#include "WordLengthTraits.hpp"
+
 #include <numeric>
 
 namespace core
@@ -230,10 +232,10 @@ end:
             view.reset(subListStart, p - subListStart);
             subListStart = p;
         };
-        fillView(m_language.m_shortWords, 4);
-        fillView(m_language.m_mediumWords, 5);
-        fillView(m_language.m_longWords, 7);
-        fillView(m_language.m_longerWords, 12);
+        fillView(m_language.m_shortWords, WordLengthTraits::Short_Max);
+        fillView(m_language.m_mediumWords, WordLengthTraits::Medium_Max);
+        fillView(m_language.m_longWords, WordLengthTraits::Long_Max);
+        fillView(m_language.m_longerWords, WordLengthTraits::Longer_Max);
         m_language.m_superLongWords.reset(subListStart, pend - subListStart);
     }
 

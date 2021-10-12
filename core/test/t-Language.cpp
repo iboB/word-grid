@@ -148,3 +148,60 @@ TEST_CASE("Simple")
     }
     CHECK(hits == sum);
 }
+
+TEST_CASE("Common words")
+{
+    core::LanguageBuilder b;
+    b.setDisplayName("common-test")
+        .setMinWordLength(3)
+        .setDictionaryUtf8Buffer(
+            u8R"(
+            a
+            aaa
+            bbb
+            aaba
+            abba
+            aaaba
+            baaba
+            aabaaa
+            babaaa
+            aabaaab
+            aababab
+            baabaaab
+            bbabaaab
+            bababaaab
+            bbabaabab
+            abababaaab
+            bbabaababa
+            bbaaabaabaaab
+            abbaaabaabaaab
+            abbababaabaaab
+            baabaaabaabaaab
+            ----------------
+            aba
+            bab
+            baba
+            babab
+            bababa
+            bababab
+            babababa
+            babababab
+            bababababababab
+        )")
+        .setAlphabet({
+            ab("a", 1),
+            ab("b", 1),
+        });
+
+    auto el = b.getLanguage();
+    REQUIRE(el.has_value());
+
+    auto& l = *el;
+
+    CHECK(l.commonWordsByLength().size() == 20);
+    CHECK(l.shortWords().size() == 4);
+    CHECK(l.mediumWords().size() == 2);
+    CHECK(l.longWords().size() == 4);
+    CHECK(l.longerWords().size() == 6);
+    CHECK(l.superLongWords().size() == 4);
+}

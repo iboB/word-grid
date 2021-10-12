@@ -217,6 +217,24 @@ end:
         }
         std::stable_sort(cw.begin(), cw.end(),
             [](const DictionaryWord& a, const DictionaryWord& b) { return a.letters.size() < b.letters.size(); });
+
+        auto p = cw.data();
+        auto subListStart = cw.data();
+        const auto pend = cw.data() + cw.size();
+
+        auto fillView = [&](Language::HelperListView& view, size_t length) {
+            for (; p != pend; ++p)
+            {
+                if (p->get().letters.size() > length) break;
+            }
+            view.reset(subListStart, p - subListStart);
+            subListStart = p;
+        };
+        fillView(m_language.m_shortWords, 4);
+        fillView(m_language.m_mediumWords, 5);
+        fillView(m_language.m_longWords, 7);
+        fillView(m_language.m_longerWords, 12);
+        m_language.m_superLongWords.reset(subListStart, pend - subListStart);
     }
 
     m_missingFields[Lang_Dictionary] = false;

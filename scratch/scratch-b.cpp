@@ -6,7 +6,7 @@
 #include <core/LetterSequenceFromUtf8.hpp>
 #include <core/PRNG.hpp>
 #include <core/Grid.hpp>
-#include <core/BoardUtils.hpp>
+#include <core/GridUtils.hpp>
 #include <core/ScoredWord.hpp>
 
 #include <set>

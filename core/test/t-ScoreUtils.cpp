@@ -5,4 +5,8 @@
 // See accompanying file LICENSE.txt or copy at
 // https://opensource.org/licenses/MIT
 //
-#include "BoardUtils.hpp"
+#include <doctest/doctest.h>
+
+TEST_SUITE_BEGIN("ScoreUtils");
+
+

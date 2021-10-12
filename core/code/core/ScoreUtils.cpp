@@ -44,6 +44,4 @@ score_t classicScore(const ScoredWord& sw, const Grid& grid)
     return ret;
 }
 
-
-
 } // namespace core::impl

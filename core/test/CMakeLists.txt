@@ -8,6 +8,8 @@ core_test(GridPath t-GridPath.cpp)
 core_test(Grid t-Grid.cpp)
 core_test(Language t-Language.cpp)
 core_test(DictionarySearch t-DictionarySearch.cpp)
+core_test(GridUtils t-GridUtils.cpp)
+core_test(ScoreUtils t-ScoreUtils.cpp)
 core_test(BoardUtils t-BoardUtils.cpp)
 
 # core_test(Scoring t-Scoring.cpp)

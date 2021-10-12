@@ -52,9 +52,10 @@ struct LetterSequenceView : public B_LetterSequenceView
 template <size_t L>
 struct LetterSequence : public itlib::static_vector<letter_t, L>
 {
-    LetterSequenceView getView() const { return LetterSequenceView(this->data(), this->size()); }
+    LetterSequenceView getView() const& { return LetterSequenceView(this->data(), this->size()); }
+    LetterSequenceView getView() && = delete;
 
-    bool operator<(const LetterSequence& b) const { return impl::compareLetters(*this, b) == -1 ; }
+    bool operator<(const LetterSequence& b) const { return impl::compareLetters(*this, b) == -1; }
 };
 
 } // namespace core

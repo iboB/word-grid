@@ -31,10 +31,12 @@ icm_add_lib(core CORE
     ScoredWord.hpp
     GridUtils.hpp
     GridUtils.cpp
-    BoardUtils.hpp
-    BoardUtils.cpp
     ScoreUtils.hpp
     ScoreUtils.cpp
+
+    BasicBoard.hpp
+    BoardUtils.hpp
+    BoardUtils.cpp
 
     PRNG.hpp
     PRNG.cpp

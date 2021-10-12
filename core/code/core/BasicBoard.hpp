@@ -7,8 +7,8 @@
 //
 #pragma once
 
+#include "Grid.hpp"
 #include "ScoredWord.hpp"
-#include "WordMatchSequence.hpp"
 
 #include <vector>
 

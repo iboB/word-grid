@@ -50,6 +50,12 @@ public:
     ElementsView row(uint32_t y) const { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
     MutableElementsView row(uint32_t y) { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
 
+    // resets all elements but doesn't affect dimensions
+    void clear()
+    {
+        for (auto& e : m_elements) e.clear();
+    }
+
 private:
     const GridElement* rowPtr(uint32_t y) const { return m_elements.data() + m_dim.w * y; }
     GridElement* rowPtr(uint32_t y) { return m_elements.data() + m_dim.w * y; }

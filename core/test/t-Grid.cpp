@@ -59,4 +59,13 @@ TEST_CASE("fancy")
     auto g = test::Grid_fancy();
     auto ms = g[GridCoord{0, 1}].firstOption().getMatchSequence();
     CHECK(ms.size() == 2);
+
+    g.clear();
+    CHECK(g.elements().size() == 16);
+    int empties = 0;
+    for (auto& e : g.elements())
+    {
+        empties += e.empty();
+    }
+    CHECK(empties == 16);
 }

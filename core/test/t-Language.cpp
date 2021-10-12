@@ -49,8 +49,6 @@ TEST_CASE("Simple")
             bozb
             ooo-aaa
         )")
-        .setMinScore(213)
-        .setMaxScore(3050)
         .setAlphabet({
             ab("a", 1),
             ab("b", 3),
@@ -67,8 +65,6 @@ TEST_CASE("Simple")
 
     auto& l = *el;
     CHECK(l.displayName() == "simple");
-    CHECK(l.minScore() == 213);
-    CHECK(l.maxScore() == 3050);
 
     auto& dic = l.dictionary().container();
     REQUIRE(dic.size() == 6);

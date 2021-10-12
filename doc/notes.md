@@ -26,7 +26,8 @@ Here's a list of things I would like to have as configuration (not sure yet whet
 * Bonus types (length, category)
 * WordLengthTraits
 * Max_WordLength
-* Grid sizes 
+* Grid sizes
+* Min/Max score
 
 For example the current hardcoded values are woefully inept for Japanese. In Japanese I'd like a 3x3 kana grid. With min length 2, max length 9, bonuses for 3, 4, 5 kana words.
 

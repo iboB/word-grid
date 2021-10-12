@@ -12,8 +12,6 @@
 #include "Dictionary.hpp"
 #include "LanguageTypes.hpp"
 
-#include <limits>
-
 namespace core
 {
 
@@ -49,12 +47,6 @@ public:
     HelperListView longerWords() const { return m_longerWords; }
     HelperListView superLongWords() const { return m_superLongWords; }
 
-    // limits for score
-    // a produced board is not considered playable if its total score is below minScore or above maxScore
-    // this allows us to have a somewhat uniform ranking of players across boards in the same language
-    score_t minScore() const { return m_minScore; }
-    score_t maxScore() const { return m_maxScore; }
-
 private:
     friend class LanguageBuilder;
 
@@ -73,9 +65,6 @@ private:
     HelperListView m_longWords;
     HelperListView m_longerWords;
     HelperListView m_superLongWords;
-
-    score_t m_minScore = 0;
-    score_t m_maxScore = std::numeric_limits<score_t>::max();
 };
 
 } // namespace core

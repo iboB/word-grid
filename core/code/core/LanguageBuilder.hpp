@@ -48,9 +48,6 @@ public:
     LanguageBuilder& setDictionaryUtf8Buffer(std::vector<char> utf8Buffer);
     LanguageBuilder& setDictionaryUtf8Buffer(std::string_view constUtf8Buffer);
 
-    LanguageBuilder& setMinScore(score_t score);
-    LanguageBuilder& setMaxScore(score_t score);
-
     std::vector<std::string> getWarnings();
 
     // if this function succeeds it will clear all warnings and missing fields

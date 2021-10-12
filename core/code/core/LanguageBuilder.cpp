@@ -250,18 +250,6 @@ LanguageBuilder& LanguageBuilder::setDictionaryUtf8Buffer(std::string_view const
     return *this;
 }
 
-LanguageBuilder& LanguageBuilder::setMinScore(score_t score)
-{
-    m_language.m_minScore = score;
-    return *this;
-}
-
-LanguageBuilder& LanguageBuilder::setMaxScore(score_t score)
-{
-    m_language.m_maxScore = score;
-    return *this;
-}
-
 std::vector<std::string> LanguageBuilder::getWarnings()
 {
     std::vector<std::string> ret;

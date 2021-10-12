@@ -19,7 +19,7 @@ bool scheckAllCellsUsedTwice(const BasicBoard& bb)
     auto& dim = bb.grid.dim();
     auto area = dim.area();
     std::vector<int> uses(area, 0);
-    int twiceUses = 0;
+    uint32_t twiceUses = 0;
     for (auto& w : bb.words)
     {
         for (auto& c : w.path)

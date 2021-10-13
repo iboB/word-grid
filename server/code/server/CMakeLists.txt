@@ -2,6 +2,9 @@
 icm_add_lib(server SERVER
     API.h
 
+    util/LoadLanguageFromDir.hpp
+    util/LoadLanguageFromDir.cpp
+
     PlatformUtil.hpp
     PlatformUtil.cpp
 

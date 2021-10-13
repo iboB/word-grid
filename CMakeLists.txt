@@ -52,6 +52,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 dep(splat)
 dep(itlib)
 dep(xec)
+dep(huse)
 
 ######################
 # subdirectories

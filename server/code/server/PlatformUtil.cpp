@@ -7,17 +7,17 @@
 //
 #include "PlatformUtil.hpp"
 
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 #if defined(_WIN32)
-#   include <Windows.h>
+#    include <Windows.h>
 #else
-#   include <dlfcn.h>
-#   include <unistd.h>
+#    include <dlfcn.h>
+#    include <unistd.h>
 #endif
 
-namespace core
+namespace server
 {
 namespace PlatformUtil
 {
@@ -26,17 +26,14 @@ namespace
 {
 // local function used to identify the current module
 void getAddr() {}
-}
+} // namespace
 
 std::string getModulePath()
 {
     std::string modulePath;
 #if defined(_WIN32)
     HMODULE engine;
-    GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS |
-        GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-        (LPCSTR)getAddr,
-        &engine);
+    GetModuleHandleExA(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT, (LPCSTR)getAddr, &engine);
 
     char path[_MAX_PATH + _MAX_FNAME + 1];
     GetModuleFileNameA(engine, path, _MAX_PATH + _MAX_FNAME);
@@ -45,10 +42,7 @@ std::string getModulePath()
     char* p = path;
     while (*p)
     {
-        if (*p == '\\')
-        {
-            *p = '/';
-        }
+        if (*p == '\\') { *p = '/'; }
         ++p;
     }
 
@@ -60,7 +54,7 @@ std::string getModulePath()
     Dl_info info;
     dladdr(p, &info);
 
-    if(*info.dli_fname == '/')
+    if (*info.dli_fname == '/')
     {
         // absolute path!
         // we're fine
@@ -102,10 +96,7 @@ std::string getAssetPath(std::string baseDir, std::string_view assetDir)
         baseDir += assetDir;
 
         struct stat info;
-        if (stat(baseDir.c_str(), &info) == 0 && (info.st_mode & S_IFDIR))
-        {
-            break;
-        }
+        if (stat(baseDir.c_str(), &info) == 0 && (info.st_mode & S_IFDIR)) { break; }
 
         baseDir.erase(slash);
     }
@@ -113,5 +104,5 @@ std::string getAssetPath(std::string baseDir, std::string_view assetDir)
     return baseDir;
 }
 
-}
-}
+} // namespace PlatformUtil
+} // namespace server

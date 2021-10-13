@@ -1,7 +1,5 @@
 #include <iostream>
 
-#include "PlatformUtil.hpp"
-
 #include <core/BasicBoard.hpp>
 #include <core/BoardUtils.hpp>
 #include <core/Grid.hpp>
@@ -11,6 +9,8 @@
 #include <core/PRNG.hpp>
 #include <core/ScoreUtils.hpp>
 #include <core/ScoredWord.hpp>
+
+#include <server/PlatformUtil.hpp>
 
 #include <set>
 
@@ -78,7 +78,7 @@ int main()
     lb.setConversionTable({{'-', {}}, {'\'', {}}, {241, core::LetterSequence_FromUtf8<core::LetterConversionTarget>("n")}});
     lb.setMinWordLength(3);
 
-    auto assetPath = core::PlatformUtil::getAssetPath(core::PlatformUtil::getModulePath(), "assets");
+    auto assetPath = server::PlatformUtil::getAssetPath(server::PlatformUtil::getModulePath(), "assets");
     auto dicPath = assetPath + "/dictionaries/sowpods+12d.txt";
     // auto dicPath = assetPath + "/dictionaries/12dicts.txt";
     auto buf = readFile(dicPath.c_str());

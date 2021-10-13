@@ -108,7 +108,7 @@ int main()
         auto& ab = lang.alphabet();
         for (auto& a : ab)
         {
-            if (a.front() == c)
+            if (a.front() == uint8_t(c))
             {
                 bb.grid[i] = a;
                 break;

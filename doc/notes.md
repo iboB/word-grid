@@ -35,4 +35,16 @@ We could experiment with rectangular grids as well.
 
 Certain languages, like Bulgarian allow for more words which are long. The short/long/longer config for Bulgarian should likely be different.
 
+### Anti-cheating ideas
 
+At minimum the grid *must* be seen by the client, so complete cheating prevention is impossible.
+
+Cheating is trivial with the "send full boards to client" approach. It can be made a bit harder if boards are sent as binary, and then read in the wasm part, but it's still pretty easy.
+
+An alternative approach would be to send the grid only (`PrivateBoard`) to clients and have the server approve all client moves. It will make cheating even harder, but since the grid *is* available at the client, they can just use their own dictionaries. Also, this will make the experience of honest clients with high latency (anything above 250ms, really) pretty unpleasant.
+
+Yet another idea is to make the grid sort of "hidden" by coverting it to an image server-side. Thus cheaters would have to implement some kind of OCR to read it or reenter it manually elsewhere. The harder the image is for an OCR algorithm, the more unpleasant the experience will be for honest clients.
+
+Ultimately, it can't be helped.
+
+That's why the goal for now is to skip cheating prevention by design and develop offline cheating detection which analyzes moves played by clients determines whether they are "human-like".

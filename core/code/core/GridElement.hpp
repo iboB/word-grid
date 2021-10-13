@@ -25,8 +25,7 @@ class CORE_API GridElement : public LetterSequence<GridElementTraits::Max_Length
 public:
     const LetterSequence<GridElementTraits::Max_Length>& letterSequence() const { return *this; }
 
-    score_t score() const { return m_score; }
-    void setScore(score_t s) { m_score = s; }
+    score_t score = 0;
 
     // sign signifies a continuation
     // can be at the front or back
@@ -71,15 +70,12 @@ public:
 
     bool operator==(const GridElement& other) const
     {
-        return letterSequence() == letterSequence() && m_score == other.m_score;
+        return letterSequence() == letterSequence() && score == other.score;
     }
 
     bool operator!=(const GridElement& other) const
     {
-        return letterSequence() != letterSequence() || m_score != other.m_score;
+        return letterSequence() != letterSequence() || score != other.score;
     }
-
-private:
-    score_t m_score = 0;
 };
 } // namespace core

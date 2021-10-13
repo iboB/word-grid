@@ -48,4 +48,5 @@ target_link_libraries(core
     PUBLIC
         itlib
         splat
+        huse
 )

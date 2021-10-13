@@ -20,7 +20,7 @@ core::GridElement ab(std::string_view str, core::score_t s)
 {
     core::GridElement ret;
     core::LetterSequence_FromUtf8(ret, str);
-    ret.setScore(s);
+    ret.score = s;
     return ret;
 }
 

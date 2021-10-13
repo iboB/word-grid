@@ -32,9 +32,7 @@ TEST_CASE("Basic")
     CHECK(e.size() == 1);
     CHECK(!e.frontOnly());
     CHECK(!e.backOnly());
-    CHECK(e.score() == 0);
-    e.setScore(7);
-    CHECK(e.score() == 7);
+    CHECK(e.score == 0);
     CHECK(e.matchesWord(wms("bagavag")));
     CHECK(e.matchesWord(wms("azbzx")));
     CHECK(e.matchesWord(wms("zbza")));
@@ -42,9 +40,9 @@ TEST_CASE("Basic")
 
     auto e2 = e;
     CHECK(e2 == e);
-    e2.setScore(43);
+    e2.score = 43;
     CHECK(e2 != e);
-    e.setScore(43);
+    e.score = 43;
     CHECK(e2 == e);
 
     auto i = e.firstOption();
@@ -56,7 +54,7 @@ TEST_CASE("Basic")
     CHECK(i.isEnd());
 
     e = ge("x");
-    CHECK(e.score() == 0);
+    CHECK(e.score == 0);
     CHECK(e.matchesWord(wms("azbzx")));
 }
 
@@ -91,7 +89,7 @@ TEST_CASE("Front/Back")
     CHECK(e.size() == 3);
     CHECK(!e.frontOnly());
     CHECK(e.backOnly());
-    CHECK(e.score() == 0);
+    CHECK(e.score == 0);
 
     auto i = e.firstOption();
     CHECK(!i.isEnd());

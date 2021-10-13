@@ -22,7 +22,7 @@ core::GridElement ab(std::string_view str, core::score_t s)
 {
     core::GridElement ret;
     core::LetterSequence_FromUtf8(ret, str);
-    ret.setScore(s);
+    ret.score = s;
     return ret;
 }
 
@@ -106,9 +106,9 @@ TEST_CASE("Simple")
     REQUIRE(abc.size() == 7);
     CHECK(abc[0].size() == 1);
     CHECK(abc[0][0] == 'a');
-    CHECK(abc[0].score() == 1);
+    CHECK(abc[0].score == 1);
     CHECK(abc[3].letterSequence() == wms(" "));
-    CHECK(abc[3].score() == 0);
+    CHECK(abc[3].score == 0);
 
     auto& commons = l.commonWordsByLength();
     CHECK(commons.size() == 4);
@@ -120,7 +120,7 @@ TEST_CASE("Simple")
     auto& fq = l.alphabetFrequencyTable();
 
     // reuse GridElement type but add expected counts in score
-    core::Alphabet counts = {
+    const core::Alphabet counts = {
         ab("a", 60),
         ab("b", 20),
         ab("c", 30),
@@ -130,13 +130,13 @@ TEST_CASE("Simple")
         ab("z", 12),
     };
     auto sum = 0;
-    for (auto& c : counts) sum += c.score();
+    for (auto& c : counts) sum += c.score;
     REQUIRE(fq.size() == sum);
     auto fi = fq.begin();
     auto hits = 0;
     for (auto& c : counts)
     {
-        for (int i = 0; i < c.score(); ++i)
+        for (int i = 0; i < c.score; ++i)
         {
             hits += c.letterSequence() == fi->get().letterSequence();
             ++fi;

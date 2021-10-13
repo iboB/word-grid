@@ -36,7 +36,7 @@ LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
             m_warnings.push_back("Rejecting alphabet with empty items");
             return *this;
         }
-        if (l.score() > highestScore) highestScore = l.score();
+        if (l.score > highestScore) highestScore = l.score;
     }
     if (highestScore == 0)
     {
@@ -53,7 +53,7 @@ LanguageBuilder& LanguageBuilder::setAlphabet(Alphabet alphabet)
 
     auto scoreFor = [highestScore](const GridElement& item) {
         // score if positive, otherwise highest + abs
-        return item.score() > 0 ? item.score() : highestScore + std::abs(item.score());
+        return item.score > 0 ? item.score : highestScore + std::abs(item.score);
     };
 
     auto ftLcm = 1;

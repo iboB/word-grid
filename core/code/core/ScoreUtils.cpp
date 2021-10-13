@@ -18,7 +18,7 @@ score_t classicScore(const ScoredWord& sw, const Grid& grid)
 {
     // sum element scores
     score_t ret = 0;
-    for (auto& c : sw.path) ret += grid[c].score();
+    for (auto& c : sw.path) ret += grid[c].score;
 
     const auto len = sw.word.size();
     if (len <= WordLengthTraits::Short_Max) return ret; // no bonus

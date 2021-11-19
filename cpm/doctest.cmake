@@ -1,5 +1,1 @@
-CPMAddPackage(
-    NAME doctest-lib
-    GITHUB_REPOSITORY iboB/doctest-lib
-    GIT_TAG 2.4.4
-)
+CPMAddPackage(gh:iboB/doctest-lib@2.4.6)

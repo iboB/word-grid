@@ -1,5 +1,1 @@
-CPMAddPackage(
-    NAME splat
-    GITHUB_REPOSITORY iboB/splat
-    VERSION 1.0.0
-)
+CPMAddPackage(gh:iboB/splat@1.1.0)

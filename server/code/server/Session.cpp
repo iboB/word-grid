@@ -8,7 +8,7 @@ class Session::Mode
 protected:
     ~Mode() = default;
 public:
-    virtual void onReceive(Session* s, itlib::memory_view<char> text) = 0;
+    virtual void onReceive(Session* s, itlib::span<char> text) = 0;
 };
 
 namespace
@@ -19,7 +19,7 @@ namespace
 class Session::InitialMode final : public Session::Mode
 {
 public:
-    virtual void onReceive(Session* s, itlib::memory_view<char> text) override
+    virtual void onReceive(Session* s, itlib::span<char> text) override
     {
 
     }
@@ -32,7 +32,7 @@ void Session::changeMode(Mode* mode)
     });
 }
 
-void Session::onReceive(itlib::memory_view<char> text)
+void Session::onReceive(itlib::span<char> text)
 {
 
 }

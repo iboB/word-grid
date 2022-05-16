@@ -9,7 +9,7 @@
 
 #include "Types.hpp"
 
-#include <itlib/memory_view.hpp>
+#include <itlib/span.hpp>
 #include <itlib/static_vector.hpp>
 
 namespace core
@@ -39,10 +39,10 @@ int compareLetters(const S& a, const S& b)
 }
 } // namespace impl
 
-using B_LetterSequenceView = itlib::const_memory_view<letter_t>;
+using B_LetterSequenceView = itlib::span<const letter_t>;
 struct LetterSequenceView : public B_LetterSequenceView
 {
-    using B_LetterSequenceView::const_memory_view;
+    using B_LetterSequenceView::span;
     using B_LetterSequenceView::operator=;
 
     bool operator==(const LetterSequenceView& b) const { return impl::compareLetters(*this, b) == 0; }

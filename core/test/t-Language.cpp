@@ -11,6 +11,8 @@
 #include <core/LanguageBuilder.hpp>
 #include <core/LetterSequenceFromUtf8.hpp>
 
+#include <iostream>
+
 TEST_SUITE_BEGIN("Language");
 
 core::WordMatchSequence wms(std::string_view str)

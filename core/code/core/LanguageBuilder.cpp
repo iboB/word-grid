@@ -229,14 +229,14 @@ end:
             {
                 if (p->get().letters.size() > length) break;
             }
-            view.reset(subListStart, p - subListStart);
+            view = itlib::span(subListStart, p - subListStart);
             subListStart = p;
         };
         fillView(m_language.m_shortWords, WordLengthTraits::Short_Max);
         fillView(m_language.m_mediumWords, WordLengthTraits::Medium_Max);
         fillView(m_language.m_longWords, WordLengthTraits::Long_Max);
         fillView(m_language.m_longerWords, WordLengthTraits::Longer_Max);
-        m_language.m_superLongWords.reset(subListStart, pend - subListStart);
+        m_language.m_superLongWords = itlib::span(subListStart, pend - subListStart);
     }
 
     m_missingFields[Lang_Dictionary] = false;

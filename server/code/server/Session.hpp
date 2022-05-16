@@ -1,7 +1,7 @@
 #pragma once
 #include "API.h"
 
-#include <itlib/memory_view.hpp>
+#include <itlib/span.hpp>
 
 #include <memory>
 #include <functional>
@@ -21,7 +21,7 @@ protected:
     // intentionally not virtual. Objects are not owned through this, but instead through shared pointers
     ~Session();
 
-    void onReceive(itlib::memory_view<char> text);
+    void onReceive(itlib::span<char> text);
 
     virtual void send() = 0;
     virtual void pushIOThreadTask(std::function<void()> task) = 0;

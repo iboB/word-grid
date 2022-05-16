@@ -11,7 +11,7 @@
 #include "GridDimensions.hpp"
 #include "GridElement.hpp"
 
-#include <itlib/memory_view.hpp>
+#include <itlib/span.hpp>
 
 #include <vector>
 
@@ -42,13 +42,13 @@ public:
     GridElement& operator[](uint32_t index) { return m_elements[index]; }
 
     using ElementsVector = std::vector<GridElement>;
-    using MutableElementsView = itlib::memory_view<GridElement>;
+    using MutableElementsView = itlib::span<GridElement>;
     const ElementsVector& elements() const { return m_elements; }
-    MutableElementsView elements() { return itlib::make_memory_view(m_elements); }
+    MutableElementsView elements() { return m_elements; }
 
-    using ElementsView = itlib::const_memory_view<GridElement>;
-    ElementsView row(uint32_t y) const { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
-    MutableElementsView row(uint32_t y) { return itlib::make_memory_view(rowPtr(y), m_dim.w); }
+    using ElementsView = itlib::span<const GridElement>;
+    ElementsView row(uint32_t y) const { return itlib::make_span(rowPtr(y), m_dim.w); }
+    MutableElementsView row(uint32_t y) { return itlib::make_span(rowPtr(y), m_dim.w); }
 
     // resets all elements but doesn't affect dimensions
     void clear()

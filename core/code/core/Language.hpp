@@ -40,7 +40,7 @@ public:
 
     using HelperList = std::vector<std::reference_wrapper<const DictionaryWord>>;
     const HelperList& commonWordsByLength() const { return m_commonWordsByLength; }
-    using HelperListView = itlib::const_memory_view<std::reference_wrapper<const DictionaryWord>>;
+    using HelperListView = itlib::span<std::reference_wrapper<const DictionaryWord>>;
     HelperListView shortWords() const { return m_shortWords; }
     HelperListView mediumWords() const { return m_mediumWords; }
     HelperListView longWords() const { return m_longWords; }

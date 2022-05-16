@@ -46,11 +46,11 @@ bool GridElement::matchesWord(LetterSequenceView word) const
         if (frontOnly())
         {
             // slice guarantees no errors even if out of bounds
-            word = word.slice(0, ms.size());
+            word = word.subspan(0, ms.size());
         }
         else
         {
-            word = word.slice(word.size() - ms.size());
+            word = word.subspan(word.size() - ms.size());
         }
         return ms == word;
     }

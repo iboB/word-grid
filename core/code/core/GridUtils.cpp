@@ -16,7 +16,7 @@
 
 #include "GridVisiting.hpp"
 
-#include <itlib/memory_view.hpp>
+#include <itlib/span.hpp>
 
 #include <cassert>
 
@@ -53,7 +53,7 @@ struct TestPatternVisitor
 
     bool done() const { return top.back().empty(); }
 
-    void pop(itlib::const_memory_view<letter_t>)
+    void pop(itlib::span<const letter_t>)
     {
         assert(!top.empty());
         top.pop_back();
@@ -73,7 +73,7 @@ struct FindAllVisitor
     DictionarySearch ds;
     GridPath path;
 
-    bool push(itlib::const_memory_view<letter_t> elem, const GridCoord& c)
+    bool push(itlib::span<const letter_t> elem, const GridCoord& c)
     {
         path.push_back(c);
 
@@ -97,7 +97,7 @@ struct FindAllVisitor
 
     bool done() { return false; }
 
-    void pop(itlib::const_memory_view<letter_t> elem)
+    void pop(itlib::span<const letter_t> elem)
     {
         assert(!path.empty());
         path.pop_back();

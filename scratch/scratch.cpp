@@ -198,7 +198,7 @@ public:
             WordElement::fromAscii("e"), WordElement::fromAscii("n"), WordElement::fromAscii("s"), WordElement::fromAscii("e"),
         };
 
-        Grid g(4, 4, itlib::make_memory_view(gridElements));
+        Grid g(4, 4, gridElements);
         g.acquireElementOwnership();
 
         ScoredDictionary sd;
@@ -220,7 +220,7 @@ int main()
     auto commonDicPath = assetPath + "/dictionaries/common-en.txt";
     //auto commonDicPath = assetPath + "/dictionaries/words_alpha.txt";
     auto commonDicData = readFile(commonDicPath.c_str());
-    Dictionary dictionary = Dictionary::fromUtf8Buffer(itlib::make_memory_view(commonDicData));
+    Dictionary dictionary = Dictionary::fromUtf8Buffer(commonDicData);
     cout << "Dictionary words: " << dictionary.words().size() << endl;
 
     auto producer = std::make_shared<TestProducer>(dictionary);

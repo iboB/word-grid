@@ -11,8 +11,6 @@
 #include "GridElementTraits.hpp"
 #include "LetterSequence.hpp"
 
-#include <itlib/memory_view.hpp>
-
 namespace core
 {
 // a grid element constists of one or more letters plus optional special characters
